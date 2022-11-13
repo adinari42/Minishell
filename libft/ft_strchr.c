@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 15:26:53 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:05:56 by slakner          ###   ########.fr       */
+/*   Created: 2022/03/25 14:28:56 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/20 05:47:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
+/*while loop checks for character occurance*/
+/*last condition is when c is NUL termination*/
 char	*ft_strchr(const char *s, int c)
 {
-	size_t	i;
-
-	i = 0;
-	while (i <= ft_strlen(s))
+	while (*s != '\0')
 	{
-		if (s[i] == (char) c)
-			return ((char *)(s + i));
-		i++;
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
 	}
-	return (NULL);
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (0);
 }

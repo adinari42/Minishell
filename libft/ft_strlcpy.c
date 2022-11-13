@@ -3,27 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 12:11:49 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:06:10 by slakner          ###   ########.fr       */
+/*   Created: 2022/03/29 20:16:34 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/19 01:26:39 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
+/*
+*copies src dstsize string from src to dst. 
+*guarantees NUL termination of dst to save memory
+and takes its size into consideration.
+dstsize - 1 because final spot is for NUL termination
+*/
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
+	size_t	len;
 	size_t	i;
 
 	i = 0;
-	if (!dstsize)
-		return (ft_strlen(src));
-	while (i < dstsize - 1 && src[i])
+	len = ft_strlen(src);
+	if (!dst || !src)
+		return (0);
+	if (dstsize > 0)
 	{
-		dst[i] = src[i];
-		i ++;
+		while (src[i] != '\0' && i < (dstsize - 1))
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
 	}
-	dst[i] = '\0';
-	return (ft_strlen(src));
+	return (len);
 }

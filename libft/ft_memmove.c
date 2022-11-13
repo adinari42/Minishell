@@ -3,37 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 12:06:17 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:14:29 by slakner          ###   ########.fr       */
+/*   Created: 2022/03/28 16:10:43 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/20 05:54:31 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*memcpy don't accept overlapping, memove allows overlapping.*/
 void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	size_t	i;
+	int	i;
 
-	if (dst == src)
-		return (dst);
-	else if (dst < src)
+	if (!src && !dst)
+		return (NULL);
+	if (dst > src)
 	{
-		i = 0;
-		while (i < len)
+		i = (int)len - 1;
+		while (i >= 0)
 		{
-			((char *) dst)[i] = ((char *) src)[i];
-			i++;
+			*(char *)(dst + i) = *(char *)(src + i);
+			i--;
 		}
 	}
 	else
 	{
-		i = len;
-		while (i > 0)
+		i = 0;
+		while (i < (int)len)
 		{
-			i --;
-			((char *) dst)[i] = ((char *) src)[i];
+			*(char *)(dst + i) = *(char *)(src + i);
+			i++;
 		}
 	}
 	return (dst);

@@ -3,45 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/24 18:20:11 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:17:33 by slakner          ###   ########.fr       */
+/*   Created: 2022/04/03 02:13:07 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/19 01:05:45 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static size_t	mem_needed(char const *s, unsigned int start, size_t len)
-{
-	if (!len || start > (ft_strlen(s) - 1))
-		return (1);
-	else if (ft_strlen(s) - start < len)
-		return (ft_strlen(s) - start + 1);
-	else
-		return (len + 1);
-}
-
+/*
+**line20: protection against NULL input
+**l23: if given empty string for start
+duplicates empty string and returns pointer to it
+**l27: reduces len to the max that can be taken in that case
+**l33: uses strlcpy to copy len + 1 bytes from s + start
+and ensures NUL termination
+*/
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char	*substr;
-	char	*ptr_substr;
+	char			*sub_str;
+	unsigned int	l1;
+	unsigned int	l2;
 
 	if (!s)
 		return (NULL);
-	substr = malloc(mem_needed(s, start, len));
-	if (!substr)
+	l1 = ft_strlen(s);
+	l2 = ft_strlen(s + start);
+	if (l1 < start)
+		return (ft_strdup(""));
+	if (l2 < len)
+		len = ft_strlen(s + start);
+	sub_str = malloc(len + 1);
+	if (!sub_str)
 		return (NULL);
-	ptr_substr = substr;
-	while (*s && start--)
-		s++;
-	while (*s && len)
-	{
-		*ptr_substr = *s;
-		ptr_substr++;
-		s++;
-		len--;
-	}
-	*ptr_substr = '\0';
-	return (substr);
+	ft_strlcpy(sub_str, s + start, len + 1);
+	return (sub_str);
 }

@@ -3,39 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 15:57:07 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:06:51 by slakner          ###   ########.fr       */
+/*   Created: 2022/03/30 20:49:29 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/19 00:49:38 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
+/*
+strchr to locate first occurance
+strncmp to compare
+first if makes sure that needle is as long or less long than haystack
+while loops checks
+ Line 22: || !needle*/
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	char		*foundptr;
-	const char	*needle_start;
-	size_t		needle_len;
-	size_t		len_remaining;
+	size_t	i;
 
-	if (!(*needle))
-		return ((char *) haystack);
-	needle_start = (char *) needle;
-	while (*haystack && len > 0)
+	i = 0;
+	if (ft_strlen(haystack) < ft_strlen(needle))
+		return (0);
+	while (len >= ft_strlen(needle) + i)
 	{
-		needle_len = ft_strlen(needle);
-		foundptr = (char *) haystack;
-		len_remaining = len;
-		while (*foundptr++ == *needle++ && len_remaining--)
-		{
-			needle_len--;
-			if (!needle_len || !(*needle))
-				return ((char *) haystack);
-		}
-		needle = needle_start;
-		haystack ++;
-		len --;
+		if (ft_memcmp(haystack + i, needle, ft_strlen(needle)) == 0)
+			return ((char *)haystack + i);
+		i++;
 	}
 	return (0);
 }
