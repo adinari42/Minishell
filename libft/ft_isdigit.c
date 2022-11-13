@@ -3,21 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/24 18:16:47 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/19 00:59:36 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/22 11:26:03 by slakner           #+#    #+#             */
+/*   Updated: 2022/03/30 14:24:10 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
 int	ft_isdigit(int c)
 {
-	if (c >= '0' && c <= '9' )
-	{
-		return (c);
-	}
-	else
+	if (c < '0' || c > '9')
 		return (0);
+	return (1);
 }

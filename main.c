@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/13 20:00:52 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/13 23:35:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,14 @@ int	main(int argc, char **argv, char **envp)
 	{
 		inpt = readline("Minishell$ ");
 		if (inpt && inpt[0])
+		{
 			add_history(inpt);
+			printf("%s\n", inpt);
+			read_tokens(inpt);
+			// do sometihng with tokens here;
+			// then:
+			// free_token_list();
+		}
 	}
 	return (argc);
 }

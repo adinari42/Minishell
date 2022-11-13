@@ -3,23 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/24 18:16:28 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/19 00:43:21 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/22 11:44:49 by slakner           #+#    #+#             */
+/*   Updated: 2022/04/21 17:07:24 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-/*counts number of characters before NUL termination*/
-int	ft_strlen(const char *s)
-{
-	int	i;
 
-	i = 0;
-	while (s[i] != '\0')
+size_t	ft_strlen(const char *s)
+{
+	int	strlen;
+
+	strlen = 0;
+	while (*s)
 	{
-		i++;
+		strlen ++;
+		s ++;
 	}
-	return (i);
+	return (strlen);
 }
