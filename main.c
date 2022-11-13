@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/13 19:57:01 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/13 19:58:24 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		inpt = readline("Minishell$ ");
-		if(inpt && inpt[0])
+		if (inpt && inpt[0])
 			add_history(inpt);
 	}
 	return (argc);
