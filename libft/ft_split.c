@@ -3,100 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/25 10:11:27 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:15:00 by slakner          ###   ########.fr       */
+/*   Created: 2022/04/14 23:36:44 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/19 01:23:31 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static int	count_strings(char *str, char c)
+/*str_count returns n number of total strings splitted by c
+str_radius returns i the length of the current string to use it in str_fill
+str_fill fills s1 with i bits from s + i in s1
+free_all frees n strings from the double pointer after failure
+*/
+static int	str_count(char const *s, char c)
 {
-	char	*ptr;
-	int		ctr;
-
-	ctr = 0;
-	ptr = str;
-	while (*ptr)
-	{
-		while (c != *ptr && *ptr)
-			ptr ++;
-		ctr ++;
-		while (c == *ptr && *ptr && c)
-			ptr ++;
-	}
-	return (ctr);
-}
-
-static char	**fill_array(char **str_array, char *str, char c, char *wordptr)
-{
-	int	i;
+	size_t	i;
+	int		n;
 
 	i = 0;
-	while (*str)
+	n = 0;
+	while (s[i])
 	{
-		str ++;
-		if (c == *str || !*str)
-		{
-			str_array[i] = malloc(sizeof(char) * ((str - wordptr) + 1));
-			if (str_array[i])
-				ft_strlcpy(str_array[i], wordptr, (str - wordptr + 1));
-			else
-			{
-				while (i--)
-					free(str_array[i]);
-				return (NULL);
-			}
-			i ++;
-			while (*str == c && c)
-				str ++;
-			wordptr = str;
-		}
+		while (s[i] == c)
+			i++;
+		if (s[i])
+			n++;
+		while (s[i] && s[i] != c)
+			i++;
 	}
-	str_array[i] = NULL;
-	return (str_array);
+	return (n);
 }
 
-static char	**nullbyte_separator(const char *s)
+static size_t	str_radius(const char *s, char c)
 {
-	char	**str_array;
+	size_t	i;
 
-	str_array = malloc(2 * sizeof(char *));
-	if (!str_array)
-		return (NULL);
-	str_array[0] = ft_strdup(s);
-	if (!str_array[0])
+	i = 0;
+	while (s[i] && s[i] != c)
+		i++;
+	return (i);
+}
+
+static int	str_fill(char **s1, const char *s, char c)
+{
+	size_t	j;
+	size_t	i;
+	size_t	rad;
+
+	i = 0;
+	j = 0;
+	while (s[i])
 	{
-		free(str_array);
-		return (NULL);
+		while (s[i] && s[i] == c)
+			i++;
+		rad = str_radius(s + i, c);
+		if (rad)
+		{
+			*(s1 + j) = ft_substr(s + i, 0, rad);
+			if (!(*(s1 + j)))
+				return (0);
+			i = i + rad;
+			j++;
+		}
 	}
-	str_array[1] = NULL;
-	return (str_array);
+	return (1);
+}
+
+static void	free_all(char **words, int n)
+{
+	while (n-- > 0)
+		free(words[n]);
+	free(words);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	char	**str_array;
-	char	*wordptr;
-	char	*str;
-	char	charstr[2];
+	char	**multistr;
+	int		n;
 
-	str_array = NULL;
-	if (!s)
+	if (s == NULL)
 		return (NULL);
-	else if (!c && *s)
-		return (nullbyte_separator(s));
-	charstr[0] = c;
-	charstr[1] = '\0';
-	str = ft_strtrim(s, charstr);
-	if (!str)
+	n = str_count(s, c);
+	multistr = (char **)malloc(sizeof(char *) * (n + 1));
+	if (!multistr)
 		return (NULL);
-	wordptr = str;
-	str_array = malloc(sizeof (char *) * (count_strings(str, c) + 1));
-	if (str_array)
-		str_array = fill_array(str_array, str, c, wordptr);
-	free(str);
-	return (str_array);
+	if (!str_fill(multistr, s, c))
+	{
+		free_all(multistr, n);
+		return (NULL);
+	}
+	multistr[n] = NULL;
+	return (multistr);
 }

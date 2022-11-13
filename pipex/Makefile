@@ -5,39 +5,46 @@
 #                                                     +:+ +:+         +:+      #
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/13 19:14:29 by adinari          ###   ########.fr        #
+#    Created: 2022/09/27 21:17:31 by adinari           #+#    #+#              #
+#    Updated: 2022/10/22 21:15:19 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = minishell
+NAME = pipex
 
-FILES = main.c
+FILES = pipex.c\
+		gnl/get_next_line.c\
+		gnl/get_next_line_utils.c\
+		process_utils.c\
+		utils2.c\
 
 OBJECTS = $(FILES:.c=.o)
 
-CC = @gcc
+# LIBFT = libft/libft.a
 
-FLAGS = -Wall -Werror -Wextra
+# @make -C ./libft
+
+CC = gcc
+
+FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
 %.o:%.c
-	gcc $(FLAGS) -c $< -o $@
+	@gcc $(FLAGS) -c $< -o $@
 
 LIBS = libft/libft.a
 
 $(NAME): $(OBJECTS)
 	@cd libft && make
-	$(CC) $(OBJECTS) $(LIBS) -o $(NAME)  -lreadline 
+	@gcc $(OBJECTS) $(LIBS) -o $(NAME) 
 
 clean:
-	@cd libft && make clean
 	@rm -rf $(OBJECTS)
-
+	@cd libft && make clean
 
 fclean: clean
-	@cd libft && make fclean
 	@rm -rf $(NAME) *.o
+	@cd libft && make fclean
 
 re: fclean all

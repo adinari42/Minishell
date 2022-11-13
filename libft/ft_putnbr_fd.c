@@ -3,58 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/25 15:13:40 by slakner           #+#    #+#             */
-/*   Updated: 2022/04/21 17:14:49 by slakner          ###   ########.fr       */
+/*   Created: 2022/04/11 04:36:37 by adinari           #+#    #+#             */
+/*   Updated: 2022/04/19 01:43:45 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	is_not_zero(int integer, int fd)
+void	ft_putnbr_fd(int n, int fd)
 {
-	if (integer == 0)
+	if ((n > MAX || n < MIN) && fd < 0)
+		return ;
+	if (n == -2147483648)
 	{
-		write (fd, "0", 1);
-		return (0);
+		ft_putchar_fd('-', fd);
+		ft_putchar_fd('2', fd);
+		n = 147483648;
 	}
-	return (1);
-}
-
-static void	digit_to_char(int integer, char *digits, int pos)
-{
-	if (integer < 0)
-		digits[pos] = '0' + (integer % 10) * -1;
+	if (n < 0)
+	{
+		ft_putchar_fd('-', fd);
+		n *= -1;
+	}
+	if (n < 10)
+	{
+		ft_putchar_fd(n + 48, fd);
+		return ;
+	}
 	else
-		digits[pos] = '0' + (integer % 10);
-}
-
-static void	write_nonzero_int(int integer, int fd)
-{
-	char	digits[10];
-	int		pos;
-
-	pos = 0;
-	if (integer < 0)
-		write (fd, "-", 1);
-	while (integer != 0)
-	{
-		digit_to_char(integer, digits, pos);
-		integer /= 10;
-		pos++;
-	}
-	while (pos > 0)
-	{
-		pos --;
-		write (fd, &digits[pos], 1);
-	}
-}
-
-void	ft_putnbr_fd(int nb, int fd)
-{
-	if (is_not_zero(nb, fd))
-	{
-		write_nonzero_int(nb, fd);
-	}
+		ft_putnbr_fd(n / 10, fd);
+	ft_putnbr_fd(n % 10, fd);
 }
