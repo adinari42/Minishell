@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/13 19:58:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/13 20:00:52 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc != 1)
 		return (1);
+	init_signals();
 	parse.split_envp = envp_parse(envp);
 	display_splitenvp(parse, argv);
 	while (1)
@@ -54,4 +55,3 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (argc);
 }
-
