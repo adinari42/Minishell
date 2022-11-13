@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt_test.c                                      :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/13 18:56:07 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/13 19:57:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ void	display_splitenvp(t_parse parse, char **argv)
 		printf("%s\n", parse.split_envp[i++]);
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
 	t_parse	parse;
 
+	if (argc != 1)
+		return (1);
 	parse.split_envp = envp_parse(envp);
 	display_splitenvp(parse, argv);
 	while (1)
@@ -52,3 +54,4 @@ int main(int argc, char **argv, char **envp)
 	}
 	return (argc);
 }
+
