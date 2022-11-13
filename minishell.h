@@ -3,21 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/12 23:00:53 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/13 22:57:49 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "libft/libft.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "libft/libft.h"
+
+# define TOKENS " $'<>\""
+
+enum e_tokentype
+{
+	PIPE,
+	REDIR_IN,
+	REDIR_OUT,
+	APPEND_IN,
+	APPEND_OUT,
+	DOUBLE_QUOTE,
+	SINGLE_QUOTE,
+	SPACE,
+	WORD
+};
+
 typedef struct s_history
 {
 	char				*history;
@@ -48,8 +64,19 @@ typedef struct pipe
 	int		append;
 }				t_pipe;
 
+typedef struct s_token
+{
+	char			*str;
+	int				type;
+	int				id;
+	struct s_token	*prev;
+	struct s_token	*next;
+}	t_token;
 
-
-
-
+t_token	**read_tokens(char *bashcmd);
+int		token_type(char *c);
+void	init_signals(void);
+t_token	*token_new(char *str);
+void	append(t_token **token, t_token *new_elem);
+t_token	*list_end(t_token **token);
 #endif

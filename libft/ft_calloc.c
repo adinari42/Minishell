@@ -3,24 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/01 18:09:00 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/12 00:19:53 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/24 17:39:32 by slakner           #+#    #+#             */
+/*   Updated: 2022/04/21 17:09:27 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-/*SIZE_MAX is type size_t max value, libft tester requires it */
+
 void	*ft_calloc(size_t count, size_t size)
 {
-	char	*mem;
+	void	*mem;
+	size_t	memsize;
 
-	if (count == SIZE_MAX || size == SIZE_MAX)
+	memsize = size * count;
+	if (size && (memsize / size != count))
 		return (NULL);
-	mem = malloc(count * size);
+	mem = malloc(memsize);
 	if (!mem)
 		return (NULL);
-	ft_bzero(mem, (count * size));
-	return ((void *)mem);
+	ft_bzero(mem, memsize);
+	return (mem);
 }

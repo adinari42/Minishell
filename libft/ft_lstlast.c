@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstlast.c                                       :+:      :+:    :+:   */
+/*   ft_lstlast.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 01:11:08 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/18 05:15:02 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/25 17:57:34 by slakner           #+#    #+#             */
+/*   Updated: 2022/03/30 22:01:53 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 t_list	*ft_lstlast(t_list *lst)
 {
 	if (!lst)
-		return (NULL);
-	while (lst->next != NULL)
+		return ((void *) 0);
+	while (lst->next)
 		lst = lst->next;
 	return (lst);
 }
