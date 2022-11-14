@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 18:31:20 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/14 20:26:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,64 +106,54 @@ int	push(t_tokens **thestack, char *thevalue)
 	}
 	return (1);
 }
-// void	tokenizer1(t_tokens *a, char *line) 
-// {
-//     // const char *line = "'foobar'|cat'mousebar'sum";
-//     char delim = '\'';
-//     char *p = (char *)line, *sp = NULL, *ep = NULL;
-// 	int first;
-// 	int	second;
-// 	first = 0;
-// 	second = 0;
-//     size_t i = 0;
 
-//    for (; *p; p++) {                /* for each char in line */
-//         if (!sp && *p == delim)             /* find 1st delim */
-//             sp = p, sp++;                   /* set start ptr  */
-//         else if (!ep && *p == delim)        /* find 2nd delim */
-//             ep = p;                         /* set end ptr    */
-//         if (sp && ep) {                     /* if both set    */
-//             char substr[ep - sp + 1];       /* declare substr */
-//             for (i = 0, p = sp; p < ep; p++)/* copy to substr */
-//                 substr[i++] = *p;
-//             substr[ep - sp] = 0;            /* nul-terminate  */
-
-//             // printf ("single-quoted string : %s\n", substr);
-//             sp = ep = NULL;
-// 			// push(&a, ft_substr(substr, first, );
-//         }
-//     }
-// }
 void	find_token(t_tokens *tokens, char* line) {
 
     // const char *line = "'foobar'|cat'mousebar'sum";
-    char delim = '\'';
-    char *p = (char *)line;
-	char *first = NULL;
-	char *second = NULL;
-	char *str;
-	size_t len = -1;
-
-    while (p && *p) {                /* for each char in line */
-        if (!first && *p == delim)             /* find 1st delim */
-            first = p, first++;                   /* set start ptr  */
-        else if (!second && *p == delim)        /* find 2nd delim */
-        {
-			str = ft_substr(first, 0, len);   
-			len = -1;                    /* set end ptr    */
-			second = p;
+    char	delim[2] = "\'\"";
+    char	*p;
+	char 	*first;
+	char 	*second;
+	char	*str;
+	// char	c;
+	size_t len;
+	int i = 0;
+		p = line;
+	// while (delim[i])
+	// {	
+		first = NULL;
+		second = NULL;
+		len = -1;
+		while (p && *p) /* for each char in line */
+		{   
+			// while (delim[i])
+			// {
+			// 	if (*p == delim[i])
+			// 		c = delim[i]
+			// }
+			if (!first && *p == delim[i])             /* find 1st delim */
+			{
+				first = p;
+				first++;                   /* set start ptr  */
+			}	
+			else if (!second && *p == delim[i])        /* find 2nd delim */
+			{
+				str = ft_substr(first, 0, len);   
+				len = -1;                    /* set end ptr    */
+				second = p;
+			}
+			if (first && second) {                     /* if both set    */
+				push(&tokens, str);
+				first = second = NULL;
+				
+			}
+			if (first)
+				len++;
+			p++;
 		}
-		if (first && second) {                     /* if both set    */
-            // printf ("single-quoted string : %s\n", str);
-			push(&tokens, str);
-            first = second = NULL;
-			
-        }
-		if (first)
-			len++;
-		p++;
-    }
-}
+		i++;
+	}
+// }
 
 
 int main(int argc, char **argv, char **envp)
@@ -173,11 +163,12 @@ int main(int argc, char **argv, char **envp)
 	t_tokens	*tokens;
 	t_tokens	*tmp;
 
-	tokens = malloc(sizeof(t_tokens));
+	
 	parse.split_envp = envp_parse(envp);
 	display_splitenvp(parse, argv);
 	while (1)
 	{
+		tokens = malloc(sizeof(t_tokens));
 		inpt = readline("Minishell$ ");
 		if (inpt && inpt[0])
 		{
@@ -189,5 +180,7 @@ int main(int argc, char **argv, char **envp)
 		display_list(tokens);
 		free_ll(tokens);
 	}
+	system("leaks minishell");
+	
 	return (argc);
 }
