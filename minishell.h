@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 21:00:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 22:39:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,14 @@ typedef struct s_tokens
 	int					type;
 	struct	s_tokens	*next;
 
-}				t_tokens;
+t_token	**read_tokens(char *bashcmd);
+int		token_type(char *c);
+void	init_signals(void);
 
-int	init_tokens(t_tokens **tokens, char *inpt);
-t_tokens	*ft_lasttoken(t_tokens *lst);
-int	push(t_tokens **thestack, char *split_token);
-t_tokens	*init_firstphase(char *inpt);
-void	free_2d(char ***to_free);
-
+t_token	*token_new(char *str);
+void	free_token_list(t_token **list);
+void	free_token(t_token *elem);
+void	delete(t_token *del_elem);
+void	append(t_token **token, t_token *new_elem);
+t_token	*list_end(t_token **token);
 #endif

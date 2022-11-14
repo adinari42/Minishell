@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 21:06:46 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/14 23:15:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ void	display_splitenvp(t_parse parse, char **argv)
 
 void	display_list(t_tokens *tokens)
 {
-	t_tokens	*tmp;
+	char	*inpt;
+	t_parse	parse;
+	t_token	**list;
 
 	tmp = tokens;
 	while(tmp)
@@ -173,12 +175,12 @@ int main(int argc, char **argv, char **envp)
 		if (inpt && inpt[0])
 		{
 			add_history(inpt);
-		quote_tokens(tokens, inpt);
-		tmp = tokens;
-		tokens = tokens->next;
-		free(tmp);
-		display_list(tokens);
-		free_ll(tokens);
+			printf("%s\n", inpt);
+			list = read_tokens(inpt);
+			// do sometihng with tokens here;
+			free_token_list(list);
+		}
+		system("leaks minishell");
 	}
 	system("leaks minishell");
 	

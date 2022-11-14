@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 22:19:06 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 22:49:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,33 +30,42 @@ t_token	*token_new(char *str)
 	return (newtoken);
 }
 
+void	free_token_list(t_token **list)
+{
+	t_token	*elem;
+	t_token	*next;
+
+	if (!list)
+		return ;
+	elem = *list;
+	while (elem)
+	{
+		next = elem->next;
+		free_token(elem);
+		elem = next;
+	}
+	free(list);
+}
+
 void	free_token(t_token *token)
 {
 	if (token)
 	{
 		if (token->str)
-			free(token_str);
+			free(token->str);
 		free(token);
 	}
 }
 
-void	delete(t_token **list, t_token *del_elem)
+void	delete(t_token *elem)
 {
-	t_token	*elem;
-	t_token	*prev;
-	t_token	*next;
-
-	elem = *list;
 	if (!elem)
-	{
-		free_token(del_elem);
 		return ;
-	}
-	if (token->prev)
-		token->prev->next = token->next;
-	if (token->next)
-		token->next->prev = token->prev;
-	free_token(token);
+	if (elem->prev)
+		elem->prev->next = elem->next;
+	if (elem->next)
+		elem->next->prev = elem->prev;
+	free_token(elem);
 }
 
 void	append(t_token **list, t_token *new_elem)
