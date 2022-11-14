@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/13 23:35:39 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 23:15:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
 	t_parse	parse;
+	t_token	**list;
 
 	if (argc != 1)
 		return (1);
@@ -54,11 +55,11 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(inpt);
 			printf("%s\n", inpt);
-			read_tokens(inpt);
+			list = read_tokens(inpt);
 			// do sometihng with tokens here;
-			// then:
-			// free_token_list();
+			free_token_list(list);
 		}
+		system("leaks minishell");
 	}
 	return (argc);
 }
