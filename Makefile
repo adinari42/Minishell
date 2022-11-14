@@ -6,22 +6,14 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/17 21:11:14 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/13 22:09:49 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRCS = main.c \
-		signals.c \
-		tokens.c \
-		llist.c \
-		expand.c \
-		quotes.c \
-		parse.c \
-		exec.c \
-		command.c \
-		builtins.c
+FILES = main.c\
+		init_tokens.c
 
 OBJS	= $(SRCS:.c=.o)
 CC		= cc
