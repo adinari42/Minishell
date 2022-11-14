@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/12 23:00:53 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/14 13:43:40 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,18 @@ typedef struct pipe
 	int		append;
 }				t_pipe;
 
+typedef struct s_tokens
+{
+	char				*token;
+	int					type;
+	struct	s_tokens	*next;
 
+}				t_tokens;
 
-
+int	init_tokens(t_tokens **tokens, char *inpt);
+t_tokens	*ft_lasttoken(t_tokens *lst);
+int	push(t_tokens **thestack, char *split_token);
+t_tokens	*init_firstphase(char *inpt);
+void	free_2d(char ***to_free);
 
 #endif
