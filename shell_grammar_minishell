@@ -5,10 +5,15 @@
 
 %start  complete_command
 %%
-complete_command : pipe_sequence
+complete_command : list separator
+                 | list
                  ;
-
-pipe_sequence    : command
+list             : list separator_op and_or
+                 |                   and_or
+                 ;
+pipeline         :      pipe_sequence
+                 ;
+pipe_sequence    :                             command
                  | pipe_sequence '|' linebreak command
                  ;
 command          : simple_command
@@ -63,7 +68,12 @@ io_here          : DLESS     here_end
                  ;
 here_end         : WORD                      /* Apply rule 3 */
                  ;
-
-Rule numbers
-------------
-See Section 2.10.2 here 
+linebreak        : newline_list
+                 | /* empty */
+                 ;
+separator        : separator_op linebreak
+                 | newline_list
+                 ;
+sequential_sep   : ';' linebreak
+                 | newline_list
+                 ;
