@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/14 20:17:46 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 20:19:43 by adinari          ###   ########.fr       */
+/*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
+/*   Updated: 2022/11/14 21:01:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	token_type(char *c)
 		return (PIPE);
 	else if (!ft_strncmp(c, " ", 1))
 		return (SPACE);
+	else if (!ft_strncmp(c, "=", 1))
+		return (ASSIGN);
 	else
 		return (WORD);
 }
@@ -66,8 +68,8 @@ void	print_list(t_tokens *tklist)
 
 t_tokens	**read_tokens(char *bashcmd)
 {
-	const char	spec_c[] = "\"'<>| ";
-	t_tokens		**tk_list;
+	const char	spec_c[] = "\"'<>| =";
+	t_token		**tk_list;
 	size_t		word_s;
 	size_t		i;
 	char		*tokenstr;
