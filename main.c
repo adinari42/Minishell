@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 20:26:47 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/14 21:06:46 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	push(t_tokens **thestack, char *thevalue)
 	return (1);
 }
 
-void	find_token(t_tokens *tokens, char* line) {
+void	quote_tokens(t_tokens *tokens, char* line) {
 
     // const char *line = "'foobar'|cat'mousebar'sum";
     char	delim[2] = "\'\"";
@@ -116,27 +116,28 @@ void	find_token(t_tokens *tokens, char* line) {
 	char 	*second;
 	char	*str;
 	// char	c;
+	int	j = 0;
 	size_t len;
 	int i = 0;
 		p = line;
-	// while (delim[i])
-	// {	
+	
 		first = NULL;
 		second = NULL;
 		len = -1;
 		while (p && *p) /* for each char in line */
-		{   
-			// while (delim[i])
-			// {
-			// 	if (*p == delim[i])
-			// 		c = delim[i]
-			// }
-			if (!first && *p == delim[i])             /* find 1st delim */
+		{   i = 0;
+			while (delim[i] && !first)
+			{
+				if (*p == delim[i])
+					j = i;
+				i++;
+			}
+			if (!first && *p == delim[j])             /* find 1st delim */
 			{
 				first = p;
 				first++;                   /* set start ptr  */
 			}	
-			else if (!second && *p == delim[i])        /* find 2nd delim */
+			else if (!second && *p == delim[j])        /* find 2nd delim */
 			{
 				str = ft_substr(first, 0, len);   
 				len = -1;                    /* set end ptr    */
@@ -144,16 +145,15 @@ void	find_token(t_tokens *tokens, char* line) {
 			}
 			if (first && second) {                     /* if both set    */
 				push(&tokens, str);
-				first = second = NULL;
-				
+				first = NULL;
+				second = NULL;
 			}
 			if (first)
 				len++;
 			p++;
 		}
-		i++;
 	}
-// }
+
 
 
 int main(int argc, char **argv, char **envp)
@@ -173,7 +173,7 @@ int main(int argc, char **argv, char **envp)
 		if (inpt && inpt[0])
 		{
 			add_history(inpt);
-		find_token(tokens, inpt);
+		quote_tokens(tokens, inpt);
 		tmp = tokens;
 		tokens = tokens->next;
 		free(tmp);
