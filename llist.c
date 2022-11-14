@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 22:10:36 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 22:19:06 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,34 @@ t_token	*token_new(char *str)
 	return (newtoken);
 }
 
+void	free_token(t_token *token)
+{
+	if (token)
+	{
+		if (token->str)
+			free(token_str);
+		free(token);
+	}
+}
+
+void	delete(t_token **list, t_token *del_elem)
+{
+	t_token	*elem;
+	t_token	*prev;
+	t_token	*next;
+
+	elem = *list;
+	if (!elem)
+	{
+		free_token(del_elem);
+		return ;
+	}
+	if (token->prev)
+		token->prev->next = token->next;
+	if (token->next)
+		token->next->prev = token->prev;
+	free_token(token);
+}
 
 void	append(t_token **list, t_token *new_elem)
 {
