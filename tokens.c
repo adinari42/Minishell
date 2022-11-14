@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 00:09:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 23:14:00 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,19 +88,12 @@ t_token	**read_tokens(char *bashcmd)
 				append(tk_list, token);
 			}
 			//now save the char that we just found
-			if (bashcmd[i] == '<' || bashcmd[i] == '>')
-			{
-				if (i < ft_strlen(bashcmd) && bashcmd[i + 1] == '<')
-				{
-					token = token_new(ft_strdup("<<"));
-					i++;
-				}
-				else if (i < ft_strlen(bashcmd) && bashcmd[i + 1] == '>')
-				{
-					token = token_new(ft_strdup(">>"));
-					i++;
-				}
-			}
+			if (i < ft_strlen(bashcmd) - 1
+				&& bashcmd[i] == '<' && bashcmd[i + 1] == '<' && i++)
+				tokenstr = ft_strdup("<<");
+			else if (i < ft_strlen(bashcmd) - 1
+				&& bashcmd[i] == '>' && bashcmd[i + 1] == '>' && i++)
+				tokenstr = ft_strdup(">>");
 			else
 				token = token_new(ft_substr(bashcmd, i, 1));
 			word_s = i + 1;
@@ -110,11 +103,10 @@ t_token	**read_tokens(char *bashcmd)
 	}
 	if (word_s < i)
 	{
-		token = token_new(ft_substr(bashcmd, word_s, i - word_s));
-		append(tk_list, token);
-		print_list(*tk_list);
+		tokenstr = ft_substr(bashcmd, word_s, i - word_s);
+		append(tk_list, token_new(tokenstr));
+		free(tokenstr);
 	}
-
-
+	print_list(*tk_list);
 	return (tk_list);
 }

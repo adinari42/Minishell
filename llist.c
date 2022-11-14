@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/13 23:49:27 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 22:49:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,51 @@ t_token	*token_new(char *str)
 	return (newtoken);
 }
 
-void	append(t_token **token, t_token *new_elem)
+void	free_token_list(t_token **list)
 {
-	t_token	*top;
+	t_token	*elem;
+	t_token	*next;
 
-	if (!token || !new_elem)
+	if (!list)
 		return ;
-	if (!*token)
+	elem = *list;
+	while (elem)
 	{
-		*token = new_elem;
-		return ;
+		next = elem->next;
+		free_token(elem);
+		elem = next;
 	}
-	top = list_end(token);
-	if (top)
+	free(list);
+}
+
+void	free_token(t_token *token)
+{
+	if (token)
+	{
+		if (token->str)
+			free(token->str);
+		free(token);
+	}
+}
+
+void	delete(t_token *elem)
+{
+	if (!elem)
+		return ;
+	if (elem->prev)
+		elem->prev->next = elem->next;
+	if (elem->next)
+		elem->next->prev = elem->prev;
+	free_token(elem);
+}
+
+void	append(t_token **list, t_token *new_elem)
+{
+	t_token	*last;
+
+	if (!list || !new_elem)
+		return ;
+	if (!*list)
 	{
 		top->next = new_elem;
 		new_elem->prev = top;
