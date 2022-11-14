@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/13 23:49:27 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 20:25:29 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_token	*token_new(char *str)
 	newtoken = malloc(sizeof(t_token));
 	if (newtoken)
 	{
-		newtoken->str = str;
+		newtoken->str = ft_strdup(str);
 		newtoken->type = token_type(str);
 		newtoken->id = idx;
 		newtoken->prev = NULL;
