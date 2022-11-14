@@ -1,37 +1,6 @@
 #include <stdio.h>
 #include "minishell.h"
-// int main (void) {
 
-//     const char *line = "'foobar'|cat'mousebar'sum";
-//     char delim = '\'';
-//     char *p = (char *)line;
-// 	char *first = NULL;
-// 	char *second = NULL;
-//     size_t i = 0;
-// 	size_t len = 0;
-
-//     while (p && *p) {                /* for each char in line */
-//         if (!first && *p == delim)             /* find 1st delim */
-//             first = p, first++;                   /* set start ptr  */
-//         else if (!second && *p == delim)        /* find 2nd delim */
-//             second = p;                         /* set end ptr    */
-//         if (first && second) {                     /* if both set    */
-//             char substr[second - first + 1];       /* declare substr */
-//             for (i = 0, p = first; p < second; p++)/* copy to substr */
-//                 substr[i++] = *p;
-//             substr[second - first] = 0;            /* nul-terminate  */
-
-//             printf ("single-quoted string : %s\n", substr);
-//             first = second = NULL;
-			
-//         }
-// 		if (first)
-// 			len++;
-// 		p++;
-//     }
-
-//     return 0;
-// }
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char			*sub_str;
