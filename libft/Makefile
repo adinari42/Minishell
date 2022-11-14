@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
+#    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/24 21:52:25 by slakner           #+#    #+#              #
-#    Updated: 2022/06/16 22:50:53 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/14 18:34:40 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,16 +46,6 @@ SRCS = 	ft_isalpha.c \
 		ft_putstr_fd.c \
 		ft_putendl_fd.c \
 		ft_putnbr_fd.c \
-		ft_printf.c \
-		ft_printf_format.c \
-		ft_printf_padding.c \
-		ft_printf_utils.c \
-		ft_print_string.c \
-		ft_print_int.c \
-		ft_print_uint.c \
-		ft_print_hex.c \
-		ft_print_char.c \
-		ft_print_ptr.c
 OBJFILES = $(SRCS:.c=.o)
 BONUSSRCS = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c ft_lstmap.c
 BONUSOBJFILES = ft_lstnew.o ft_lstadd_front.o ft_lstsize.o ft_lstlast.o ft_lstadd_back.o ft_lstdelone.o ft_lstclear.o ft_lstiter.o ft_lstmap.o
