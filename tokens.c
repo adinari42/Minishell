@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 00:09:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 19:11:28 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ int	token_type(char *c)
 	else if (!ft_strncmp(c, "|", 1))
 		return (PIPE);
 	else if (!ft_strncmp(c, " ", 1))
-		return(SPACE);
+		return (SPACE);
 	else
 		return (WORD);
 }
 
-void print_list(t_token *tklist)
+void	print_list(t_token *tklist)
 {
 	if (!tklist)
 		return;
