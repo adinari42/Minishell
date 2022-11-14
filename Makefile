@@ -6,13 +6,14 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/13 19:14:29 by adinari          ###   ########.fr        #
+#    Updated: 2022/11/13 22:09:49 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-FILES = main.c
+FILES = main.c\
+		init_tokens.c
 
 OBJECTS = $(FILES:.c=.o)
 
