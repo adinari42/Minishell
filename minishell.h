@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 19:10:54 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 21:00:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ enum e_tokentype
 	APPEND_OUT,
 	DOUBLE_QUOTE,
 	SINGLE_QUOTE,
+	ASSIGN,
 	SPACE,
 	WORD
 };
