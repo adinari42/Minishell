@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 20:25:29 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/14 22:10:36 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,23 @@ t_token	*token_new(char *str)
 	return (newtoken);
 }
 
-void	append(t_token **token, t_token *new_elem)
-{
-	t_token	*top;
 
-	if (!token || !new_elem)
+void	append(t_token **list, t_token *new_elem)
+{
+	t_token	*last;
+
+	if (!list || !new_elem)
 		return ;
-	if (!*token)
+	if (!*list)
 	{
-		*token = new_elem;
+		*list = new_elem;
 		return ;
 	}
-	top = list_end(token);
-	if (top)
+	last = list_end(list);
+	if (last)
 	{
-		top->next = new_elem;
-		new_elem->prev = top;
+		last->next = new_elem;
+		new_elem->prev = last;
 	}
 }
 

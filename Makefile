@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/14 19:45:35 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/14 22:00:55 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,8 @@ NAME = minishell
 SRCS = main.c \
 		signals.c \
 		tokens.c \
-		llist.c
+		llist.c \
+		expand.c
 
 OBJS	= $(SRCS:.c=.o)
 CC		= cc
