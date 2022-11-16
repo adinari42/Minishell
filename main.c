@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 23:15:11 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/16 22:37:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,10 +172,14 @@ int main(int argc, char **argv, char **envp)
 			add_history(inpt);
 			printf("%s\n", inpt);
 			list = read_tokens(inpt);
-			// do sometihng with tokens here;
+			list = merge_quoted_strings(list);
+			printf("After quotes treatment: \n");
+			print_list(*list);
+			const char arg[] = "-l main.c";
+			execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
 			free_token_list(list);
 		}
-		system("leaks minishell");
+		//system("leaks minishell");
 	}
 	return (argc);
 }

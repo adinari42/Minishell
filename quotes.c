@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/13 22:04:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/16 22:14:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,19 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 	t_token	*token;
 	t_token	*open_quote;
 
-	token = tlist_start(list);
+	token = list_start(list);
 	open_quote = NULL;
 	while (token)
 	{
 		if (token->type == SINGLE_QUOTE || token->type == DOUBLE_QUOTE)
 		{
 			open_quote = token;
-			while (token && (open_quote == token
-					|| open_quote->type != token->type))
+			while (token && (open_quote == token || open_quote->type != token->type))
 			{
 				if (!token->next)
 				{
-					// open_quote->type = WORD;
-					// ms_fd_err(258);					free_token_list(list);
-					ms_fd_error(258, data);
-					return (NULL);
+					open_quote->type = WORD;
+					break ;
 				}
 				token = token->next;
 			}
@@ -45,8 +42,6 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 
 t_token	*merge_tokens(t_token *first, t_token *last)
 {
-	char	*tstr;
-
 	if (first == last)
 		return (first);
 	while (first->next != last)
@@ -56,9 +51,6 @@ t_token	*merge_tokens(t_token *first, t_token *last)
 		first->type = STR_DQUOTES;
 	else if (first->type == SINGLE_QUOTE)
 		first->type = STR_SQUOTES;
-	tstr = ft_substr(first->str, 1, ft_strlen(first->str) - 2);
-	free (first->str);
-	first->str = tstr;
 	return (first);
 }
 
@@ -70,10 +62,11 @@ t_token	*merge_two_tokens(t_token *token1, t_token *token2)
 		return (token1);
 	newstr = ft_strjoin(token1->str, token2->str);
 	free(token1->str);
+	free(token2->str);
 	token1->str = newstr;
 	token1->next = token2->next;
 	if (token1->next)
 		token1->next->prev = token1;
-	delete(token2);
+	free(token2);
 	return (token1);
 }
