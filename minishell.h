@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 22:39:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/16 21:36:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ enum e_tokentype
 	SINGLE_QUOTE,
 	ASSIGN,
 	SPACE,
-	WORD
+	WORD,
+	STR_DQUOTES,
+	STR_SQUOTES
 };
 
 typedef struct s_history
@@ -83,5 +85,11 @@ void	free_token_list(t_token **list);
 void	free_token(t_token *elem);
 void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
+t_token	*list_start(t_token **token);
 t_token	*list_end(t_token **token);
+void	print_list(t_token *tklist);
+t_token	**merge_quoted_strings(t_token **list);
+t_token	*merge_tokens(t_token *first, t_token *last);
+t_token	*merge_two_tokens(t_token *first, t_token *last);
+
 #endif
