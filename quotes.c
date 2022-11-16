@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/16 22:14:46 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 00:19:30 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ t_token	**merge_quoted_strings(t_token **list)
 		if (token->type == SINGLE_QUOTE || token->type == DOUBLE_QUOTE)
 		{
 			open_quote = token;
-			while (token && (open_quote == token || open_quote->type != token->type))
+			while (token && (open_quote == token
+					|| open_quote->type != token->type))
 			{
 				if (!token->next)
 				{
@@ -42,6 +43,8 @@ t_token	**merge_quoted_strings(t_token **list)
 
 t_token	*merge_tokens(t_token *first, t_token *last)
 {
+	char	*tstr;
+
 	if (first == last)
 		return (first);
 	while (first->next != last)
@@ -51,6 +54,9 @@ t_token	*merge_tokens(t_token *first, t_token *last)
 		first->type = STR_DQUOTES;
 	else if (first->type == SINGLE_QUOTE)
 		first->type = STR_SQUOTES;
+	tstr = ft_substr(first->str, 1, ft_strlen(first->str) - 2);
+	free (first->str);
+	first->str = tstr;
 	return (first);
 }
 
