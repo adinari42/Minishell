@@ -6,23 +6,18 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 20:18:52 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/16 23:09:43 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "libft/libft.h"
-typedef struct s_history
-{
-	char				*history;
-	struct s_history	*next;
-}				t_history;
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "libft/libft.h"
 
 # define TOKENS " $'<>\""
 
@@ -35,9 +30,18 @@ enum e_tokentype
 	APPEND_OUT,
 	DOUBLE_QUOTE,
 	SINGLE_QUOTE,
+	ASSIGN,
 	SPACE,
-	WORD
+	WORD,
+	STR_DQUOTES,
+	STR_SQUOTES
 };
+
+typedef struct s_history
+{
+	char				*history;
+	struct s_history	*next;
+}				t_history;
 
 typedef struct file
 {
@@ -63,18 +67,31 @@ typedef struct pipe
 	int		append;
 }				t_pipe;
 
-typedef struct s_tokens
+typedef struct s_token
 {
-	char				*token;
-	int					type;
-	struct	s_tokens	*next;
+	char			*str;
+	int				type;
+	int				id;
+	struct s_token	*prev;
+	struct s_token	*next;
+}	t_token;
 
-}				t_tokens;
-
-int	init_tokens(t_tokens **tokens, char *inpt);
-t_tokens	*ft_lasttoken(t_tokens *lst);
-int	push(t_tokens **thestack, char *split_token);
-t_tokens	*init_firstphase(char *inpt);
-void	free_2d(char ***to_free);
+t_token	**read_tokens(char *bashcmd);
+int		token_type(char *c);
+void	init_signals(void);
+void	print_list(t_token *tklist);
+t_token	*token_new(char *str);
+void	free_token_list(t_token **list);
+void	free_token(t_token *elem);
+void	delete(t_token *del_elem);
+void	append(t_token **token, t_token *new_elem);
+t_token	*list_end(t_token **token);
+t_token	*list_start(t_token **token);
+/*expand.c*/
+void	check_value(t_token *list, char **envp);
+char	*value_expand(char **envp, char *var);
+t_token	**merge_quoted_strings(t_token **list);
+t_token	*merge_tokens(t_token *first, t_token *last);
+t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 #endif
