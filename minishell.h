@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/16 21:36:34 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 14:11:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,7 @@ void	print_list(t_token *tklist);
 t_token	**merge_quoted_strings(t_token **list);
 t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *first, t_token *last);
+
+t_token	**remove_spaces(t_token **list);
 
 #endif
