@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/17 19:03:13 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 21:42:35 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,11 @@ int	main(int argc, char **argv, char **envp)
 			// exec("/bin/cat", args, envp);
 
 			exec(NULL, NULL, envp);
-
+			handle_commandstr(list);
 			free_token_list(list);
 		}
+		if (inpt)
+			free(inpt);
 		//system("leaks minishell");
 	}
 	return (argc);
