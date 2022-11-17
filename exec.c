@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:50:44 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 19:44:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 21:45:21 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@ int	exec(char *program, char **args, char *const *envp)
 	}
 	else
 	{
-	// 	printf("main thread, child PID %d\n", pid);
+	// // 	printf("main thread, child PID %d\n", pid);
 		close(link[1]);
 		//dup2(link[0], 0);
-	 	waitpid(pid, NULL, 0);
+	  	waitpid(pid, NULL, 0);
 	}
 	return (0);
 }
