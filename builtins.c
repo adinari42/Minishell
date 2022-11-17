@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 21:28:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 21:56:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,34 @@ int	is_builtin(char *str)
 	return (0);
 }
 
-// these functions are emtpy dummy functions for now so it compiles
 int	exec_echo(t_token **list)
 {
-	int	ret;
+	t_token	*token;
+	int		ret;
+	int		newline;
 
-	(void) list;
+	token = list_start(list);
 	ret = 0;
+	newline = 1;
+	if (ft_strncmp(token->str, "echo", 5))
+	{
+		printf("Something went wrong here, %s is not the echo command\n",
+			token->str);
+		return (1);
+	}
+	if (token->next && !ft_strncmp(token->next->str, "-n", 3))
+		newline = 0;
+	while (token->next)
+	{
+		token = token->next;
+		write(1, token->str, ft_strlen(token->str));
+	}
+	if (newline)
+		printf("\n");
 	return (ret);
 }
 
+// these functions are emtpy dummy functions for now so it compiles
 int	exec_cd(t_token **list)
 {
 	int	ret;
