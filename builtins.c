@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 23:43:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 23:49:45 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ int	exec_echo(t_token **list)
 	return (ret);
 }
 
-// these functions are emtpy dummy functions for now so it compiles
+
+//TODO: Update the PWD environment variable here
 int	exec_cd(t_token **list)
 {
 	int		ret;
@@ -88,6 +89,8 @@ int	exec_cd(t_token **list)
 	return (ret);
 }
 
+
+// these functions are emtpy dummy functions for now so it compiles
 int	exec_export(t_token **list)
 {
 	int	ret;
