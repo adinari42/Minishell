@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/17 15:52:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 19:03:13 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,15 @@ int	main(int argc, char **argv, char **envp)
 			list = merge_quoted_strings(list);
 			printf("After quotes treatment: \n");
 			print_list(*list);
-
 			printf("After removing spaces: \n");
 			list = remove_spaces(list);
 			print_list(*list);
-			char *args[2];
-			args[0] = "/bin/cat";
-			args[1] = "ps";
-			exec("/bin/cat", args, envp);
+			// char *args[2];
+			// args[0] = "/bin/cat";
+			// args[1] = "ps";
+			// exec("/bin/cat", args, envp);
+
+			exec(NULL, NULL, envp);
 
 			free_token_list(list);
 		}
