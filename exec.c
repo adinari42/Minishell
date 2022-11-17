@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:50:44 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 21:45:21 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 18:17:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 void	die(char *str)
 {
-	(void) str;
-	// write(2, str, ft_strlen(str));
-	// write(2, "\n", 1);
+	write(2, str, ft_strlen(str));
+	write(2, "\n", 1);
 	exit(1);
 }
 
@@ -26,16 +25,14 @@ int	exec(char *program, char **args, char *const *envp)
 	int		link[2];
 
 	(void) program;
-	(void) args;
-	char	**args2; 
+	(void) envp;
+	char **args2; 
 
-	args2 = ft_split("/bin/ps aux", ' ');
+	args2 = ft_split("/bin/ps faux", ' ');
 
-	// args = args2;
-	// args[0] = "/bin/ps";
-	// args[1] = "aux";
-
-	printf("args2: %s %s %s\n", args2[0], args2[1], args2[2]);
+	args = args2;
+	args[0] = "/bin/ps";
+	args[1] = "faux";
 
 	if (pipe(link) == -1)
 		die("pipe");
@@ -48,17 +45,17 @@ int	exec(char *program, char **args, char *const *envp)
 		printf("PID: %d\n", pid);
 		close (link[0]);
 		dup2(link[1], 1);
-		//execve("/bin/sh", NULL, envp);
-		execve("/bin/ps", NULL, envp);
-		//execve("/bin/ps", args2, envp);//(char *const *) *envp);
+		execve("/bin/sh", NULL, envp);
+		execve(args2[0], args2, NULL);//(char *const *) *envp);
 		die("execve");
 	}
 	else
 	{
-	// // 	printf("main thread, child PID %d\n", pid);
+		printf("not executing, waitpid %d\n", pid);
 		close(link[1]);
-		//dup2(link[0], 0);
-	  	waitpid(pid, NULL, 0);
+		dup2(link[0], 0);
+		//printf("Output: %s\n");
+		waitpid(pid, NULL, 0);
 	}
 	return (0);
 }
