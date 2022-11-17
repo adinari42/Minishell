@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 22:39:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 15:26:42 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,13 @@ void	free_token(t_token *elem);
 void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
+void	print_list(t_token *tklist);
+t_token	**merge_quoted_strings(t_token **list);
+t_token	*merge_tokens(t_token *first, t_token *last);
+t_token	*merge_two_tokens(t_token *first, t_token *last);
+
+t_token	**remove_spaces(t_token **list);
+
+int		exec(char *program, char **args, char *const *envp);
+
 #endif

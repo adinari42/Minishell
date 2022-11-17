@@ -6,13 +6,20 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/13 19:14:29 by adinari          ###   ########.fr        #
+#    Updated: 2022/11/17 15:19:52 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-FILES = main.c
+SRCS = main.c \
+		signals.c \
+		tokens.c \
+		llist.c \
+		expand.c \
+		quotes.c \
+		parse.c \
+		exec.c
 
 OBJECTS = $(FILES:.c=.o)
 
