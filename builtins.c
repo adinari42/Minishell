@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 21:56:15 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 23:43:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,34 @@ int	exec_echo(t_token **list)
 // these functions are emtpy dummy functions for now so it compiles
 int	exec_cd(t_token **list)
 {
-	int	ret;
+	int		ret;
+	int		dir_found;
+	t_token	*token;
 
-	(void) list;
-	ret = 0;
+	token = list_start(list);
+	dir_found = 0;
+	if (ft_strncmp(token->str, "cd", 3))
+	{
+		printf("Something went wrong here, %s is not the cd command\n",
+			token->str);
+		return (1);
+	}
+	token = token->next;
+	while (token->next)
+	{
+		token = token->next;
+		if (token->type == WORD || token->type == STR_DQUOTES || token->type == STR_SQUOTES)
+		{
+			if (dir_found)
+				printf("cd: string not in pwd: %s\n", list_start(list)->next->str);
+			else
+				dir_found = 1;
+		}
+	}
+	ret = chdir(list_start(list)->next->str);
+	if (ret == -1)
+		printf("cd: no such file or directory: %s\n", list_start(list)->next->str);
+	//printf("%d \n", ret);
 	return (ret);
 }
 
