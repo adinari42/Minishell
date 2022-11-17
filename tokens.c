@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/16 21:31:29 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/16 22:48:17 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	token_type(char *c)
 		return (WORD);
 }
 
-void	print_list(t_tokens *tklist)
+void	print_list(t_token *tklist)
 {
 	if (!tklist)
 		return ;
@@ -66,12 +66,12 @@ void	print_list(t_tokens *tklist)
 }
 
 
-t_tokens	**read_tokens(char *bashcmd)
+t_token	**read_tokens(char *bashcmd)
 {
 	const char	spec_c[] = "\"'<>| =";
 	t_token		**tk_list;
-	size_t		word_s;
-	size_t		i;
+	int			word_s;
+	int			i;
 	char		*tokenstr;
 
 	tk_list = malloc(sizeof(t_list *));
@@ -84,8 +84,9 @@ t_tokens	**read_tokens(char *bashcmd)
 		{
 			if (i - word_s > 0) // we need to save the previous word
 			{
-				tokenstr = ft_substr(bashcmd, word_s, i - word_s); //TODO: free this
+				tokenstr = ft_substr(bashcmd, word_s, i - word_s);
 				append(tk_list, token_new(tokenstr));
+				free(tokenstr);
 			}
 			//now save the char that we just found
 			if (i < ft_strlen(bashcmd) - 1
@@ -98,6 +99,7 @@ t_tokens	**read_tokens(char *bashcmd)
 				tokenstr = ft_substr(bashcmd, i, 1);
 			word_s = i + 1;
 			append(tk_list, token_new(tokenstr));
+			free(tokenstr);
 		}
 		i++;
 	}
@@ -107,6 +109,6 @@ t_tokens	**read_tokens(char *bashcmd)
 		append(tk_list, token_new(tokenstr));
 		free(tokenstr);
 	}
-	print_list(*tk_list);
+	// print_list(*tk_list);
 	return (tk_list);
 }

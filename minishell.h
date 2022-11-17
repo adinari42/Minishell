@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/17 15:26:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/16 23:09:43 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,6 @@ typedef struct s_history
 	struct s_history	*next;
 }				t_history;
 
-# define TOKENS " $'<>\""
-
-enum e_tokentype
-{
-	PIPE,
-	REDIR_IN,
-	REDIR_OUT,
-	APPEND_IN,
-	APPEND_OUT,
-	DOUBLE_QUOTE,
-	SINGLE_QUOTE,
-	SPACE,
-	WORD
-};
-
 typedef struct file
 {
 	int	infile;
@@ -82,30 +67,31 @@ typedef struct pipe
 	int		append;
 }				t_pipe;
 
-typedef struct s_tokens
+typedef struct s_token
 {
-	char				*token;
-	int					type;
-	struct	s_tokens	*next;
+	char			*str;
+	int				type;
+	int				id;
+	struct s_token	*prev;
+	struct s_token	*next;
+}	t_token;
 
 t_token	**read_tokens(char *bashcmd);
 int		token_type(char *c);
 void	init_signals(void);
-
+void	print_list(t_token *tklist);
 t_token	*token_new(char *str);
 void	free_token_list(t_token **list);
 void	free_token(t_token *elem);
 void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
-t_token	*list_start(t_token **token);
 t_token	*list_end(t_token **token);
-void	print_list(t_token *tklist);
+t_token	*list_start(t_token **token);
+/*expand.c*/
+void	check_value(t_token *list, char **envp);
+char	*value_expand(char **envp, char *var);
 t_token	**merge_quoted_strings(t_token **list);
 t_token	*merge_tokens(t_token *first, t_token *last);
-t_token	*merge_two_tokens(t_token *first, t_token *last);
-
-t_token	**remove_spaces(t_token **list);
-
-int		exec(char *program, char **args, char *const *envp);
+t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 #endif
