@@ -6,7 +6,7 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/17 15:19:52 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/17 21:11:14 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,9 @@ SRCS = main.c \
 		expand.c \
 		quotes.c \
 		parse.c \
-		exec.c
+		exec.c \
+		command.c \
+		builtins.c
 
 OBJECTS = $(FILES:.c=.o)
 

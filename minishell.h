@@ -6,18 +6,58 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/17 15:26:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/17 21:07:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "libft/libft.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "libft/libft.h"
+
+# define TOKENS " $'<>\""
+
+enum e_tokentype
+{
+	PIPE,
+	REDIR_IN,
+	REDIR_OUT,
+	APPEND_IN,
+	APPEND_OUT,
+	DOUBLE_QUOTE,
+	SINGLE_QUOTE,
+	ASSIGN,
+	SPACE,
+	WORD,
+	STR_DQUOTES,
+	STR_SQUOTES
+};
+
+enum e_builtins
+{
+	ECHO,
+	CD,
+	PWD,
+	EXPORT,
+	UNSET,
+	ENV,
+	EXIT	
+};
+
+const static char *const	g_builtins[] = {
+	"echo",
+	"cd",
+	"pwd",
+	"export",
+	"unset",
+	"env",
+	"exit"
+};
+
 typedef struct s_history
 {
 	char				*history;
@@ -67,5 +107,22 @@ t_token	*merge_two_tokens(t_token *first, t_token *last);
 t_token	**remove_spaces(t_token **list);
 
 int		exec(char *program, char **args, char *const *envp);
+
+t_token	**remove_spaces(t_token **list);
+
+int		exec(char *program, char **args, char *const *envp);
+
+int		handle_commandstr(t_token **list);
+int		handle_builtin(t_token **list);
+int		handle_command(t_token **list);
+
+int		is_builtin(char *str);
+int		exec_echo(t_token **token);
+int		exec_cd(t_token **token);
+int		exec_pwd(t_token **token);
+int		exec_export(t_token **token);
+int		exec_unset(t_token **token);
+int		exec_env(t_token **token);
+int		exec_exit(t_token **token);
 
 #endif
