@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/16 23:34:39 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 03:18:17 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	init_signals();
 	parse.split_envp = envp_parse(envp);
-	display_splitenvp(parse, argv);
+	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env
+	// display_splitenvp(parse, argv);
 	while (1)
 	{
 		inpt = readline("Minishell$ ");
@@ -56,10 +57,17 @@ int	main(int argc, char **argv, char **envp)
 			add_history(inpt);
 			printf("%s\n", inpt);
 			list = read_tokens(inpt);
-			merge_quoted_strings(list);
+			list = merge_quoted_strings(list);
+			// printf("After quotes treatment: \n");
+			// print_list(*list);
+			// printf("After removing spaces: \n");
 			check_value(*list, envp);
+			printf("printing list :\n");
 			print_list(*list);
-			// do sometihng with tokens here;
+			printf("here\n");
+			// const char arg[] = "-l main.c";
+			// execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			free(inpt);
 			free_token_list(list);
 		}
 		system("leaks minishell");

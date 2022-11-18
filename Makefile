@@ -6,18 +6,19 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/16 23:04:24 by adinari          ###   ########.fr        #
+#    Updated: 2022/11/17 23:17:18 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRCS = main.c \
+SRCS = main.c\
+		expandvalue.c \
 		signals.c \
 		tokens.c \
 		llist.c \
-		expand.c\
 		quotes.c
+# expand.c
 
 OBJS	= $(SRCS:.c=.o)
 CC		= cc
