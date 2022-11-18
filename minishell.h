@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/16 23:09:43 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 04:27:33 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,13 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
-/*expand.c*/
-void	check_value(t_token *list, char **envp);
+/*expandvalue.c*/
 char	*value_expand(char **envp, char *var);
+char	*expand_value(char *str, char **envp);
+void	check_value(t_token *list, char **envp);
+void	free_2d(char ***to_free);
+void	free_strings(char *str, char **split1);
+/*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
 t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *token1, t_token *token2);
