@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 19:10:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 20:24:09 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,7 @@ char	*value_expand(char **envp, char *var)
 	return (ft_strdup(""));
 }
 
-void	free_2d(char ***to_free)
-{
-	size_t	i;
 
-	i = 0;
-	if (*to_free == NULL)
-		return ;
-	while ((*to_free)[i] != NULL)
-	{
-		free((*to_free)[i]);
-		++i;
-	}
-	free(*to_free);
-	*to_free = NULL;
-}
-
-void	free_strings(char *str, char **split1)
-{
-	free(str);
-	free_2d(&split1);
-}
 
 /********add necessary spaces*******/
 char	*add_space(char *tmp, char *res)
