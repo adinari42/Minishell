@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 19:16:57 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 22:21:54 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,18 +70,18 @@ int	main(int argc, char **argv, char **envp)
 			// args[1] = "ps";
 			// exec("/bin/cat", args, envp);
 
-			exec(NULL, NULL, envp);
-			handle_commandstr(list);
+			//exec(NULL, NULL, envp);
+			
 			//system("leaks minishell");
 			// printf("After quotes treatment: \n");
 			// print_list(*list);
 			// printf("After removing spaces: \n");
 			check_value(*list, envp);
-			printf("printing list :\n");
+			// we need a function here that deletes empty nodes
+			list = remove_empty(list);
+			printf("After check_value, printing list:\n");
 			print_list(*list);
-			printf("here\n");
-			// const char arg[] = "-l main.c";
-			// execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			handle_commandstr(list);
 			if (inpt)
 				free(inpt);
 			free_token_list(list);
