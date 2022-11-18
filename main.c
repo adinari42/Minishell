@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 21:06:46 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 15:26:29 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,22 @@ void	display_splitenvp(t_parse parse, char **argv)
 		printf("%s\n", parse.split_envp[i++]);
 }
 
-void	display_list(t_tokens *tokens)
+void	display_list(t_token *tokens)
 {
-	t_tokens	*tmp;
+	t_token	*tmp;
 
 	tmp = tokens;
 	while(tmp)
 	{
-		printf(">%s\n", tmp->token);
+		printf(">%s\n", tmp->str);
 		tmp = tmp->next;
 	}
 }
 
-void	free_ll(t_tokens *stack)
+void	free_ll(t_token *stack)
 {
-	t_tokens	*tmp1;
-	t_tokens 	*tmp;
+	t_token	*tmp1;
+	t_token 	*tmp;
 
 	tmp = stack;
 	tmp1 = NULL;
@@ -80,20 +80,20 @@ void	free_2d(char ***to_free)
 	free(*to_free);
 	*to_free = NULL;
 }
-int	push(t_tokens **thestack, char *thevalue)
+int	push(t_token **thestack, char *thevalue)
 {
-	t_tokens	*newnode;
-	t_tokens	*temp;
+	t_token	*newnode;
+	t_token	*temp;
 
 	temp = NULL;
-	newnode = malloc(sizeof(t_tokens));
+	newnode = malloc(sizeof(t_token));
 	if (newnode == NULL)
 	{
 		write(2, "Error\n", 6);
 		free(newnode);
 		return (0);
 	}
-	newnode->token = thevalue;
+	newnode->str = thevalue;
 	newnode->next = NULL;
 	if (*thestack == NULL)
 		*thestack = newnode;
@@ -107,7 +107,7 @@ int	push(t_tokens **thestack, char *thevalue)
 	return (1);
 }
 
-void	quote_tokens(t_tokens *tokens, char* line) {
+void	quote_tokens(t_token *tokens, char* line) {
 
     // const char *line = "'foobar'|cat'mousebar'sum";
     char	delim[2] = "\'\"";
@@ -160,15 +160,14 @@ int main(int argc, char **argv, char **envp)
 {
 	char		*inpt;
 	t_parse		parse;
-	t_tokens	*tokens;
-	t_tokens	*tmp;
+	t_token		**list;
 
 	
 	parse.split_envp = envp_parse(envp);
 	display_splitenvp(parse, argv);
 	while (1)
 	{
-		tokens = malloc(sizeof(t_tokens));
+		list = malloc(sizeof(t_token));
 		inpt = readline("Minishell$ ");
 		if (inpt && inpt[0])
 		{
