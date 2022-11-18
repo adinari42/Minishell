@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 23:49:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 14:24:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,41 @@ int	exec_cd(t_token **list)
 	return (ret);
 }
 
+char	**envp_parse(char **envp)
+{
+	int		j;
+	char	**envp_parse;
+
+	j = -1;
+	while (envp[++j])
+	{
+		if (!ft_strncmp(envp[j], "PATH=", 5))
+			break ;
+	}
+	envp_parse = ft_split(*(envp + j) + 5, ':');
+	return (envp_parse);
+}
+
 
 // these functions are emtpy dummy functions for now so it compiles
 int	exec_export(t_token **list)
 {
-	int	ret;
-
-	(void) list;
+	int		ret;
+	t_token *token;
+	char	*varname;
+	
+	token = list_start(list);
 	ret = 0;
+	if (ft_strncmp(token->str, "export", 7))
+	{
+		printf("Something went wrong here, %s is not the cd command\n",
+			token->str);
+		return (1);
+	}
+	export_extract_varname(token->)
+	if (var_not_in_env())
+	ret = 0;
+	free(varname);
 	return (ret);
 }
 
