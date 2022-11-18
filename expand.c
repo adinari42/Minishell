@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:00:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 15:53:50 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 15:55:20 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*value_expand(char **envp, char *var)
 {
 	int		j;
 	char	*value;
-	int		len;
+	size_t	len;
 	char	*tmp;
 	
 	// len = ft_strlen(var);
@@ -49,12 +49,8 @@ char	*value_expand(char **envp, char *var)
 
 void	check_value(t_token *list, char **envp)
 {
-	char	**split1;
-	char	**split2;
 	char	*value;
-	char	*tmp;
 	t_token	*list_tmp;
-	int		len;
 
 	printf("len check %c\n", envp[1][1]);
 	list_tmp = list;
