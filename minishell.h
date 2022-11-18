@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/14 20:18:52 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 15:20:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,6 @@ typedef struct s_history
 }				t_history;
 
 # define TOKENS " $'<>\""
-
-enum e_tokentype
-{
-	PIPE,
-	REDIR_IN,
-	REDIR_OUT,
-	APPEND_IN,
-	APPEND_OUT,
-	DOUBLE_QUOTE,
-	SINGLE_QUOTE,
-	SPACE,
-	WORD
-};
 
 typedef struct file
 {
