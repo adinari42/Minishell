@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/18 19:48:28 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/18 20:39:05 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS = main.c\
 		expandvalue.c \
 		signals.c \
 		tokens.c \
-		utils/llist.c \
+		llist.c \
 		expand.c \
 		quotes.c \
 		parse.c \
@@ -24,7 +24,7 @@ SRCS = main.c\
 		command.c \
 		builtins.c \
 		expandvalue.c \
-		utils/free.c
+		free.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
@@ -47,7 +47,6 @@ print-%:
 
 $(ODIR):
 	mkdir -p $(ODIR)
-	mkdir -p $(ODIR)/utils
 
 $(ODIR)/%.o: %.c $(ODIR)
 	@$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
