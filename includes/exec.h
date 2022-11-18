@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:00:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 19:58:36 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 04:33:57 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,3 +72,28 @@ void	check_value(t_token *list, char **envp)
 		list_tmp = list_tmp->next;//1
 	}
 }
+// while (split2[j])
+// 		{
+// 			/********add necessary spaces*******/
+// 			while (tmp[k] && tmp[k] == ' ')//add spaces
+// 			{
+// 				tmp1 = res;
+// 				res = ft_strjoin(res, " ");
+// 				free(tmp1);
+// 				k++;
+// 			}
+// 			/*******expand values*******/
+// 			if (j != 0  ||  (j == 0 && tmp[k] == '$'))
+// 				split2[j] = value_expand(envp, split2[j]);
+// 			tmp1 = res;
+// 			res = ft_strjoin(res, split2[j]);
+// 			free(tmp1);
+// 			/*******reach end of word********/
+// 			while (tmp[k] && tmp[k] != ' ')
+// 			{
+// 				k++;
+// 				if (tmp[k + 1] == '$')
+// 					break;
+// 			}
+// 			j++;
+// 		}
