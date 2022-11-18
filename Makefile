@@ -12,7 +12,8 @@
 
 NAME = minishell
 
-SRCS = main.c \
+SRCS = main.c\
+		expandvalue.c \
 		signals.c \
 		tokens.c \
 		llist.c \
