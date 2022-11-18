@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 04:27:33 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 06:03:25 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,13 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+typedef	struct s_expand
+{
+	int		i;
+	int		j;
+	int		k;
+}				t_expand;
+
 t_token	**read_tokens(char *bashcmd);
 int		token_type(char *c);
 void	init_signals(void);
@@ -114,6 +121,8 @@ char	*expand_value(char *str, char **envp);
 void	check_value(t_token *list, char **envp);
 void	free_2d(char ***to_free);
 void	free_strings(char *str, char **split1);
+char	*add_space(char *tmp, char *res);
+char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
 t_token	*merge_tokens(t_token *first, t_token *last);
