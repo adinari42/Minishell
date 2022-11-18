@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 15:20:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 18:59:07 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 
 # define TOKENS " $'<>\""
 
+char **g_envp;
+
 enum e_tokentype
 {
 	PIPE,
@@ -34,7 +36,8 @@ enum e_tokentype
 	SPACE,
 	WORD,
 	STR_DQUOTES,
-	STR_SQUOTES
+	STR_SQUOTES,
+	EQUAL
 };
 
 enum e_builtins

@@ -6,11 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 14:24:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 19:07:44 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+extern char	**g_envp;
 
 int	is_builtin(char *str)
 {
@@ -105,12 +107,38 @@ char	**envp_parse(char **envp)
 }
 
 
+char	*extract_varname_quoted(char *tokenstr)
+{
+	char	*varname;
+	char	*ptr;
+
+	ptr = ft_strchr(tokenstr, '=');
+	if (!ptr)	// case: no equal sign found in string, probably needs actual error management to behave like bash
+		return (NULL);
+	else
+		varname = ft_substr(tokenstr, 0, ptr - tokenstr);
+	printf("varname from extract_varname_quoted: %s\n", varname);
+	return (varname);
+}
+
+int	var_in_env(char *varname)
+{
+	(void) varname;
+	return (0);
+}
+
+void	display_env(void)
+{
+	return ;
+}
+
 // these functions are emtpy dummy functions for now so it compiles
 int	exec_export(t_token **list)
 {
 	int		ret;
 	t_token *token;
 	char	*varname;
+	char	*value;
 	
 	token = list_start(list);
 	ret = 0;
@@ -120,8 +148,34 @@ int	exec_export(t_token **list)
 			token->str);
 		return (1);
 	}
-	export_extract_varname(token->)
-	if (var_not_in_env())
+	while (token->next && token->next->type == SPACE)
+		token = token->next;
+	if (!token->next)
+	{
+		display_env();
+		return (0);
+	}
+	token = token->next;
+	if (token->type == WORD)
+	{
+		varname = ft_strdup(token->next->str);
+		value = NULL;
+		if (token->next && token->next->type == EQUAL)
+		{
+			token = token->next;
+			if (token->next)
+				value = ft_strdup(token->next->str);
+		}
+	}
+	else if (token->next->type == STR_DQUOTES || token->next->type == STR_SQUOTES)
+		varname = extract_varname_quoted(token->next->str);
+	else
+		varname = NULL; // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
+	if (var_in_env(varname) != -1)
+		; // TODO: update variables
+	else
+	// TODO: handle nonexistent variable names here
+	;
 	ret = 0;
 	free(varname);
 	return (ret);
