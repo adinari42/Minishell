@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:00:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/16 23:36:27 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/17 19:58:36 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ char	*value_expand(char **envp, char *var)
 	len = 0;
 
 	tmp = var;
-	while (tmp && (tmp != ft_strchr(tmp, ' ') || tmp != ft_strchr(tmp, '\0')))
-	{
-		printf("len = %d\n", len);
-		len++;
-		tmp++;
-	}
-	printf("len = %d\n", len);
+	// while (tmp && (tmp != ft_strchr(tmp, ' ') || tmp != ft_strchr(tmp, '\0')))
+	// {
+	// 	printf("len = %d\n", len);
+	// 	len++;
+	// 	tmp++;
+	// }
+	// printf("len = %d\n", len);
 	j = -1;
 	while (envp[++j])
 	{
@@ -49,26 +49,26 @@ char	*value_expand(char **envp, char *var)
 
 void	check_value(t_token *list, char **envp)
 {
-	char 	*value;
+	char	**split1;
+	char	**split2;
+	char	*value;
 	char	*tmp;
-	t_token	*tmp1;
+	t_token	*list_tmp;
+	int		len;
 
-	tmp1 = list;
-	while (tmp1)
+	printf("len check %c\n", envp[1][1]);
+	list_tmp = list;
+	value = ft_strdup("");
+	while (list_tmp)//1 : iterate through token nodes
 	{
-		if (tmp1->type != STR_SQUOTES)
-		{
-			tmp = tmp1->str;
-			while (tmp)
-			{	if (*tmp == '$')
-				{
-					value = value_expand(envp, tmp + 1);
-					free(tmp1->str);
-					tmp1->str = value;
-				}
-				tmp++;
-			}
-			tmp1 = tmp1->next;
-		}
+		//split using space
+
+
+		//split individual onnes using $ sign
+
+
+
+
+		list_tmp = list_tmp->next;//1
 	}
 }

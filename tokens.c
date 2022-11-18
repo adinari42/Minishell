@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/16 22:48:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/17 18:20:07 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,6 @@ t_token	**read_tokens(char *bashcmd)
 		append(tk_list, token_new(tokenstr));
 		free(tokenstr);
 	}
-	// print_list(*tk_list);
+	print_list(*tk_list);
 	return (tk_list);
 }
