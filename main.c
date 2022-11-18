@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 03:18:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 06:06:32 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	main(int argc, char **argv, char **envp)
 			free(inpt);
 			free_token_list(list);
 		}
-		system("leaks minishell");
+		// system("leaks minishell");
 	}
 	return (argc);
 }
