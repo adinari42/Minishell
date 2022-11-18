@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 15:20:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 15:32:21 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ typedef struct s_history
 	char				*history;
 	struct s_history	*next;
 }				t_history;
-
-# define TOKENS " $'<>\""
 
 typedef struct file
 {
@@ -132,18 +130,36 @@ int		exec_unset(t_token **token);
 int		exec_env(t_token **token);
 int		exec_exit(t_token **token);
 
-// typedef struct s_tokens
-// {
-// 	char				*token;
-// 	int					type;
-// 	struct	s_tokens	*next;
 
-// }				t_tokens;
+typedef	struct s_expand
+{
+	int		i;
+	int		j;
+	int		k;
+}				t_expand;
 
-// int	init_tokens(t_tokens **tokens, char *inpt);
-// t_tokens	*ft_lasttoken(t_tokens *lst);
-// int	push(t_tokens **thestack, char *split_token);
-// t_tokens	*init_firstphase(char *inpt);
-// void	free_2d(char ***to_free);
+t_token	**read_tokens(char *bashcmd);
+int		token_type(char *c);
+void	init_signals(void);
+void	print_list(t_token *tklist);
+t_token	*token_new(char *str);
+void	free_token_list(t_token **list);
+void	free_token(t_token *elem);
+void	delete(t_token *del_elem);
+void	append(t_token **token, t_token *new_elem);
+t_token	*list_end(t_token **token);
+t_token	*list_start(t_token **token);
+/*expandvalue.c*/
+char	*value_expand(char **envp, char *var);
+char	*expand_value(char *str, char **envp);
+void	check_value(t_token *list, char **envp);
+void	free_2d(char ***to_free);
+void	free_strings(char *str, char **split1);
+char	*add_space(char *tmp, char *res);
+char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
+/*quotes.c*/
+t_token	**merge_quoted_strings(t_token **list);
+t_token	*merge_tokens(t_token *first, t_token *last);
+t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 #endif

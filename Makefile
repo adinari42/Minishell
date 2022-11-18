@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/18 15:17:22 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/18 15:50:23 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ SRCS = main.c \
 		parse.c \
 		exec.c \
 		command.c \
-		builtins.c
+		builtins.c \
+		expandvalue.c
 
 OBJS	= $(SRCS:.c=.o)
 CC		= cc
