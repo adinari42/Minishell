@@ -6,7 +6,7 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/17 21:11:14 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/18 20:39:05 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ SRCS = main.c\
 		parse.c \
 		exec.c \
 		command.c \
-		builtins.c
+		builtins.c \
+		expandvalue.c \
+		free.c
 
 OBJECTS = $(FILES:.c=.o)
 
@@ -35,7 +37,8 @@ all: $(NAME)
 %.o:%.c
 	gcc $(FLAGS) -c $< -o $@
 
-LIBS = libft/libft.a
+$(ODIR):
+	mkdir -p $(ODIR)
 
 $(NAME): $(OBJECTS)
 	@cd libft && make

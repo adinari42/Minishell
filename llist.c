@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 22:49:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 20:22:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_token	*token_new(char *str)
 	newtoken = malloc(sizeof(t_token));
 	if (newtoken)
 	{
-		newtoken->str = str;
+		newtoken->str = ft_strdup(str);
 		newtoken->type = token_type(str);
 		newtoken->id = idx;
 		newtoken->prev = NULL;
@@ -28,33 +28,6 @@ t_token	*token_new(char *str)
 	}
 	idx ++;
 	return (newtoken);
-}
-
-void	free_token_list(t_token **list)
-{
-	t_token	*elem;
-	t_token	*next;
-
-	if (!list)
-		return ;
-	elem = *list;
-	while (elem)
-	{
-		next = elem->next;
-		free_token(elem);
-		elem = next;
-	}
-	free(list);
-}
-
-void	free_token(t_token *token)
-{
-	if (token)
-	{
-		if (token->str)
-			free(token->str);
-		free(token);
-	}
 }
 
 void	delete(t_token *elem)
@@ -76,8 +49,14 @@ void	append(t_token **list, t_token *new_elem)
 		return ;
 	if (!*list)
 	{
-		top->next = new_elem;
-		new_elem->prev = top;
+		*list = new_elem;
+		return ;
+	}
+	last = list_end(list);
+	if (last)
+	{
+		last->next = new_elem;
+		new_elem->prev = last;
 	}
 }
 
