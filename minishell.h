@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 06:03:25 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 18:59:07 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 
 # define TOKENS " $'<>\""
 
+char **g_envp;
+
 enum e_tokentype
 {
 	PIPE,
@@ -34,7 +36,8 @@ enum e_tokentype
 	SPACE,
 	WORD,
 	STR_DQUOTES,
-	STR_SQUOTES
+	STR_SQUOTES,
+	EQUAL
 };
 
 typedef struct s_history
