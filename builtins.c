@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 19:07:44 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 19:56:32 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,12 @@ char	**envp_parse(char **envp)
 	int		j;
 	char	**envp_parse;
 
+	j = 0;
+	while (envp[j])
+	{
+		printf("envp[i]: %s\n", envp[j]);
+		j++;
+	}
 	j = -1;
 	while (envp[++j])
 	{
@@ -107,24 +113,68 @@ char	**envp_parse(char **envp)
 }
 
 
+//assumption here: quotes have been stripped already
 char	*extract_varname_quoted(char *tokenstr)
 {
 	char	*varname;
 	char	*ptr;
+	char	**split;
 
 	ptr = ft_strchr(tokenstr, '=');
 	if (!ptr)	// case: no equal sign found in string, probably needs actual error management to behave like bash
 		return (NULL);
 	else
-		varname = ft_substr(tokenstr, 0, ptr - tokenstr);
+	{
+		split = ft_split(tokenstr, '=');
+		varname = ft_strdup(split[0]);
+		free_split(split);
+	}
+	if (ft_strchr(varname, ' '))
+	{
+		printf("export: not valid in this context: %s\n", varname);
+		free(varname);
+	}
+	printf("varname from extract_varname_quoted: %s\n", varname);
+	return (varname);
+}
+
+char *extract_value(char *tokenstr)
+{
+	char	*varname;
+	char	*ptr;
+	char	**split;
+
+	ptr = ft_strchr(tokenstr, '=');
+	if (!ptr)	// case: no equal sign found in string, probably needs actual error management to behave like bash
+		return (NULL);
+	else
+	{
+		split = ft_split(tokenstr, '=');
+		varname = ft_strdup(split[1]);
+		free_split(split);
+	}
 	printf("varname from extract_varname_quoted: %s\n", varname);
 	return (varname);
 }
 
 int	var_in_env(char *varname)
 {
-	(void) varname;
-	return (0);
+	int		i;
+	char	**split;
+
+	i = 0;
+	while (g_envp[i])
+	{
+		split = ft_split(g_envp[i], '=');
+		if (!ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
+		{
+			free_split(split);
+			return (i);
+		}
+		free_split(split);
+		i++;
+	}
+	return (-1);
 }
 
 void	display_env(void)
@@ -136,9 +186,10 @@ void	display_env(void)
 int	exec_export(t_token **list)
 {
 	int		ret;
-	t_token *token;
+	t_token	*token;
 	char	*varname;
 	char	*value;
+	int		arraypos;
 	
 	token = list_start(list);
 	ret = 0;
@@ -168,14 +219,17 @@ int	exec_export(t_token **list)
 		}
 	}
 	else if (token->next->type == STR_DQUOTES || token->next->type == STR_SQUOTES)
+	{
 		varname = extract_varname_quoted(token->next->str);
+		value = extract_value(token->next->str);
+	}
 	else
 		varname = NULL; // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
-	if (var_in_env(varname) != -1)
-		; // TODO: update variables
-	else
-	// TODO: handle nonexistent variable names here
-	;
+	arraypos = var_in_env(varname);
+	// if (arraypos != -1)
+	// 	; // TODO: update variables
+	// else
+	// 	;// TODO: handle nonexistent variable names here
 	ret = 0;
 	free(varname);
 	return (ret);
