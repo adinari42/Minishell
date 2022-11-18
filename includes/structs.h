@@ -3,27 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/24 05:14:33 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 20:26:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
-
-typedef struct s_kval
-{
-	char	*key;
-	char	*val;
-}	t_kval;
-
-typedef struct s_dlist
-{
-	struct s_kval	*content;
-	struct s_dlist	*next;
-}	t_dlist;
 
 typedef struct s_history
 {
@@ -50,7 +38,6 @@ typedef struct pipe
 	int		fd[2];
 	pid_t	pid;
 	t_file	file;
-	char	*out_fd;
 	t_parse	parse;
 	int		error_code;
 	int		append;
@@ -64,12 +51,5 @@ typedef struct s_token
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
-
-typedef struct s_expand
-{
-	int		i;
-	int		j;
-	int		k;
-}				t_expand;
 
 #endif
