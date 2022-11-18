@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/17 21:07:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/18 15:17:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,21 @@ typedef struct s_history
 	char				*history;
 	struct s_history	*next;
 }				t_history;
+
+# define TOKENS " $'<>\""
+
+enum e_tokentype
+{
+	PIPE,
+	REDIR_IN,
+	REDIR_OUT,
+	APPEND_IN,
+	APPEND_OUT,
+	DOUBLE_QUOTE,
+	SINGLE_QUOTE,
+	SPACE,
+	WORD
+};
 
 typedef struct file
 {
@@ -129,5 +144,19 @@ int		exec_export(t_token **token);
 int		exec_unset(t_token **token);
 int		exec_env(t_token **token);
 int		exec_exit(t_token **token);
+
+// typedef struct s_tokens
+// {
+// 	char				*token;
+// 	int					type;
+// 	struct	s_tokens	*next;
+
+// }				t_tokens;
+
+// int	init_tokens(t_tokens **tokens, char *inpt);
+// t_tokens	*ft_lasttoken(t_tokens *lst);
+// int	push(t_tokens **thestack, char *split_token);
+// t_tokens	*init_firstphase(char *inpt);
+// void	free_2d(char ***to_free);
 
 #endif
