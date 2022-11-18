@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/15 22:40:37 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/18 21:40:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	display_list(t_tokens *tokens)
 	t_tokens	*tmp;
 
 	tmp = tokens;
-	while(tmp)
+	while (tmp)
 	{
 		printf(">%s\n", tmp->token);
 		tmp = tmp->next;
@@ -52,7 +52,7 @@ void	display_list(t_tokens *tokens)
 void	free_ll(t_tokens *stack)
 {
 	t_tokens	*tmp1;
-	t_tokens 	*tmp;
+	t_tokens	*tmp;
 
 	tmp = stack;
 	tmp1 = NULL;
@@ -80,6 +80,7 @@ void	free_2d(char ***to_free)
 	free(*to_free);
 	*to_free = NULL;
 }
+
 int	push(t_tokens **thestack, char *thevalue)
 {
 	t_tokens	*newnode;
@@ -106,6 +107,7 @@ int	push(t_tokens **thestack, char *thevalue)
 	}
 	return (1);
 }
+
 /*returns last node of the ll*/
 t_tokens	*ft_lasttoken(t_tokens *lst)
 {
@@ -115,6 +117,7 @@ t_tokens	*ft_lasttoken(t_tokens *lst)
 		lst = lst->next;
 	return (lst);
 }
+
 void	quote_tokens(t_token *tokens, char* line) 
 {
     // const char *line = "'foobar'|cat'mousebar'sum";
