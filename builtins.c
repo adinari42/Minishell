@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 22:28:23 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 14:47:45 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	exec_export(t_token **list)
 	t_token	*token;
 	char	*varname;
 	char	*value;
-	int		arraypos;
+	int		pos;
 	char	*newstr;
 
 	varname = NULL;
@@ -119,7 +119,7 @@ int	exec_export(t_token **list)
 	{
 		varname = ft_strdup(token->str);
 		value = NULL;
-		if (token->next && token->next->type == EQUAL)
+		if (token->next && token->next->type == ASSIGN)
 		{
 			token = token->next;
 			if (token->next)
@@ -137,11 +137,13 @@ int	exec_export(t_token **list)
 		display_env();
 		return (0);
 	}
-	arraypos = var_in_env(varname);
-	free(g_envp[arraypos]);
+	pos = var_in_env(varname);
+	if (g_envp[pos])
+		free(g_envp[pos]);
 	newstr = ft_strjoin(varname, "=");
-	g_envp[arraypos] = ft_strjoin(newstr, value);
-	
+	g_envp[pos] = ft_strjoin(newstr, value);
+	if (pos == num_vars_env() - 1)
+		g_envp[pos + 1] = ft_strdup("");		// replace string that marks the end of the array
 	// if (arraypos != -1)
 	// 	; // TODO: update variables
 	// else if (token->prev->type = EQUALS)

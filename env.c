@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 22:12:05 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 15:41:10 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,17 @@ char	*extract_value(char *tokenstr)
 	return (varname);
 }
 
+int	num_vars_env()
+{
+	int	i;
+
+	i = 0;
+	//while (ft_strncmp(g_envp[i], "", 1))
+	while (g_envp[i])
+		i++;
+	return (i);
+}
+
 int	var_in_env(char *varname)
 {
 	int		i;
@@ -81,7 +92,7 @@ int	var_in_env(char *varname)
 	while (g_envp[i] && varname)
 	{
 		split = ft_split(g_envp[i], '=');
-		if (!ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
+		if (split && *split && !ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
 		{
 			free_split(split);
 			return (i);
@@ -89,7 +100,7 @@ int	var_in_env(char *varname)
 		free_split(split);
 		i++;
 	}
-	return (-1);
+	return (i);
 }
 
 void	display_env(void)
