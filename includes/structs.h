@@ -6,12 +6,24 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 20:28:58 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 18:22:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
+
+typedef struct s_kval
+{
+	char	*key;
+	char	*val;
+}	t_kval;
+
+typedef struct s_dlist
+{
+	struct s_kval	*content;
+	struct s_dlist	*next;
+}	t_dlist;
 
 typedef struct s_history
 {
@@ -40,7 +52,7 @@ typedef struct pipe
 	t_file	file;
 	t_parse	parse;
 	int		error_code;
-	int		append;
+	int		tappend;
 }				t_pipe;
 
 typedef struct s_token
