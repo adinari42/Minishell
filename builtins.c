@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 20:18:20 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 21:59:13 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,26 +100,30 @@ int update_var(char *varname, char *value)
 	{
 		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
 		{
-			free(var->content->val);
+			if(var->content->val)
+				free(var->content->val);
 			var->content->val = value;
-			return (1);
+			return (0);
 		}
+		var = var->next;
 	}
-	return (0);
+	return (1);
 }
 
 int	exec_export(t_token **list)
 {
 	int		ret;
 	t_token	*token;
-	char	*varname;
-	char	*value;
+	// char	*varname;
+	// char	*value;
 	t_dlist	*var;
+	//t_kval	*content;
 
-	varname = NULL;
+	//varname = NULL;
 	token = tlist_start(list);
 	ret = 0;
-	var = malloc(sizeof(var));
+	var = malloc(sizeof(t_dlist));
+	var->content = malloc(sizeof(t_kval));
 	if (ft_strncmp(token->str, "export", 7))
 	{
 		printf("Something went wrong here, %s is not the export command\n",
@@ -136,42 +140,37 @@ int	exec_export(t_token **list)
 	token = token->next;
 	if (token->type == WORD && ft_strlen(token->str))
 	{
-		varname = ft_strdup(token->str);
-		value = NULL;
-		if (token->next && token->next->type == ASSIGN)
+		var->content->key = ft_strdup(token->str);
+		if (token->next && token->next->type == ASSIGN) // found the equal sign, next token please
 		{
 			token = token->next;
-			if (token->next)
-				value = ft_strdup(token->next->str);
+			if (token->next && token->next->str)
+				var->content->val = ft_strdup(token->next->str);
+			else
+				var->content->val = ft_strdup("");
 		}
 	}
 	else if (token->type == STR_DQUOTES || token->type == STR_SQUOTES)
 	{
-		varname = extract_varname_quoted(token->next->str);
-		value = extract_value(token->next->str);
+		var->content->key = extract_varname_quoted(token->next->str);
+		var->content->val = extract_value(token->next->str);
 	}
 	else
 	{
-		varname = NULL; // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
+		free(var); // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
 		display_env();
 		return (0);
 	}
 
-	if (!var_in_env(varname))
-	{
-		var->content->key = varname;
-		var->content->val = value;
+	if (!var_in_env(var->content->key))
 		lstadd_back(g_env, var);
-	}
 	else
 	{
-		update_var(varname, value);
-		free(varname);
+		update_var(var->content->key, var->content->val);
+		free(var->content->key);
+		free(var->content);
+		free(var);
 	}
-	// replace string that marks the end of the array
-	// if (arraypos != -1)
-	// 	; // TODO: update variables
-	// else if (token->prev->type = EQUALS)
 	// 	;// TODO: add variable names here, if there is an EQUAL sign
 	// do nothing if there is no assignment operator
 	return (0);
