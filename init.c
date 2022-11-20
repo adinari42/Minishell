@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 20:43:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 20:44:24 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,7 @@ int	init_env_llist(char **envp)
 		elem = lstnew((void *) var);
 		if (!g_env)
 			g_env = malloc(sizeof(t_dlist *));
-		// 	*g_env = elem;
-		// }
-		// else
-			lstadd_back(g_env, elem);
+		lstadd_back(g_env, elem);
 		i++;
 	}
 	return (0);
