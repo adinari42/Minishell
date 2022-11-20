@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/20 18:03:31 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 20:02:16 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*inpt;
 	t_parse	parse;
 	t_token	**list;
+	char 	**envp_c;
 
 	if (argc != 1)
 		return (1);
@@ -77,7 +78,9 @@ int	main(int argc, char **argv, char **envp)
 			// printf("After quotes treatment: \n");
 			// print_list(*list);
 			// printf("After removing spaces: \n");
+			envp_c = env_list_to_char_arr(g_env);
 			check_value(*list, envp);
+			free(envp_c);
 			// we need a function here that deletes empty nodes
 			list = remove_empty(list);
 			printf("After check_value, printing list:\n");
