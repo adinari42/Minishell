@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 19:17:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 20:18:20 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,11 +194,11 @@ int	exec_env(t_token **list)
 	token = tlist_start(list);
 	if (ft_strncmp(token->str, "env", 7))
 	{
-		printf("Something went wrong here, %s is not the cd command\n",
+		printf("Something went wrong here, %s is not the env command\n",
 			token->str);
 		return (1);
 	}
-	while (token->next)
+	while (token->next) // env command does not take arguments
 	{
 		if (token->next->type != SPACE)
 		{
