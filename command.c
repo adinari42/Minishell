@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 21:19:35 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 18:22:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	handle_commandstr(t_token **list)
 {
 	char	*str;
 
-	str = (list_start(list))->str;
+	str = (tlist_start(list))->str;
 	if (is_builtin(str))
 		return (handle_builtin(list));
 	else
@@ -31,7 +31,7 @@ int	handle_builtin(t_token **list)
 	char	*str;
 	int		ret;
 
-	str = (list_start(list))->str;
+	str = (tlist_start(list))->str;
 	ret = 0;
 	if (!ft_strncmp(str, g_builtins[ECHO], 5))
 		ret = exec_echo(list);

@@ -6,13 +6,11 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 14:47:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 19:17:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-extern char	**g_envp;
 
 int	is_builtin(char *str)
 {
@@ -34,7 +32,7 @@ int	exec_echo(t_token **list)
 {
 	int	ret;
 
-	(void) list;
+	token = tlist_start(list);
 	ret = 0;
 	newline = 1;
 	if (ft_strncmp(token->str, "echo", 5))
@@ -62,7 +60,7 @@ int	exec_cd(t_token **list)
 {
 	int	ret;
 
-	token = list_start(list);
+	token = tlist_start(list);
 	dir_found = 0;
 	if (ft_strncmp(token->str, "cd", 3))
 	{
@@ -77,15 +75,32 @@ int	exec_cd(t_token **list)
 		if (token->type == WORD || token->type == STR_DQUOTES || token->type == STR_SQUOTES)
 		{
 			if (dir_found)
-				printf("cd: string not in pwd: %s\n", list_start(list)->next->str);
+				printf("cd: string not in pwd: %s\n", tlist_start(list)->next->str);
 			else
 				dir_found = 1;
 		}
 	}
-	ret = chdir(list_start(list)->next->str);
+	ret = chdir(tlist_start(list)->next->str);
 	if (ret == -1)
-		printf("cd: no such file or directory: %s\n", list_start(list)->next->str);
+		printf("cd: no such file or directory: %s\n", tlist_start(list)->next->str);
 	return (ret);
+}
+
+int update_var(char *varname, char *value)
+{
+	t_dlist	*var;
+	
+	var = *g_env;
+	while (var)
+	{
+		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
+		{
+			free(var->content->val);
+			var->content->val = value;
+			return (1);
+		}
+	}
+	return (0);
 }
 
 int	exec_export(t_token **list)
@@ -94,20 +109,19 @@ int	exec_export(t_token **list)
 	t_token	*token;
 	char	*varname;
 	char	*value;
-	int		pos;
-	char	*newstr;
+	t_dlist	*var;
 
 	varname = NULL;
-
-	token = list_start(list);
+	token = tlist_start(list);
 	ret = 0;
+	var = malloc(sizeof(var));
 	if (ft_strncmp(token->str, "export", 7))
 	{
 		printf("Something went wrong here, %s is not the export command\n",
 			token->str);
 		return (1);
 	}
-	while (token->next && token->next->type == SPACE)
+	while (token->next && token->next->type == SPACE)	// skip over spaces
 		token = token->next;
 	if (!token->next)
 	{
@@ -137,20 +151,24 @@ int	exec_export(t_token **list)
 		display_env();
 		return (0);
 	}
-	pos = var_in_env(varname);
-	if (g_envp[pos])
-		free(g_envp[pos]);
-	newstr = ft_strjoin(varname, "=");
-	g_envp[pos] = ft_strjoin(newstr, value);
-	if (pos == num_vars_env() - 1)
-		g_envp[pos + 1] = ft_strdup("");		// replace string that marks the end of the array
+
+	if (!var_in_env(varname))
+	{
+		var->content->key = varname;
+		var->content->val = value;
+		lstadd_back(g_env, var);
+	}
+	else
+	{
+		update_var(varname, value);
+		free(varname);
+	}
+	// replace string that marks the end of the array
 	// if (arraypos != -1)
 	// 	; // TODO: update variables
 	// else if (token->prev->type = EQUALS)
 	// 	;// TODO: add variable names here, if there is an EQUAL sign
 	// do nothing if there is no assignment operator
-	free(newstr);
-	free(varname);
 	return (0);
 }
 
@@ -168,7 +186,7 @@ int	exec_env(t_token **list)
 {
 	t_token	*token;
 
-	token = list_start(list);
+	token = tlist_start(list);
 	if (ft_strncmp(token->str, "env", 7))
 	{
 		printf("Something went wrong here, %s is not the cd command\n",
@@ -201,7 +219,7 @@ int	exec_pwd(t_token **list)
 	t_token	*token;
 	char	buf[1024];
 
-	token = list_start(list);
+	token = tlist_start(list);
 	if (ft_strncmp(token->str, "pwd", 4))
 	{
 		printf("Something went wrong here, %s is not the pwd command\n",

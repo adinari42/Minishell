@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 15:41:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 19:12:54 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,46 +72,100 @@ char	*extract_value(char *tokenstr)
 	return (varname);
 }
 
+// int	num_vars_env()
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	//while (ft_strncmp(g_envp[i], "", 1))
+// 	while (g_envp[i])
+// 		i++;
+// 	return (i);
+// }
+
 int	num_vars_env()
 {
-	int	i;
-
-	i = 0;
-	//while (ft_strncmp(g_envp[i], "", 1))
-	while (g_envp[i])
-		i++;
-	return (i);
+	return lstsize(*g_env);
 }
+
+// int	var_in_env(char *varname)
+// {
+// 	int		i;
+// 	char	**split;
+
+// 	i = 0;
+// 	while (g_envp[i] && varname)
+// 	{
+// 		split = ft_split(g_envp[i], '=');
+// 		if (split && *split && !ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
+// 		{
+// 			free_split(split);
+// 			return (i);
+// 		}
+// 		free_split(split);
+// 		i++;
+// 	}
+// 	return (i);
+// }
 
 int	var_in_env(char *varname)
 {
-	int		i;
-	char	**split;
+	t_dlist *elem;
 
-	i = 0;
-	while (g_envp[i] && varname)
+	elem = *g_env;
+	while (elem)
 	{
-		split = ft_split(g_envp[i], '=');
-		if (split && *split && !ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
-		{
-			free_split(split);
-			return (i);
-		}
-		free_split(split);
-		i++;
+		if (!ft_strncmp(varname, elem->content->key, ft_strlen(varname) + 1))
+			return (1);
+		elem = elem->next;
 	}
-	return (i);
+	return (0);
 }
+
+// void	display_env(void)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	while (g_envp[i])
+// 	{
+// 		printf("%s\n",g_envp[i]);
+// 		i++;
+// 	}
+// 	return ;
+// }
 
 void	display_env(void)
 {
-	int		i;
-
-	i = 0;
-	while (g_envp[i])
+	t_dlist	*var;
+	
+	var = *g_env;
+	while (var)
 	{
-		printf("%s\n",g_envp[i]);
+		printf("%s=%s\n", var->content->key, var->content->val);
+		var = var->next;
+	}
+}
+
+char	**env_list_to_char_arr(t_dlist **env)
+{
+	int		i;
+	t_dlist	*elem;
+	char	**env_c;
+	char	*buf;
+
+	env_c = malloc(sizeof(char *) * lstsize(*env));
+	i = 0;
+	if (!env)
+		return (NULL);
+	elem = *env;
+	while (i < lstsize(*env))
+	{
+		buf = ft_strjoin(elem->content->key, "=");
+		env_c[i] = ft_strjoin(buf, elem->content->val);
+		free(buf);
 		i++;
 	}
-	return ;
+	env_c[i] = ft_strdup("");
+	return (env_c);
 }

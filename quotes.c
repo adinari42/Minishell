@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 00:19:30 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 18:22:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 	t_token	*token;
 	t_token	*open_quote;
 
-	token = list_start(list);
+	token = tlist_start(list);
 	open_quote = NULL;
 	while (token)
 	{

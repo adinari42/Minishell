@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/17 18:20:07 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/20 18:17:33 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,9 @@ t_token	**read_tokens(char *bashcmd)
 		{
 			if (i - word_s > 1) // we need to save the previous word
 			{
-				tokenstr = ft_substr(bashcmd, word_s, i - word_s); //TODO: free this
-				token = token_new(tokenstr);
-				append(tk_list, token);
+				tokenstr = ft_substr(bashcmd, word_s, i - word_s);
+				tappend(tk_list, token_new(tokenstr));
+				free(tokenstr);
 			}
 			//now save the char that we just found
 			if (i < ft_strlen(bashcmd) - 1
@@ -97,14 +97,15 @@ t_token	**read_tokens(char *bashcmd)
 			else
 				token = token_new(ft_substr(bashcmd, i, 1));
 			word_s = i + 1;
-			append(tk_list, token);
+			tappend(tk_list, token_new(tokenstr));
+			free(tokenstr);
 		}
 		i++;
 	}
 	if (word_s < i)
 	{
 		tokenstr = ft_substr(bashcmd, word_s, i - word_s);
-		append(tk_list, token_new(tokenstr));
+		tappend(tk_list, token_new(tokenstr));
 		free(tokenstr);
 	}
 	print_list(*tk_list);

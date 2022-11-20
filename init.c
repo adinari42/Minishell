@@ -6,58 +6,47 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/11 19:20:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 18:50:04 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_dlist	**init_minishell(char **envp)
+// int	init_env(char **envp)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (envp[i])
+// 		i++;
+// 	g_envp = calloc(i * sizeof(char *));
+// 	i = 0;
+// 	while (envp[i])
+// 		g_envp[i] = ft_strdup(envp[i]);
+// }
+
+int	init_env_llist(char **envp)
 {
-	t_dlist	**l_envp;
-
-	init_term(STDOUT_FILENO);
-	l_envp = init_env_llist(envp);
-	init_signals();
-	return (l_envp);
-}
-
-void	reset_term_signals(void)
-{
-	init_term(STDOUT_FILENO);
-	init_signals();
-}
-
-void	init_term(int fd)
-{
-	struct termios	t_settings;
-
-	tcgetattr(fd, &t_settings);
-	t_settings.c_lflag &= ~(ECHOCTL);
-	tcsetattr(fd, 0, &t_settings);
-}
-
-t_dlist	**init_env_llist(char **envp)
-{
-	t_dlist	**l_envp;
 	int		i;
+	t_dlist	*elem;
 	t_kval	*var;
 	char	**tmp;
 
-	if (!envp)
-		return (NULL);
 	i = 0;
-	l_envp = malloc(sizeof(t_dlist *));
-	*l_envp = NULL;
+	var = malloc(sizeof(t_kval));
+	if (!envp)
+		return (1);
 	while (envp[i])
 	{
 		tmp = ft_split(envp[i], '=');
-		var = malloc(sizeof(t_kval));
-		var->key = ft_strdup(tmp[0]);
-		var->val = ft_strdup(tmp[1]);
+		var->key = tmp[0];
+		var->val = tmp[1];
 		free_split(tmp);
-		lstadd_back(l_envp, lstnew(var));
-		i++;
+		elem = lstnew((void *) var);
+		if (!g_env)
+			g_env = &elem;
+		else
+			lstadd_back(g_env, elem);
 	}
-	return (l_envp);
+	return (0);
 }
