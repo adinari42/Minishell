@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/20 16:12:34 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/20 18:34:07 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME = minishell
 SRCS = main.c \
 		signals.c \
 		tokens.c \
-		llist.c \
+		ltokens.c \
 		expand.c \
 		quotes.c \
 		parse.c \
@@ -25,7 +25,8 @@ SRCS = main.c \
 		expandvalue.c \
 		free.c \
 		env.c \
-		init.c
+		init.c \
+		dlist.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
