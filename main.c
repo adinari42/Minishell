@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 15:19:49 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/21 12:02:53 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,48 +58,19 @@ int	main(int argc, char **argv, char **envp)
 		inpt = readline("Minishell$ ");
 		if (inpt && inpt[0])
 		{
-			// list = malloc(sizeof(t_token *));
-			// add_history(inpt);
-			// printf("%s\n", inpt);
-			// list = read_tokens(inpt);
-			// list = merge_quoted_strings(list);
-			// printf("After quotes treatment: \n");
-			// print_list(*list);
-			// printf("After removing spaces: \n");
-			// list = remove_spaces(list);
-			// print_list(*list);
-
-			
-			
-			// char *args[2];
-			// args[0] = "/bin/cat";
-			// args[1] = "ps";
-			//exec("/bin/cat", args, envp);
-
-			//exec(NULL, NULL, envp);
-			
-			//system("leaks minishell");
-			// printf("After quotes treatment: \n");
-			// print_list(*list);
-			// printf("After removing spaces: \n");
-			
-			
-			// envp_c = env_list_to_char_arr(g_env);
-			// for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
-			// 	printf("envp: %s\n", envp[i]);
-			// //check_value(*list, envp_c);
-			// free(envp_c);
-
-			
-			// we need a function here that deletes empty nodes
-			//list = remove_empty(list);
-			// printf("After check_value, printing list:\n");
-			// print_list(*list);
-			// handle_commandstr(list);
-			// if (inpt)
-			// 	free(inpt);
-			// free_token_list(list);
-			// free_token_list(list);
+			add_history(inpt);
+			printf("%s\n", inpt);
+			list = read_tokens(inpt);
+			list = merge_quoted_strings(list);
+			printf("After quotes treatment: \n");
+			print_list(*list);
+			printf("here\n");
+			const char arg[] = "-l main.c";
+			execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			free(inpt);
+			free_token_list(list);
+			// if (list)
+			// 	free(list);
 		 	//free(parse.split_envp);
 		}
 		//system("leaks minishell");
