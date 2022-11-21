@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 06:06:32 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/21 12:02:53 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int	main(int argc, char **argv, char **envp)
 			printf("printing list :\n");
 			print_list(*list);
 			printf("here\n");
-			// const char arg[] = "-l main.c";
-			// execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			const char arg[] = "-l main.c";
+			execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
 			free(inpt);
 			free_token_list(list);
 		}
