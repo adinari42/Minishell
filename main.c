@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:50:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/21 12:02:53 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,30 +64,10 @@ int	main(int argc, char **argv, char **envp)
 			list = merge_quoted_strings(list);
 			printf("After quotes treatment: \n");
 			print_list(*list);
-			// printf("After removing spaces: \n");
-			// list = remove_spaces(list);
-			// print_list(*list);
-
-			// char *args[2];
-			// args[0] = "/bin/cat";
-			// args[1] = "ps";
-			//exec("/bin/cat", args, envp);
-
-			//exec(NULL, NULL, envp);
-		
-					
-			envp_c = env_list_to_char_arr(g_env);
-			for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
-				printf("envp: %s\n", envp[i]);
-			// //check_value(*list, envp_c);
-			free_char_arr(envp_c);
-
-			
-			// we need a function here that deletes empty nodes
-			//list = remove_empty(list);
-			// printf("After check_value, printing list:\n");
-			// print_list(*list);
-			// handle_commandstr(list);
+			printf("here\n");
+			const char arg[] = "-l main.c";
+			execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			free(inpt);
 			free_token_list(list);
 			// if (list)
 			// 	free(list);
