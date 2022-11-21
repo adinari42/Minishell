@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/20 20:02:16 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/21 12:02:53 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,9 +207,10 @@ int main(int argc, char **argv, char **envp)
 			list = remove_empty(list);
 			printf("After check_value, printing list:\n");
 			print_list(*list);
-			handle_commandstr(list);
-			if (inpt)
-				free(inpt);
+			printf("here\n");
+			const char arg[] = "-l main.c";
+			execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			free(inpt);
 			free_token_list(list);
 		}
 		// system("leaks minishell");
