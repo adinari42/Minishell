@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 17:27:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 17:46:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,13 @@ void	free_split(char **splitret)
 {
 	int	i;
 
-	if (!splitret)
-		return ;
 	i = 0;
-	while (splitret[i] && ft_strncmp(splitret[i], "", 1))
+	while (splitret[i])
 	{
 		free(splitret[i]);
 		i++;
 	}
-	free(splitret[i]);
-	free(splitret);
-	return ;
+	free (splitret);
 }
 
 void	free_token_list(t_token *list)
@@ -70,19 +66,35 @@ void	free_char_arr(char **to_free)
 	i = 0;
 	if (to_free == NULL)
 		return ;
-	while (to_free[i] && ft_strncmp(to_free[i], "", 1))
+	while (to_free[i] != NULL) //&& *(to_free[i]) != '\0')
 	{
 		free(to_free[i]);
 		++i;
 	}
-	free(to_free[i]);
 	free(to_free);
+	to_free = NULL;
+}
+
+void	free_2d(char ***to_free)
+{
+	size_t	i;
+
+	i = 0;
+	if (*to_free == NULL)
+		return ;
+	while ((*to_free)[i] != NULL)
+	{
+		free((*to_free)[i]);
+		++i;
+	}
+	free(*to_free);
+	*to_free = NULL;
 }
 
 void	free_strings(char *str, char **split1)
 {
 	free(str);
-	free_split(split1);
+	free_2d(&split1);
 }
 
 void	free_dlist(t_dlist *list)
@@ -94,7 +106,13 @@ void	free_dlist(t_dlist *list)
 	while (elem)
 	{
 		if (elem->content)
-			free_kval(elem->content);
+		{
+			if (elem->content->key)
+				free(elem->content->key);
+			if (elem->content->val)
+				free(elem->content->val);
+			free(elem->content);
+		}
 		tmp = elem;
 		elem = elem->next;
 		free(tmp);

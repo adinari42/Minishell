@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 21:40:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 17:38:53 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,20 @@ int	var_in_env(char *varname, t_dlist *env)
 	return (0);
 }
 
-int	display_env(t_dlist *env)
+// void	display_env(void)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	while (g_envp[i])
+// 	{
+// 		printf("%s\n",g_envp[i]);
+// 		i++;
+// 	}
+// 	return ;
+// }
+
+void	display_env(void)
 {
 	t_dlist	*var;
 
@@ -141,7 +154,6 @@ int	display_env(t_dlist *env)
 		printf("\n");
 		var = var->next;
 	}
-	return (0);
 }
 
 char	**env_list_to_char_arr(t_dlist **env)
@@ -162,11 +174,13 @@ char	**env_list_to_char_arr(t_dlist **env)
 		buf = ft_strjoin(elem->content->key, "=");
 		if (elem->content->val && *(elem->content->val))
 		{
-			env_c[i] = ft_strjoin(buf, elem->content->val);
+			buf = ft_strjoin(elem->content->key, "=");
+			if (elem->content->val && *(elem->content->val))
+				env_c[i] = ft_strjoin(buf, elem->content->val);
+			else
+				env_c[i] = ft_strjoin(buf, "");
 			free(buf);
 		}
-		else
-			env_c[i] = buf;
 		i++;
 		elem = elem->next;
 	}

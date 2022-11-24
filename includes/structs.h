@@ -62,7 +62,7 @@ typedef struct s_token
 	char			*str;
 	int				type;
 	int				id;
-//	char			*path;
+	char			*path;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;

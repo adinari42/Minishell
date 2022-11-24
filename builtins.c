@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/27 16:31:17 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/21 22:53:42 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@ int	is_builtin(char *str)
 	char	**split;
 
 	i = 0;
-	split = ft_split(str, ' ');
-	while (split && split[0] && split[0][0]
-		&& i < sizeof(g_builtins) / sizeof(const char *const))
+	while (i < sizeof(g_builtins)
+		/sizeof(const char *const))
 	{
 		if (!ft_strncmp(split[0], g_builtins[i], ft_strlen(g_builtins[i]) + 1))
 		{
@@ -38,23 +37,28 @@ int	is_builtin(char *str)
 
 int	exec_echo(t_token *list, t_dlist *env)
 {
-	t_token	*tkn;
+	t_token	*token;
+	int		ret;
 	int		newline;
 
-	tkn = tlist_start(list);
+	token = tlist_start(list);
+	ret = 0;
 	newline = 1;
-	if (!builtin_plausible(tkn, "echo"))
+	if (ft_strncmp(token->str, "echo", 5))
+	{
+		printf("Something went wrong here, %s is not the echo command\n",
+			token->str);
 		return (1);
-	tkn = skip_spaces(tkn);
-	if (tkn && !ft_strncmp(tkn->str, "-n", 3))
-	{
-		newline = 0;
-		tkn = skip_spaces(tkn);
 	}
-	while (tkn)
+	if (token->next && !ft_strncmp(token->next->str, "-n", 3))
 	{
-		write(1, tkn->str, ft_strlen(tkn->str));
-		tkn = tkn->next;
+		token = token->next;
+		newline = 0;
+	}
+	while (token->next)
+	{
+		token = token->next;
+		write(1, token->str, ft_strlen(token->str));
 	}
 	if (newline)
 		printf("\n");
@@ -69,7 +73,7 @@ int	exec_cd(t_token **list)
 	int		dir_found;
 	t_token	*token;
 
-	token = list_start(list);
+	token = tlist_start(list);
 	dir_found = 0;
 	if (ft_strncmp(token->str, "cd", 3))
 	{
@@ -84,127 +88,57 @@ int	exec_cd(t_token **list)
 		if (token->type == WORD || token->type == STR_DQUOTES || token->type == STR_SQUOTES)
 		{
 			if (dir_found)
-				printf("cd: string not in pwd: %s\n", list_start(list)->next->str);
+				printf("cd: string not in pwd: %s\n", tlist_start(list)->next->str);
 			else
 				dir_found = 1;
 		}
 	}
-	ret = chdir(list_start(list)->next->str);
+	ret = chdir(tlist_start(list)->next->str);
 	if (ret == -1)
-		printf("cd: no such file or directory: %s\n", list_start(list)->next->str);
-	//printf("%d \n", ret);
+		printf("cd: no such file or directory: %s\n", tlist_start(list)->next->str);
 	return (ret);
 }
 
-char	**envp_parse(char **envp)
+int update_var(char *varname, char *value)
 {
-	int		j;
-	char	**envp_parse;
-
-	j = 0;
-	while (envp[j])
+	t_dlist	*var;
+	
+	var = *g_env;
+	while (var)
 	{
-		printf("envp[i]: %s\n", envp[j]);
-		j++;
-	}
-	j = -1;
-	while (envp[++j])
-	{
-		if (!ft_strncmp(envp[j], "PATH=", 5))
-			break ;
-	}
-	envp_parse = ft_split(*(envp + j) + 5, ':');
-	return (envp_parse);
-}
-
-
-//assumption here: quotes have been stripped already
-char	*extract_varname_quoted(char *tokenstr)
-{
-	char	*varname;
-	char	*ptr;
-	char	**split;
-
-	ptr = ft_strchr(tokenstr, '=');
-	if (!ptr)	// case: no equal sign found in string, probably needs actual error management to behave like bash
-		return (NULL);
-	else
-	{
-		split = ft_split(tokenstr, '=');
-		varname = ft_strdup(split[0]);
-		free_split(split);
-	}
-	if (ft_strchr(varname, ' '))
-	{
-		printf("export: not valid in this context: %s\n", varname);
-		free(varname);
-	}
-	printf("varname from extract_varname_quoted: %s\n", varname);
-	return (varname);
-}
-
-char *extract_value(char *tokenstr)
-{
-	char	*varname;
-	char	*ptr;
-	char	**split;
-
-	ptr = ft_strchr(tokenstr, '=');
-	if (!ptr)	// case: no equal sign found in string, probably needs actual error management to behave like bash
-		return (NULL);
-	else
-	{
-		split = ft_split(tokenstr, '=');
-		varname = ft_strdup(split[1]);
-		free_split(split);
-	}
-	printf("varname from extract_varname_quoted: %s\n", varname);
-	return (varname);
-}
-
-int	var_in_env(char *varname)
-{
-	int		i;
-	char	**split;
-
-	i = 0;
-	while (g_envp[i])
-	{
-		split = ft_split(g_envp[i], '=');
-		if (!ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
+		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
 		{
-			free_split(split);
-			return (i);
+			if(var->content->val)
+				free(var->content->val);
+			var->content->val = value;
+			return (0);
 		}
-		free_split(split);
-		i++;
+		var = var->next;
 	}
-	return (-1);
+	return (1);
 }
 
-void	display_env(void)
-{
-	return ;
-}
-
-// these functions are emtpy dummy functions for now so it compiles
 int	exec_export(t_token **list)
 {
 	int		ret;
 	t_token	*token;
-	char	*varname;
-	char	*value;
-	int		arraypos;
-	
-	token = list_start(list);
+	// char	*varname;
+	// char	*value;
+	t_dlist	*var;
+	//t_kval	*content;
+
+	//varname = NULL;
+	token = tlist_start(list);
 	ret = 0;
+	var = malloc(sizeof(t_dlist));
+	var->content = malloc(sizeof(t_kval));
 	if (ft_strncmp(token->str, "export", 7))
 	{
-		printf("Something went wrong here, %s is not the cd command\n",
+		printf("Something went wrong here, %s is not the export command\n",
 			token->str);
 		return (1);
 	}
-	while (token->next && token->next->type == SPACE)
+	while (token->next && token->next->type == SPACE)	// skip over spaces
 		token = token->next;
 	if (!token->next)
 	{
@@ -212,34 +146,45 @@ int	exec_export(t_token **list)
 		return (0);
 	}
 	token = token->next;
-	if (token->type == WORD)
+	if (token->type == WORD && ft_strlen(token->str))
 	{
-		varname = ft_strdup(token->next->str);
-		value = NULL;
-		if (token->next && token->next->type == EQUAL)
+		var->content->key = ft_strdup(token->str);
+		if (token->next && token->next->type == ASSIGN) // found the equal sign, next token please
 		{
 			token = token->next;
-			if (token->next)
-				value = ft_strdup(token->next->str);
+			if (token->next && token->next->str)
+				var->content->val = ft_strdup(token->next->str);
+			else
+				var->content->val = ft_strdup("");
 		}
 	}
-	else if (token->next->type == STR_DQUOTES || token->next->type == STR_SQUOTES)
+	else if (token->type == STR_DQUOTES || token->type == STR_SQUOTES)
 	{
-		varname = extract_varname_quoted(token->next->str);
-		value = extract_value(token->next->str);
+		var->content->key = extract_varname_quoted(token->next->str);
+		var->content->val = extract_value(token->next->str);
 	}
 	else
-		varname = NULL; // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
-	arraypos = var_in_env(varname);
-	// if (arraypos != -1)
-	// 	; // TODO: update variables
-	// else
-	// 	;// TODO: handle nonexistent variable names here
-	ret = 0;
-	free(varname);
-	return (ret);
+	{
+		free(var); // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
+		display_env();
+		return (0);
+	}
+
+	if (!var_in_env(var->content->key))
+		lstadd_back(g_env, var);
+	else
+	{
+		update_var(var->content->key, var->content->val);
+		free(var->content->key);
+		free(var->content);
+		free(var);
+	}
+	// 	;// TODO: add variable names here, if there is an EQUAL sign
+	// do nothing if there is no assignment operator
+	return (0);
 }
 
+// these functions are emtpy dummy functions for now so it compiles
 int	exec_unset(t_token **list)
 {
 	int	ret;
@@ -251,13 +196,27 @@ int	exec_unset(t_token **list)
 
 int	exec_env(t_token **list)
 {
-	int	ret;
+	t_token	*token;
 
-	(void) list;
-	ret = 0;
-	return (ret);
+	token = tlist_start(list);
+	if (ft_strncmp(token->str, "env", 7))
+	{
+		printf("Something went wrong here, %s is not the env command\n",
+			token->str);
+		return (1);
+	}
+	while (token->next) // env command does not take arguments
+	{
+		if (token->next->type != SPACE)
+		{
+			printf("env: %s: No such file or directory\n", token->next->str);
+			return (1);
+		}
+	}
+	display_env();
+	return (0);
 }
-
+ 
 int	exec_exit(t_token **list)
 {
 	int	ret;
@@ -267,12 +226,12 @@ int	exec_exit(t_token **list)
 	return (ret);
 }
 
-int	exec_pwd(t_token **list)
+int	exec_pwd(t_token *list, t_dlist *env)
 {
 	t_token	*token;
 	char	buf[1024];
 
-	token = list_start(list);
+	token = tlist_start(list);
 	if (ft_strncmp(token->str, "pwd", 4))
 	{
 		printf("Something went wrong here, %s is not the pwd command\n",
@@ -293,249 +252,3 @@ int	exec_pwd(t_token **list)
 	return (0);
 }
 
-int	update_var(char *varname, char *value, t_dlist *env)
-{
-	t_dlist	*var;
-
-	var = env;
-	while (var)
-	{
-		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
-		{
-			if (var->content->val)
-				free(var->content->val);
-			var->content->val = ft_strdup(value);
-			return (0);
-		}
-		var = var->next;
-	}
-	return (1);
-}
-
-
-// if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
-// -> we don't have to do any special handling of too many arguments
-int	exec_cd(t_token *list, t_dlist *env)
-{
-	int		ret;
-	t_token	*tkn;
-	char	pwd[1024];
-
-	tkn = tlist_start(list);
-	if (!builtin_plausible(tkn, "cd"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	if (tkn->type == WORD 
-		|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
-		ret = chdir(tkn->str);
-	if (ret == -1)
-		ret = print_builtin_error("cd", tkn->str);
-	getcwd(pwd, 1024);
-	update_var("PWD", pwd, env);
-	return (ret);
-}
-
-int	exec_export(t_token *list, t_dlist *env)
-{
-	t_token	*tkn;
-	t_kval	*content;
-
-	tkn = tlist_start(list);
-	content = malloc(sizeof(t_kval));
-	if (!builtin_plausible(tkn, "export"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	if (!tkn)
-		return (display_env());
-	if (tkn->type == WORD && ft_strlen(tkn->str))
-	{
-		content->key = ft_strdup(tkn->str);
-		if (tkn->next && tkn->next->type == ASSIGN) // found the equal sign, next tkn please
-		{
-			tkn = tkn->next;
-			if (tkn->next && tkn->next->str)
-				content->val = ft_strdup(tkn->next->str);
-			else
-				cntnt->val = ft_strdup("");
-		}
-		else
-		{
-			free(cntnt->key);
-			free(cntnt);
-			return (0);
-		}
-	}
-	else if (tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
-	{
-		content->key = extract_varname_quoted(tkn->next->str);
-		content->val = extract_value(tkn->next->str);
-	}
-	else
-	{
-		free(content); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
-		display_env();
-		return (0);
-	}
-	if (!var_in_env(cntnt->key, env))
-		lstadd_back(&env, lstnew(cntnt));
-	else
-	{
-		update_var(cntnt->key, cntnt->val, env);
-		free_kval(cntnt);
-	}
-	return (0);
-}
-
-// unset without an argument returns 0
-int	exec_unset(t_token **list)
-{
-	t_token	*tkn;
-	t_dlist	*var;
-	char	*varname;
-	char	**splitres;
-
-	tkn = tlist_start(list);
-	var = *g_env;
-	if (!builtin_plausible(tkn, "unset"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	while (var)
-	{
-		if (!ft_strncmp(var->content->key, tkn->str, ft_strlen(tkn->str)))
-		{
-			if (!tkn->next || tkn->next->type == SPACE_TKN)
-			{
-				lstdel_elem(g_env, var);
-				return (0);
-			}
-		}
-		var = var->next;
-	}
-	return (1);
-}
-
-int	exec_env(t_token **list)
-{
-	t_token	*tkn;
-
-	tkn = tlist_start(list);
-	if (!builtin_plausible(tkn, "env"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	if (tkn) // env command does not take arguments
-	{
-		printf("env: %s: No such file or directory\n", tkn->next->str);
-		return (1);
-	}
-	display_env();
-	return (0);
-}
-
-int	exec_exit(t_token **list)
-{
-	t_token	*tkn;
-	char	*tokenstr;
-	int		ret;
-
-	tkn = tlist_start(list);
-	ret = 0;
-	if (!builtin_plausible(tkn, "exit"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	if (tkn && tkn->next)
-	{
-		tkn = skip_spaces(tkn);
-		if (tkn)
-		{
-			if (!tkn->next || tkn->next->type == SPACE_TKN)
-			{
-				lstdel_elem(&env, var);
-				return (0);
-			}
-		}
-		var = var->next;
-	}
-	else if (tkn)
-	{
-		tokenstr = tkn->str;
-		while (*tokenstr)
-		{
-			if (!ft_isdigit(*tokenstr))
-				printf("minishell: exit: %s: numeric argument required\n", tkn->str);
-			tokenstr ++;
-		}
-		ret = ft_atoi(tkn->str);
-	}
-	exit_with_value(data->error_code, env);
-}
-
-int	exec_pwd(t_token *list, t_dlist *env)
-{
-	t_token	*tkn;
-	char	pwd[1024];
-
-	tkn = tlist_start(list);
-	if (!builtin_plausible(tkn, "pwd"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	while (tkn->next)
-	{
-		tkn = tkn->next;
-		if (tkn->type != SPACE_TKN)
-		{
-			printf("pwd: too many arguments");
-			return (1);
-		}
-	}
-	getcwd(pwd, 1024);
-	printf("%s \n", pwd);
-	return (0);
-}
-
-int	builtin_plausible(t_token *tkn, char *builtin)
-{
-	if (ft_strncmp(tkn->str, builtin, ft_strlen(builtin) + 1))
-	{
-		printf("Something went wrong here, %s is not the %s command.\n",
-			tkn->str, builtin);
-		return (0);
-	}
-	return (1);
-}
-
-int	print_builtin_error(char *builtin, char *dir)
-{
-	if (ft_strncmp(builtin, "cd", 3))
-		access(dir, X_OK);
-	if (errno == EACCES)
-		printf("minishell: %s: %s/: permission denied\n", builtin, dir);
-	else if (errno == ENOTDIR)
-		printf("minishell: %s: %s: Not a directory\n", builtin, dir);
-	else if (errno == ENAMETOOLONG)
-		printf("minishell: %s: %s: File name too long\n", builtin, dir);
-	else if (errno == ENOENT)
-		printf("minishell: %s: %s: No such file or directory\n", builtin, dir);
-	return (1);
-}
-
-// varnames can contain letters, digits and underscores
-// a varname can't start with a digit
-int	valid_identifier(char *varname)
-{
-	if (ft_isdigit(*varname))
-		return (1);
-	while (*varname)
-	{
-		if (!ft_isalpha(*varname) && !ft_isdigit(*varname)
-			&& *varname != '_')
-			return (0);
-		varname ++;
-	}
-	return (1);
-}
-
-int	prnt_err(char *cmd, char *arg, char *errstr)
-{
-	printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
-	return (1);
-}

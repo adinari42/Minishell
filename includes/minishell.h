@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/27 16:29:28 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 20:05:39 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <unistd.h>
-# include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "structs.h"
@@ -98,15 +97,13 @@ int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
 
 /*builtin.c*/
 int		is_builtin(char *str);
-int		exec_echo(t_token *token, t_dlist *env);
-int		exec_cd(t_token *token, t_dlist *env);
-int		exec_pwd(t_token *token, t_dlist *env);
-int		exec_export(t_token *token, t_dlist *env);
-int		exec_unset(t_token *token, t_dlist *env);
-int		exec_env(t_token *token, t_dlist *env);
-void	exec_exit(t_token *token, t_dlist **env, t_pipe *data);
-int		builtin_plausible(t_token *token, char *builtin);
-int		print_builtin_error(char *builtin, char *dir);
+int		exec_echo(t_token **token);
+int		exec_cd(t_token **token);
+int		exec_pwd(t_token **token);
+int		exec_export(t_token **token);
+int		exec_unset(t_token **token);
+int		exec_env(t_token **token);
+int		exec_exit(t_token **token);
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
@@ -114,12 +111,13 @@ t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 /*exit.c*/
-void	free_and_exit(int signum, t_dlist **env);
-void	exit_with_value(int retval, t_dlist **env);
+void	free_globals(void);
+void	free_and_exit(int signum);
+
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);
-void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data);
+void	init_path(t_token *tklist, char *cmdline, t_parse *parse);
 char	*get_path(char **string, char *cmd);
 void	ms_fd_err(int i);
 void	ms_fd_error(int i, t_pipe *data);
@@ -129,24 +127,5 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
-
-/* spaces.c */
-t_token	*skip_spaces(t_token *token);
-
-/* current main.c */
-char	*get_cmd(t_token *list, t_pipe *data);
-void	exec_cmd(t_pipe *pipe, t_dlist **env);
-void	parent(t_pipe *pipe);
-void	free_and_close(t_pipe *pipe);
-int		init_outfile(t_pipe *pipe);
-char**	set_parse_cmd(t_token *head);
-
-/*signals.c*/
-void	signals_blocking_command(void);
-void	heredoc_signals(int fd);
-
-
-
-void	print_double_ptr(char **ptr);
 
 #endif
