@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/23 21:05:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 15:12:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ char	*extract_value(char *tokenstr)
 
 int	num_vars_env(t_dlist *env)
 {
-	return (lstsize(env));
+	return (lstsize(*g_env));
 }
 
 int	var_in_env(char *varname, t_dlist *env)
