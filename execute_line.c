@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:46:52 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/24 19:43:34 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,30 +38,30 @@ char	*get_path(char **string, char *cmd)
 	return (NULL);
 }
 
-void	init_path(t_token *tklist, t_parse parse)
-{
-	t_token *tmp;
-	int		iscmd;
+// void	init_path(t_token *tklist, t_parse parse)
+// {
+// 	t_token *tmp;
+// 	int		iscmd;
 
-	iscmd = 1;
-	tmp = tklist;
-	printf("init path\b");
-	while (tmp && tmp->type != PIPE)
-	{
-		if (tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES || tmp->type == WORD)
-			parse.path = tmp->path;
-		else if (tmp->type == SPACE)
-			tmp = tmp->next;
-		else
-		{
-			perror("no such file of directory\n");
-			exit(1);
-		}
-	}
-			// parse.path = ret_path(parse.split_envp, tmp->str);
-	perror("parse error\n");
-	exit(1);
-}
+// 	iscmd = 1;
+// 	tmp = tklist;
+// 	printf("init path\b");
+// 	while (tmp && tmp->type != PIPE)
+// 	{
+// 		if (tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES || tmp->type == WORD)
+// 			parse.path = tmp->path;
+// 		else if (tmp->type == SPACE)
+// 			tmp = tmp->next;
+// 		else
+// 		{
+// 			perror("no such file of directory\n");
+// 			exit(1);
+// 		}
+// 	}
+// 			// parse.path = ret_path(parse.split_envp, tmp->str);
+// 	perror("parse error\n");
+// 	exit(1);
+// }
 
 void	fd_err(int i)
 {
@@ -183,45 +183,45 @@ void search_infile(t_token *tklist, t_pipe	pip)
 		tmp = tmp->next;
 	}
 }
-void	execute_line(t_token *list, t_parse parse, char **envp)
-{
-	t_token *tklist;
-	t_pipe	pip;
-	// int		begin;
+// void	execute_line(t_token *list, t_parse parse, char **envp)
+// {
+// 	t_token *tklist;
+// 	t_pipe	pip;
+// 	// int		begin;
 
-	// begin = 1;
-	printf("%s\n", parse.path);
-	tklist = list;
-	while (tklist)
-	{
-		// if (tklist->type == PIPE)
-			// begin = 1;
-		pipe(pip.fd);
-		// if (begin)
-		search_infile(tklist, pip);
-		execve("/bin/cat", NULL, envp);
-		// begin = 0;
-			// while (tklist)
-		init_path(tklist, parse);
-		// printf("cmd path = %s\n", parse.path);
-		/*pip.pid = fork();
-		if (pip.pid == -1)
-			fd_err(4);
-		if (pip.pid == 0)
-		{
-			child(argv, argc, i, &pip);
-			exec_cmd(&pip, envp);*/
-	// 	}
-	// 	else
-	// 		parent(&pip);
-	// 	i++;
-	// 	free_parse(&pip);
-	// }
-	// free_and_close(&pip);
-		sleep(1);
-		printf("debug 2\n");
-		while (tklist && tklist->type != PIPE)
-			tklist = tklist->next;sleep(1);
-		printf("debug 1\n");
-	}
-}
+// 	// begin = 1;
+// 	printf("%s\n", parse.path);
+// 	tklist = list;
+// 	while (tklist)
+// 	{
+// 		// if (tklist->type == PIPE)
+// 			// begin = 1;
+// 		pipe(pip.fd);
+// 		// if (begin)
+// 		search_infile(tklist, pip);
+// 		execve("/bin/cat", NULL, envp);
+// 		// begin = 0;
+// 			// while (tklist)
+// 		init_path(tklist, parse);
+// 		// printf("cmd path = %s\n", parse.path);
+// 		/*pip.pid = fork();
+// 		if (pip.pid == -1)
+// 			fd_err(4);
+// 		if (pip.pid == 0)
+// 		{
+// 			child(argv, argc, i, &pip);
+// 			exec_cmd(&pip, envp);*/
+// 	// 	}
+// 	// 	else
+// 	// 		parent(&pip);
+// 	// 	i++;
+// 	// 	free_parse(&pip);
+// 	// }
+// 	// free_and_close(&pip);
+// 		sleep(1);
+// 		printf("debug 2\n");
+// 		while (tklist && tklist->type != PIPE)
+// 			tklist = tklist->next;sleep(1);
+// 		printf("debug 1\n");
+// 	}
+// }
