@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/20 20:02:16 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 14:52:53 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,18 @@ void	display_splitenvp(t_parse parse, char **argv)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
-	t_parse	parse;
+	//t_parse	parse;
 	t_token	**list;
-	char 	**envp_c;
+	char	**envp_c;
 
 	if (argc != 1)
 		return (1);
 	init_signals();
 	init_env_llist(envp);
-	parse.split_envp = envp_parse(envp);
+	//parse.split_envp = envp_parse(envp);
 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env 
 	//g_envp = envp;
-	display_splitenvp(parse, argv);
+	//display_splitenvp(parse, argv);
 	while (1)
 	{
 		list = malloc(sizeof(t_token));
@@ -67,10 +67,11 @@ int	main(int argc, char **argv, char **envp)
 			printf("After removing spaces: \n");
 			list = remove_spaces(list);
 			print_list(*list);
+			
 			// char *args[2];
 			// args[0] = "/bin/cat";
 			// args[1] = "ps";
-			// exec("/bin/cat", args, envp);
+			//exec("/bin/cat", args, envp);
 
 			//exec(NULL, NULL, envp);
 			
@@ -79,18 +80,21 @@ int	main(int argc, char **argv, char **envp)
 			// print_list(*list);
 			// printf("After removing spaces: \n");
 			envp_c = env_list_to_char_arr(g_env);
-			check_value(*list, envp);
+			for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
+				printf("envp: %s\n", envp[i]);
+			//check_value(*list, envp_c);
 			free(envp_c);
 			// we need a function here that deletes empty nodes
-			list = remove_empty(list);
+			//list = remove_empty(list);
 			printf("After check_value, printing list:\n");
 			print_list(*list);
 			handle_commandstr(list);
 			if (inpt)
 				free(inpt);
-			free_token_list(list);
+			// free_token_list(list);
+		 	//free(parse.split_envp);
 		}
-		// system("leaks minishell");
+		//system("leaks minishell");
 	}
 	return (argc);
 }

@@ -6,12 +6,12 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/24 21:52:25 by slakner           #+#    #+#              #
-#    Updated: 2022/11/14 19:18:51 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/21 21:11:25 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -O0
 SRCS = 	ft_isalpha.c \
 		ft_isdigit.c \
 		ft_isalnum.c \
