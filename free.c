@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/18 20:24:18 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/23 21:35:55 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,21 @@ void	free_strings(char *str, char **split1)
 {
 	free(str);
 	free_2d(&split1);
+}
+
+void	free_dlist(t_dlist *list)
+{
+	t_dlist	*elem;
+	t_dlist	*tmp;
+
+	elem = list;
+	while (elem)
+	{
+		free(elem->content->key);
+		free(elem->content->val);
+		free(elem->content);
+		tmp = elem;
+		elem = elem->next;
+		free(tmp);
+	}
 }

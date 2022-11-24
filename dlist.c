@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:15:44 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 20:29:27 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/21 23:29:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_dlist	*lstlast(t_dlist *lst)
 	return (lst);
 }
 
-t_dlist	*lstnew(void *content)
+t_dlist	*lstnew(t_kval *content)
 {
 	t_dlist	*newlist;
 
