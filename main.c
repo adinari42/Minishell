@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 15:30:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 16:00:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	display_list(t_token *tokens)
 {
 	char	*inpt;
 	//t_parse	parse;
-	//t_token	**list;
+	t_token	**list;
 	//char	**envp_c;
 
 	tmp = tokens;
@@ -180,7 +180,8 @@ int main(int argc, char **argv, char **envp)
 		inpt = readline("Minishell$ ");
 		if (inpt && inpt[0])
 		{
-			// list = malloc(sizeof(t_token *));
+			list = malloc(sizeof(t_token *));
+			*list = NULL;
 			// add_history(inpt);
 			// printf("%s\n", inpt);
 			// list = read_tokens(inpt);
@@ -218,12 +219,11 @@ int main(int argc, char **argv, char **envp)
 			// printf("After check_value, printing list:\n");
 			// print_list(*list);
 			// handle_commandstr(list);
-			// if (inpt)
-			// 	free(inpt);
-			// free_token_list(list);
-			// free_token_list(list);
+			free_token_list(list);
 		 	//free(parse.split_envp);
 		}
+		if (inpt)
+			free(inpt);
 		//system("leaks minishell");
 	}
 	return (argc);
