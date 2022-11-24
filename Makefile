@@ -6,7 +6,7 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/24 17:42:00 by adinari          ###   ########.fr        #
+#    Updated: 2022/11/24 18:05:53 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,19 @@ SRCS = main.c\
 		expandvalue.c \
 		signals.c \
 		tokens.c \
+		ltokens.c \
+		expand.c \
+		quotes.c \
+		parse.c \
+		exec.c \
+		command.c \
+		builtins.c \
+		expandvalue.c \
+		free.c \
+		env.c \
+		init.c \
+		dlist.c \
+		exit.c
 		llist.c \
 		quotes.c\
 		gnl/get_next_line.c\
