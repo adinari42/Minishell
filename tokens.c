@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 19:49:59 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/24 21:49:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,23 +69,23 @@ void	set_cmd_path(t_token *tklist, t_parse parse)
 
 void	print_list(t_token *list)
 {
-	t_token *tklist;
+	t_token	*tklist;
 
 	tklist = list;
 	if (!tklist)
 		return ;
 	while (tklist)
 	{
-		printf(">%s %d\n", tklist->str, tklist->type);
-		// printf("[Debug] current str is %s\n", tklist->str);
-		// printf("[Debug] current path is %s\n", tklist->path);
-		// printf("[Debug] next is %p\n", tklist->next);
-		// if (tklist->next)
-		// {
-		// 	printf("[Debug] next str is %s\n", tklist->next->str);
-		// 	printf("[Debug] next type is %d\n", tklist->next->type);
-		// 	printf("[Debug] next path is %s\n", tklist->next->path);
-		// }
+		// printf(">%s %d  path-> %s\n", tklist->str, tklist->type, tklist->path);
+		printf("[Debug] current str is %s\n", tklist->str);
+		//printf("[Debug] current path is %s\n", tklist->path);
+		printf("[Debug] next is %p\n", tklist->next);
+		if (tklist->next)
+		{
+			printf("[Debug] next str is %s\n", tklist->next->str);
+			printf("[Debug] next type is %d\n", tklist->next->type);
+			//printf("[Debug] next path is %s\n", tklist->next->path);
+		}
 		tklist = tklist->next;
 	}
 	// printf("end printlist\n");
