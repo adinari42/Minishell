@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/27 16:01:13 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/23 21:05:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,34 +151,25 @@ char	**env_list_to_char_arr(t_dlist **env)
 	char	**env_c;
 	char	*buf;
 
-	if (!env || !*env)
-		return (NULL);
-	i = 0;
-	elem = *env;
 	env_c = malloc(sizeof(char *) * (lstsize(*env) + 1));
-	if (!env_c)
+	//printf("lstsize: %d\n", lstsize(*env));
+	i = 0;
+	if (!env && !env_c)
 		return (NULL);
+	elem = env[0];
 	while (i < lstsize(*env))
 	{
-		if (elem->content && elem->content->key)
+		buf = ft_strjoin(elem->content->key, "=");
+		if (elem->content->val && *(elem->content->val))
 		{
-			buf = ft_strjoin(elem->content->key, "=");
-			if (elem->content->val && (elem->content->val)[0])
-				env_c[i] = ft_strjoin(buf, elem->content->val);
-			else
-				env_c[i] = ft_strdup(buf);
+			env_c[i] = ft_strjoin(buf, elem->content->val);
 			free(buf);
 		}
 		else
-			env_c[i] = ft_strdup("");
+			env_c[i] = buf;
 		i++;
 		elem = elem->next;
 	}
 	*(env_c + i) = NULL;
 	return (env_c);
 }
-
-// void	write_exit_to_env(int err)
-// {
-	
-// }

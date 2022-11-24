@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/22 22:02:37 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/23 21:35:55 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	free_char_arr(char **to_free)
 void	free_strings(char *str, char **split1)
 {
 	free(str);
-	free_split(split1);
+	free_2d(&split1);
 }
 
 void	free_dlist(t_dlist *list)
@@ -93,39 +93,11 @@ void	free_dlist(t_dlist *list)
 	elem = list;
 	while (elem)
 	{
-		if (elem->content)
-			free_kval(elem->content);
+		free(elem->content->key);
+		free(elem->content->val);
+		free(elem->content);
 		tmp = elem;
 		elem = elem->next;
 		free(tmp);
 	}
-}
-
-void	free_kval(t_kval *kval)
-{
-	if (kval)
-	{
-		if (kval->key)
-			free(kval->key);
-		if (kval->val)
-			free(kval->val);
-		free(kval);
-	}
-}
-
-void	free_pipes(t_token **pipes)
-{
-	int	i;
-
-	if (!pipes)
-		return ;
-	i = 0;
-	while (pipes && pipes[i])
-	{
-		free_token_list(pipes[i]);
-		i ++;
-	}
-	free(pipes[i]);
-	if (pipes)
-		free(pipes);
 }
