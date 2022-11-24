@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 18:12:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 19:00:43 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,136 +37,59 @@ void	display_splitenvp(t_parse parse, char **argv)
 		printf("%s\n", parse.split_envp[i++]);
 }
 
-void	display_list(t_token *tokens)
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	char	*inpt;
+// 	char	**inpt_split;
+// 	t_parse	parse;
+// 	t_token	**list;
+// 	int		i;
+
+// 	if (argc != 1)
+// 		return (1);
+// 	init_signals();
+// 	parse.split_envp = envp_parse(envp);
+// 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env
+// 	// display_splitenvp(parse, argv);
+// 	while (1)
+// 	{
+// 		inpt = readline("Minishell$ ");
+// 		if (inpt && inpt[0])
+// 		{
+// 			add_history(inpt);
+// 			printf("%s\n", inpt);
+// 			inpt_split = ft_split(inpt, '|');
+// 			free(inpt);
+// 			i = 0;
+// 			while(inpt_split[i])
+// 			{
+// 				list = read_tokens(inpt_split[i]);
+// 				list = merge_quoted_strings(list);
+// 				check_value(*list, envp);
+// 				printf("1--------:\n");
+// 				set_cmd_path(*list, parse);
+// 				printf("printing list :\n");
+// 				print_list(*list);
+// 				// execute_line(*list, parse, envp);
+// 				free_token_list(list);
+// 				sleep(1);
+// 				i++;
+// 			}
+// 		}
+// 		free_2d(&inpt_split);
+// 		// exit(1);
+// 		// system("leaks minishell");
+// 	}
+// 	return (argc);
+// }
+
+int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
-	char	**inpt_split;
-	t_parse	parse;
+	//t_parse	parse;
 	t_token	**list;
 	char	**envp_c;
 
-	tmp = tokens;
-	while(tmp)
-	{
-		printf(">%s\n", tmp->str);
-		tmp = tmp->next;
-	}
-}
-
-void	free_ll(t_token *stack)
-{
-	t_token	*tmp1;
-	t_token 	*tmp;
-
-	tmp = stack;
-	tmp1 = NULL;
-	while (tmp)
-	{
-		tmp1 = tmp;
-		tmp = tmp->next;
-		free(tmp1);
-	}
-	stack = NULL;
-}
-
-void	free_2d(char ***to_free)
-{
-	size_t	i;
-
-	i = 0;
-	if (*to_free == NULL)
-		return ;
-	while ((*to_free)[i] != NULL)
-	{
-		free((*to_free)[i]);
-		++i;
-	}
-	free(*to_free);
-	*to_free = NULL;
-}
-int	push(t_token **thestack, char *thevalue)
-{
-	t_token	*newnode;
-	t_token	*temp;
-
-	temp = NULL;
-	newnode = malloc(sizeof(t_token));
-	if (newnode == NULL)
-	{
-		write(2, "Error\n", 6);
-		free(newnode);
-		return (0);
-	}
-	newnode->str = thevalue;
-	newnode->next = NULL;
-	if (*thestack == NULL)
-		*thestack = newnode;
-	else
-	{
-		temp = *thestack;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = newnode;
-	}
-	return (1);
-}
-
-void	quote_tokens(t_token *tokens, char* line) {
-
-    // const char *line = "'foobar'|cat'mousebar'sum";
-    char	delim[2] = "\'\"";
-    char	*p;
-	char 	*first;
-	char 	*second;
-	char	*str;
-	// char	c;
-	int	j = 0;
-	size_t len;
-	int i = 0;
-		p = line;
-	
-		first = NULL;
-		second = NULL;
-		len = -1;
-		while (p && *p) /* for each char in line */
-		{   i = 0;
-			while (delim[i] && !first)
-			{
-				if (*p == delim[i])
-					j = i;
-				i++;
-			}
-			if (!first && *p == delim[j])             /* find 1st delim */
-			{
-				first = p;
-				first++;                   /* set start ptr  */
-			}	
-			else if (!second && *p == delim[j])        /* find 2nd delim */
-			{
-				str = ft_substr(first, 0, len);   
-				len = -1;                    /* set end ptr    */
-				second = p;
-			}
-			if (first && second) {                     /* if both set    */
-				push(&tokens, str);
-				first = NULL;
-				second = NULL;
-			}
-			if (first)
-				len++;
-			p++;
-		}
-	}
-
-
-
-int main(int argc, char **argv, char **envp)
-{
-	char		*inpt;
-	t_parse		parse;
-	t_token		**list;
-
-	
 	if (argc != 1)
 		return (1);
 	init_signals();
@@ -174,7 +97,6 @@ int main(int argc, char **argv, char **envp)
 	init_env_llist(envp);
 	//parse.split_envp = envp_parse(envp);
 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env 
-	//g_envp = envp;
 	//display_splitenvp(parse, argv);
 	while (1)
 	{
@@ -186,7 +108,7 @@ int main(int argc, char **argv, char **envp)
 			list = read_tokens(inpt);
 			list = merge_quoted_strings(list);
 			printf("After quotes treatment: \n");
-			print_list(*list);
+			//print_list(*list);
 			// printf("After removing spaces: \n");
 			// list = remove_spaces(list);
 			// print_list(*list);
@@ -200,7 +122,7 @@ int main(int argc, char **argv, char **envp)
 		
 					
 			envp_c = env_list_to_char_arr(g_env);
-			for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
+			for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
 				printf("envp: %s\n", envp[i]);
 			// //check_value(*list, envp_c);
 			free_char_arr(envp_c);
@@ -216,72 +138,9 @@ int main(int argc, char **argv, char **envp)
 			// 	free(list);
 		 	//free(parse.split_envp);
 		}
-		free_2d(&inpt_split);
-		// exit(1);
-		// system("leaks minishell");
+		if (inpt)
+			free(inpt);
+		//system("leaks minishell");
 	}
 	return (argc);
 }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	char	*inpt;
-// 	//t_parse	parse;
-// 	t_token	**list;
-// 	char	**envp_c;
-
-// 	if (argc != 1)
-// 		return (1);
-// 	init_signals();
-// 	//(void) envp;
-// 	init_env_llist(envp);
-// 	//parse.split_envp = envp_parse(envp);
-// 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env 
-// 	//g_envp = envp;
-// 	//display_splitenvp(parse, argv);
-// 	while (1)
-// 	{
-// 		inpt = readline("Minishell$ ");
-// 		if (inpt && inpt[0])
-// 		{
-// 			add_history(inpt);
-// 			printf("%s\n", inpt);
-// 			list = read_tokens(inpt);
-// 			list = merge_quoted_strings(list);
-// 			printf("After quotes treatment: \n");
-// 			print_list(*list);
-// 			// printf("After removing spaces: \n");
-// 			// list = remove_spaces(list);
-// 			// print_list(*list);
-
-// 			// char *args[2];
-// 			// args[0] = "/bin/cat";
-// 			// args[1] = "ps";
-// 			//exec("/bin/cat", args, envp);
-
-// 			//exec(NULL, NULL, envp);
-		
-					
-// 			envp_c = env_list_to_char_arr(g_env);
-// 			for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
-// 				printf("envp: %s\n", envp[i]);
-// 			// //check_value(*list, envp_c);
-// 			free_char_arr(envp_c);
-
-			
-// 			// we need a function here that deletes empty nodes
-// 			//list = remove_empty(list);
-// 			// printf("After check_value, printing list:\n");
-// 			// print_list(*list);
-// 			// handle_commandstr(list);
-// 			free_token_list(list);
-// 			// if (list)
-// 			// 	free(list);
-// 		 	//free(parse.split_envp);
-// 		}
-// 		if (inpt)
-// 			free(inpt);
-// 		//system("leaks minishell");
-// 	}
-// 	return (argc);
-// }
