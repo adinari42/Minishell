@@ -6,26 +6,26 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 18:05:21 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 18:12:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**envp_parse(char **envp)
-{
-	int		j;
-	char	**envp_parse;
+// char	**envp_parse(char **envp)
+// {
+// 	int		j;
+// 	char	**envp_parse;
 
-	j = -1;
-	while (envp[++j])
-	{
-		if (!ft_strncmp(envp[j], "PATH=", 5))
-			break ;
-	}
-	envp_parse = ft_split(*(envp + j) + 5, ':');
-	return (envp_parse);
-}
+// 	j = -1;
+// 	while (envp[++j])
+// 	{
+// 		if (!ft_strncmp(envp[j], "PATH=", 5))
+// 			break ;
+// 	}
+// 	envp_parse = ft_split(*(envp + j) + 5, ':');
+// 	return (envp_parse);
+// }
 
 void	display_splitenvp(t_parse parse, char **argv)
 {

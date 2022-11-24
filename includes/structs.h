@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 17:55:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 18:10:43 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct pipe
 	t_file	file;
 	t_parse	parse;
 	int		error_code;
-	int		tappend;
+	int		append;
 }				t_pipe;
 
 typedef struct s_token

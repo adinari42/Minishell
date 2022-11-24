@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/24 18:05:53 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/24 18:13:59 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,11 +27,9 @@ SRCS = main.c \
 		env.c \
 		init.c \
 		dlist.c \
-		exit.c
-		llist.c \
-		quotes.c\
-		gnl/get_next_line.c\
-		gnl/get_next_line_utils.c\
+		exit.c \
+		gnl/get_next_line.c \
+		gnl/get_next_line_utils.c \
 		execute_line.c
 # expand.c
 
