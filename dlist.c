@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:15:44 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 23:29:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 19:33:44 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int	lstsize(t_dlist *lst)
 
 	if (!lst)
 		return (0);
-	cnt = 1;
-	while (lst->next)
+	cnt = 0;
+	while (lst)
 	{
 		cnt ++;
 		lst = lst->next;
