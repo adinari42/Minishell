@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 23:33:25 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 15:31:24 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	init_env_llist(char **envp)
 		var = malloc(sizeof(t_kval));
 		var->key = ft_strdup(tmp[0]);
 	 	var->val = ft_strdup(tmp[1]);
-	// 	free_split(tmp);
+		free_split(tmp);
 		lstadd_back(g_env, lstnew(var));
 		i++;
 	}
