@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:00:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 16:33:04 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,9 @@ int	main(int argc, char **argv, char **envp)
 		inpt = readline("Minishell$ ");
 		if (inpt && inpt[0])
 		{
-			list = malloc(sizeof(t_token *));
-			*list = NULL;
-			// add_history(inpt);
-			// printf("%s\n", inpt);
-			// list = read_tokens(inpt);
+			add_history(inpt);
+			printf("%s\n", inpt);
+			list = read_tokens(inpt);
 			// list = merge_quoted_strings(list);
 			// printf("After quotes treatment: \n");
 			// print_list(*list);
@@ -98,6 +96,8 @@ int	main(int argc, char **argv, char **envp)
 			// print_list(*list);
 			// handle_commandstr(list);
 			free_token_list(list);
+			// if (list)
+			// 	free(list);
 		 	//free(parse.split_envp);
 		}
 		if (inpt)
