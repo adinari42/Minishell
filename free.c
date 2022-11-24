@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 20:37:40 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 20:53:30 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,17 @@ void	free_split(char **splitret)
 {
 	int	i;
 
+	if (!splitret)
+		return ;
 	i = 0;
-	while (splitret[i])
+	while (splitret[i] && ft_strncmp(splitret[i], "", 1))
 	{
 		free(splitret[i]);
 		i++;
 	}
-	free (splitret);
+	free(splitret[i]);
+	free(splitret);
+	return ;
 }
 
 void	free_token_list(t_token **list)
@@ -59,7 +63,7 @@ void	free_char_arr(char **to_free)
 	i = 0;
 	if (to_free == NULL)
 		return ;
-	while (ft_strncmp(to_free[i], "", 1)) //&& *(to_free[i]) != '\0')
+	while (to_free[i] && ft_strncmp(to_free[i], "", 1))
 	{
 		free(to_free[i]);
 		++i;
@@ -76,9 +80,9 @@ void	free_2d(char ***to_free)
 	i = 0;
 	if (*to_free == NULL)
 		return ;
-	while ((*to_free)[i] != NULL)
+	while (*(to_free)[i] != NULL)
 	{
-		free((*to_free)[i]);
+		free(*(to_free)[i]);
 		++i;
 	}
 	free(*to_free);
