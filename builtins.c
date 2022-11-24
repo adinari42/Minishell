@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 22:35:34 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 22:42:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	exec_echo(t_token **list)
 int	update_var(char *varname, char *value)
 {
 	t_dlist	*var;
-	
+
 	var = *g_env;
 	while (var)
 	{
@@ -68,7 +68,7 @@ int	update_var(char *varname, char *value)
 		{
 			if(var->content->val)
 				free(var->content->val);
-			var->content->val = value;
+			var->content->val = ft_strdup(value);
 			return (0);
 		}
 		var = var->next;
