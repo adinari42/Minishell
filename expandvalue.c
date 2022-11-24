@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/22 00:00:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 22:07:58 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 {
 	char	*tmp1;
 
-	if (j != 0  ||  (j == 0 && *tmp == '$'))
+	if (j != 0 || (j == 0 && *tmp == '$'))
 		split2[j] = value_expand(envp, split2[j]);
 	tmp1 = res;
 	res = ft_strjoin(res, split2[j]);
@@ -106,7 +106,7 @@ char	*expand_value(char *str, char **envp)
 	t_expand	counter;
 	char		*res;
 	char		*tmp;
-	char 		*tmp1;
+	char		*tmp1;
 
 	counter.i = 0;
 	counter.k = 0;
@@ -127,21 +127,22 @@ char	*expand_value(char *str, char **envp)
 				free(tmp1);
 				counter.k++;
 			}
-			/*******expand values*******/
+		// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 				split2[counter.j] = value_expand(envp, split2[counter.j]);
 			tmp1 = res;
 			res = ft_strjoin(res, split2[counter.j]);
-			/*******reach end of word********/
+			free(tmp1);
+		// 	/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
 				counter.k++;
 				if (tmp[counter.k + 1] == '$')
-					break;
+					break ;
 			}
 			counter.j++;
 		}
-		free_2d(&split2);
+		free_split(split2);
 		counter.i++;
 	}
 	free_strings(str, split1);
