@@ -6,11 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/13 22:45:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 15:00:55 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
+
 void	init_signals(void)
 {
-
+	signal(SIGINT, free_and_exit);
 }

@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/20 18:34:07 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/24 15:01:13 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,8 @@ SRCS = main.c\
 		free.c \
 		env.c \
 		init.c \
-		dlist.c
+		dlist.c \
+		exit.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
