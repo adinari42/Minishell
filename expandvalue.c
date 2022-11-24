@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 22:27:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 23:21:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,15 @@ char	*value_expand(char **envp, char *var)
 
 	len = 0;
 	tmp = var;
-	j = -1;
-	while (envp[++j])
+	j = 0;
+	while (ft_strncmp(envp[j], "", 1))
 	{
-		if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
+		if (envp[j] && !ft_strncmp(envp[j], var, ft_strlen(var)))
 		{
 			len += ft_strlen(var);
-			break ;
+			break;
 		}
+		j++;
 	}
 	// printf("couldnt find env variable, j = %d, len = %d\n", j, len);
 	if (len == ft_strlen(var))
