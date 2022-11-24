@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 22:53:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 22:35:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,31 @@ int	exec_echo(t_token **list)
 	return (ret);
 }
 
+int	update_var(char *varname, char *value)
+{
+	t_dlist	*var;
+	
+	var = *g_env;
+	while (var)
+	{
+		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
+		{
+			if(var->content->val)
+				free(var->content->val);
+			var->content->val = value;
+			return (0);
+		}
+		var = var->next;
+	}
+	return (1);
+}
 
-//TODO: Update the PWD environment variable here
 int	exec_cd(t_token **list)
 {
 	int		ret;
 	int		dir_found;
 	t_token	*token;
+	char	pwd[1024];
 
 	token = tlist_start(list);
 	dir_found = 0;
@@ -88,26 +106,9 @@ int	exec_cd(t_token **list)
 	ret = chdir(tlist_start(list)->next->str);
 	if (ret == -1)
 		printf("cd: no such file or directory: %s\n", tlist_start(list)->next->str);
+	getcwd(pwd, 1024);
+	update_var("PWD", pwd);
 	return (ret);
-}
-
-int update_var(char *varname, char *value)
-{
-	t_dlist	*var;
-	
-	var = *g_env;
-	while (var)
-	{
-		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
-		{
-			if(var->content->val)
-				free(var->content->val);
-			var->content->val = value;
-			return (0);
-		}
-		var = var->next;
-	}
-	return (1);
 }
 
 int	exec_export(t_token **list)
@@ -221,7 +222,7 @@ int	exec_exit(t_token **list)
 int	exec_pwd(t_token **list)
 {
 	t_token	*token;
-	char	buf[1024];
+	char	pwd[1024];
 
 	token = tlist_start(list);
 	if (ft_strncmp(token->str, "pwd", 4))
@@ -239,8 +240,8 @@ int	exec_pwd(t_token **list)
 			return (1);
 		}
 	}
-	getcwd(buf, 1024);
-	printf("%s \n", buf);
+	getcwd(pwd, 1024);
+	printf("%s \n", pwd);
 	return (0);
 }
 

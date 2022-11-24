@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 22:12:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 22:37:31 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,11 @@ int	main(int argc, char **argv, char **envp)
 		if (inpt && inpt[0])
 		{
 			add_history(inpt);
-			printf("%s\n", inpt);
+			//printf("%s\n", inpt);
 			list = read_tokens(inpt);
 			list = merge_quoted_strings(list);
-			printf("After quotes treatment: \n");
-			print_list(*list);
+			//printf("After quotes treatment: \n");
+			//print_list(*list);
 			// printf("After removing spaces: \n");
 			// list = remove_spaces(list);
 			// print_list(*list);
@@ -130,8 +130,8 @@ int	main(int argc, char **argv, char **envp)
 			
 			// we need a function here that deletes empty nodes
 			list = remove_empty(list);
-			printf("After check_value, printing list:\n");
-			print_list(*list);
+			//printf("After check_value, printing list:\n");
+			//print_list(*list);
 			handle_commandstr(list);
 			free_token_list(list);
 		 	//free(parse.split_envp);
