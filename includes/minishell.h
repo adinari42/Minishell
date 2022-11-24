@@ -6,24 +6,32 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:34:52 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/24 20:05:39 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
-# include <fcntl.h>
+# include <signal.h>
+# include <unistd.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "libft/libft.h"
-# include "gnl/get_next_line.h"
+# include "structs.h"
+# include "../libft/libft.h"
+# include "free.h"
+# include "expand.h"
+# include "llist.h"
+# include "env.h"
+# include "init.h"
+# include "../gnl/get_next_line.h"
 
 # define TOKENS " $'<>\""
+
+//char	**g_envp;
+t_dlist	**g_env;
 
 enum e_tokentype
 {
@@ -41,52 +49,67 @@ enum e_tokentype
 	STR_SQUOTES
 };
 
-typedef struct s_history
+enum e_builtins
 {
-	char				*history;
-	struct s_history	*next;
-}				t_history;
+	ECHO,
+	CD,
+	PWD,
+	EXPORT,
+	UNSET,
+	ENV,
+	EXIT	
+};
 
-typedef struct file
-{
-	int	infile;
-	int	outfile;
-	int	tmp;
-}				t_file;
+const static char *const	g_builtins[] = {
+	"echo",
+	"cd",
+	"pwd",
+	"export",
+	"unset",
+	"env",
+	"exit"
+};
 
-typedef struct parse
-{
-	char	**cmd;
-	char	**split_envp;
-	char	*path;
-}				t_parse;
+/*tokens.c*/
+t_token	**read_tokens(char *bashcmd);
+int		token_type(char *c);
 
-typedef struct pipe
-{
-	int		fd[2];
-	pid_t	pid;
-	t_file	file;
-	// t_parse	parse;
-	int		error_code;
-	int		append;
-}				t_pipe;
+void	init_signals(void);
 
-typedef struct s_token
-{
-	char			*str;
-	int				type;
-	int				id;
-	char			*path;
-	struct s_token	*prev;
-	struct s_token	*next;
-}	t_token;
+t_token	**remove_spaces(t_token **list);
+t_token	**remove_empty(t_token **list);
 
-typedef	struct s_expand
-{
-	int		i;
-	int		j;
-	int		k;
-}				t_expand;
+int		exec(char *program, char **args, char *const *envp);
+
+/*command.c*/
+int		handle_commandstr(t_token **list);
+int		handle_builtin(t_token **list);
+int		handle_command(t_token **list);
+
+/*builtin.c*/
+int		is_builtin(char *str);
+int		exec_echo(t_token **token);
+int		exec_cd(t_token **token);
+int		exec_pwd(t_token **token);
+int		exec_export(t_token **token);
+int		exec_unset(t_token **token);
+int		exec_env(t_token **token);
+int		exec_exit(t_token **token);
+
+/*quotes.c*/
+t_token	**merge_quoted_strings(t_token **list);
+t_token	*merge_tokens(t_token *first, t_token *last);
+t_token	*merge_two_tokens(t_token *token1, t_token *token2);
+
+/*exit.c*/
+void	free_globals(void);
+void	free_and_exit(int signum);
+
+
+/*execute_line.c*/
+void	execute_line(t_token *list, t_parse parse, char **envp);
+void	init_path(t_token *tklist, char *cmdline, t_parse *parse);
+char	*get_path(char **string, char *cmd);
 
 t_token	**read_tokens(char *bashcmd);
 void	set_cmd_path(t_token *tklist, t_parse parse);
@@ -109,12 +132,8 @@ void	free_strings(char *str, char **split1);
 char	*add_space(char *tmp, char *res);
 char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
 /*quotes.c*/
-t_token	**merge_quoted_strings(t_token **list);
-t_token	*merge_tokens(t_token *first, t_token *last);
-t_token	*merge_two_tokens(t_token *token1, t_token *token2);
-/*execute_line.c*/
-void	execute_line(t_token *list, t_parse parse, char **envp);
-void	init_path(t_token *tklist, t_parse parse);
-char	*get_path(char **string, char *cmd);
+// t_token	**merge_quoted_strings(t_token **list);
+// t_token	*merge_tokens(t_token *first, t_token *last);
+// t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 #endif

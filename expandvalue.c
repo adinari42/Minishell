@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/18 06:06:11 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/22 00:00:09 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*value_expand(char **envp, char *var)
 {
 	int		j;
 	char	*value;
-	int		len;
+	size_t	len;
 	char	*tmp;
 
 	len = 0;
@@ -24,7 +24,8 @@ char	*value_expand(char **envp, char *var)
 	j = -1;
 	while (envp[++j])
 	{
-		if (!ft_strncmp(envp[j], var, ft_strlen(var)))
+		//if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
+		if (envp[j] && *(envp[j]))
 		{
 			len += ft_strlen(var);
 			break ;
@@ -44,27 +45,7 @@ char	*value_expand(char **envp, char *var)
 	return (ft_strdup(""));
 }
 
-void	free_2d(char ***to_free)
-{
-	size_t	i;
 
-	i = 0;
-	if (*to_free == NULL)
-		return ;
-	while ((*to_free)[i] != NULL)
-	{
-		free((*to_free)[i]);
-		++i;
-	}
-	free(*to_free);
-	*to_free = NULL;
-}
-
-void	free_strings(char *str, char **split1)
-{
-	free(str);
-	free_2d(&split1);
-}
 
 /********add necessary spaces*******/
 char	*add_space(char *tmp, char *res)
@@ -131,7 +112,6 @@ char	*expand_value(char *str, char **envp)
 				split2[counter.j] = value_expand(envp, split2[counter.j]);
 			tmp1 = res;
 			res = ft_strjoin(res, split2[counter.j]);
-			free(tmp1);
 			/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
@@ -148,7 +128,7 @@ char	*expand_value(char *str, char **envp)
 	return (res);
 }
 
-void	 check_value(t_token *list, char **envp)
+void	check_value(t_token *list, char **envp)
 {
 	t_token	*tmp1;
 	char	*str_tmp;

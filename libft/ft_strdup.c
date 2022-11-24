@@ -3,29 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/03 01:21:45 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/19 00:44:23 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/24 18:05:40 by slakner           #+#    #+#             */
+/*   Updated: 2022/11/24 17:34:09 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s1)
+static char	*ft_strcpy(char *dest, const char *src)
 {
-	char	*mem_dup;
-	size_t	i;
+	int	i;
 
 	i = 0;
-	mem_dup = malloc(ft_strlen(s1) + 1);
-	if (!mem_dup)
-		return (NULL);
-	while (s1[i] != '\0')
+	while (src[i])
 	{
-		mem_dup[i] = s1[i];
+		dest[i] = src[i];
 		i++;
 	}
-	mem_dup[i] = '\0';
-	return (mem_dup);
+	dest[i] = '\0';
+	return (dest);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	size_t	size;
+	char	*new_string;
+
+	size = ft_strlen(s1);
+	new_string = malloc(size + 1);
+	if (!new_string)
+		return (NULL);
+	ft_strcpy(new_string, s1);
+	return (new_string);
 }

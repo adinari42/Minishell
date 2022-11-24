@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   llist.c                                            :+:      :+:    :+:   */
+/*   ltokens.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/14 22:49:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/20 18:22:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,33 +30,6 @@ t_token	*token_new(char *str)
 	return (newtoken);
 }
 
-void	free_token_list(t_token **list)
-{
-	t_token	*elem;
-	t_token	*next;
-
-	if (!list)
-		return ;
-	elem = *list;
-	while (elem)
-	{
-		next = elem->next;
-		free_token(elem);
-		elem = next;
-	}
-	free(list);
-}
-
-void	free_token(t_token *token)
-{
-	if (token)
-	{
-		if (token->str)
-			free(token->str);
-		free(token);
-	}
-}
-
 void	delete(t_token *elem)
 {
 	if (!elem)
@@ -68,7 +41,7 @@ void	delete(t_token *elem)
 	free_token(elem);
 }
 
-void	append(t_token **list, t_token *new_elem)
+void	tappend(t_token **list, t_token *new_elem)
 {
 	t_token	*last;
 
@@ -79,7 +52,7 @@ void	append(t_token **list, t_token *new_elem)
 		*list = new_elem;
 		return ;
 	}
-	last = list_end(list);
+	last = tlist_end(list);
 	if (last)
 	{
 		last->next = new_elem;
@@ -87,7 +60,7 @@ void	append(t_token **list, t_token *new_elem)
 	}
 }
 
-t_token	*list_end(t_token **token)
+t_token	*tlist_end(t_token **token)
 {
 	t_token	*elemptr;
 
@@ -104,7 +77,7 @@ t_token	*list_end(t_token **token)
 	return (NULL);
 }
 
-t_token	*list_start(t_token **token)
+t_token	*tlist_start(t_token **token)
 {
 	if (token && *token)
 		return (*token);

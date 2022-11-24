@@ -3,66 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/09 22:42:35 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/19 23:32:08 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/25 11:49:34 by slakner           #+#    #+#             */
+/*   Updated: 2022/04/21 17:10:54 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-/*
-**int_len sets length of n to 1 if it's equal to 0 or negative for
-extra sign adress.
-and keeps dividing by 10 to count number of digits in n.
-**true_sign insures that the sign of n remains after multp or div.
-**allocating i + 1 for
-*/
-static int	int_len(long int n)
-{
-	int	i;
 
-	i = 0;
-	if (n <= 0)
-		i = 1;
-	while (n != 0)
+static int	chars_required(int n)
+{
+	int	chars_required;
+
+	chars_required = 1;
+	while (n > 9 || n < -9)
 	{
 		n = n / 10;
-		i++;
+		chars_required += 1;
 	}
-	return (i);
+	if (n < 0)
+		chars_required += 1;
+	return (chars_required);
 }
 
-static long int	true_sign(long int n)
+static void	nonzero_int(char *int_str, int n, int numchars)
 {
+	int	digit;
+
+	digit = numchars - 1;
 	if (n < 0)
-		return (-n);
-	return (n);
+		int_str[0] = '-';
+	while (n != 0)
+	{
+		if (n < 0)
+			int_str[digit] = n % 10 * -1 + '0';
+		else
+			int_str[digit] = n % 10 + '0';
+		n /= 10;
+		digit --;
+	}
 }
 
 char	*ft_itoa(int n)
 {
-	int		i;
-	char	*charstr;
-	int		sign;
+	char	*int_str;
+	int		numchars;
 
-	i = int_len(n);
-	if (n < 0)
-		sign = -1;
-	else
-		sign = 1;
-	charstr = (char *)malloc(sizeof(char) * i + 1);
-	if (!charstr)
-		return (0);
-	charstr[i] = '\0';
-	i--;
-	while (i >= 0)
+	numchars = chars_required(n);
+	int_str = malloc(numchars + 1);
+	if (!int_str)
+		return (NULL);
+	if (!n)
 	{
-		charstr[i] = true_sign(n % 10) + '0';
-		n = true_sign(n / 10);
-		i--;
+		int_str[0] = '0';
+		int_str[1] = '\0';
 	}
-	if (sign == -1)
-		charstr[0] = '-';
-	return (charstr);
+	else
+	{
+		nonzero_int(int_str, n, numchars);
+		int_str[numchars] = '\0';
+	}
+	return (int_str);
 }
