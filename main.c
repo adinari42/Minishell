@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 22:08:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 22:12:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,20 +122,18 @@ int	main(int argc, char **argv, char **envp)
 		
 					
 			envp_c = env_list_to_char_arr(g_env);
-			for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
-				printf("envp: %s\n", envp[i]);
+			// for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
+			// 	printf("envp: %s\n", envp[i]);
 			check_value(*list, envp_c);
 			free_char_arr(envp_c);
 
 			
 			// we need a function here that deletes empty nodes
-			//list = remove_empty(list);
-			// printf("After check_value, printing list:\n");
-			// print_list(*list);
-			// handle_commandstr(list);
+			list = remove_empty(list);
+			printf("After check_value, printing list:\n");
+			print_list(*list);
+			handle_commandstr(list);
 			free_token_list(list);
-			// if (list)
-			// 	free(list);
 		 	//free(parse.split_envp);
 		}
 		if (inpt)
