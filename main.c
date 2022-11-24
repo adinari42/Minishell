@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/21 12:02:53 by adinari          ###   ########.fr       */
+/*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
+/*   Updated: 2022/11/24 16:10:27 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,10 @@ void	display_splitenvp(t_parse parse, char **argv)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
-	//t_parse	parse;
+	char	**inpt_split;
+	t_parse	parse;
 	t_token	**list;
-	char	**envp_c;
+	int		i;
 
 	if (argc != 1)
 		return (1);
@@ -60,22 +61,27 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(inpt);
 			printf("%s\n", inpt);
-			list = read_tokens(inpt);
-			list = merge_quoted_strings(list);
-			printf("After quotes treatment: \n");
-			print_list(*list);
-			printf("here\n");
-			const char arg[] = "-l main.c";
-			execve("/usr/bin/wc",  (char * const *) arg, (char * const *) *envp);
+			inpt_split = ft_split(inpt, '|');
 			free(inpt);
-			free_token_list(list);
-			// if (list)
-			// 	free(list);
-		 	//free(parse.split_envp);
+			i = 0;
+			while(inpt_split[i])
+			{
+				list = read_tokens(inpt_split[i]);
+				list = merge_quoted_strings(list);
+				check_value(*list, envp);
+				printf("1--------:\n");
+				set_cmd_path(*list, parse);
+				printf("printing list :\n");
+				print_list(*list);
+				// execute_line(*list, parse, envp);
+				free_token_list(list);
+				sleep(1);
+				i++;
+			}
 		}
-		if (inpt)
-			free(inpt);
-		//system("leaks minishell");
+		free_2d(&inpt_split);
+		// exit(1);
+		// system("leaks minishell");
 	}
 	return (argc);
 }
