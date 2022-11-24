@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main2.c                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:10:27 by adinari          ###   ########.fr       */
+/*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
+/*   Updated: 2022/11/23 19:32:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,8 @@ void	display_splitenvp(t_parse parse, char **argv)
 int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
-	char	**inpt_split;
 	t_parse	parse;
 	t_token	**list;
-	int		i;
 
 	if (argc != 1)
 		return (1);
@@ -58,26 +56,18 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(inpt);
 			printf("%s\n", inpt);
-			inpt_split = ft_split(inpt, '|');
+			list = read_tokens(inpt);
+			list = merge_quoted_strings(list);
+			check_value(*list, envp);
+			set_cmd_path(*list, parse);
+			printf("printing list :\n");
+			print_list(*list);
+			execute_line(*list, parse, envp);
 			free(inpt);
-			i = 0;
-			while(inpt_split[i])
-			{
-				list = read_tokens(inpt_split[i]);
-				list = merge_quoted_strings(list);
-				check_value(*list, envp);
-				printf("1--------:\n");
-				set_cmd_path(*list, parse);
-				printf("printing list :\n");
-				print_list(*list);
-				// execute_line(*list, parse, envp);
-				free_token_list(list);
-				sleep(1);
-				i++;
-			}
+			free_token_list(list);
+			sleep(1);
 		}
-		free_2d(&inpt_split);
-		// exit(1);
+		exit(1);
 		// system("leaks minishell");
 	}
 	return (argc);

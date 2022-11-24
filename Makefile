@@ -6,7 +6,7 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/17 23:17:18 by adinari          ###   ########.fr        #
+#    Updated: 2022/11/24 17:42:00 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,10 @@ SRCS = main.c\
 		signals.c \
 		tokens.c \
 		llist.c \
-		quotes.c
+		quotes.c\
+		gnl/get_next_line.c\
+		gnl/get_next_line_utils.c\
+		execute_line.c
 # expand.c
 
 OBJS	= $(SRCS:.c=.o)
