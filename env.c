@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 17:38:53 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 20:32:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,8 @@ char	**env_list_to_char_arr(t_dlist **env)
 				env_c[i] = ft_strjoin(buf, "");
 			free(buf);
 		}
+		else
+			env_c[i] = ft_strdup("");
 		i++;
 		elem = elem->next;
 	}
