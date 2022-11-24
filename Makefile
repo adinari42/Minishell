@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/24 18:13:59 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/24 18:21:44 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,6 +54,7 @@ print-%:
 
 $(ODIR):
 	mkdir -p $(ODIR)
+	mkdir -p $(ODIR)/gnl
 
 $(ODIR)/%.o: %.c $(ODIR)
 	@$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
