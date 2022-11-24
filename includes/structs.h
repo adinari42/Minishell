@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/25 14:48:04 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/24 18:10:43 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ typedef struct pipe
 	int		cmd_pos;
 	t_parse	parse;
 	int		error_code;
-	int		status;
 	int		append;
 }				t_pipe;
 
