@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 23:21:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/22 00:00:09 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ char	*value_expand(char **envp, char *var)
 	j = 0;
 	while (ft_strncmp(envp[j], "", 1))
 	{
-		if (envp[j] && !ft_strncmp(envp[j], var, ft_strlen(var)))
+		//if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
+		if (envp[j] && *(envp[j]))
 		{
 			len += ft_strlen(var);
 			break;
@@ -112,8 +113,7 @@ char	*expand_value(char *str, char **envp)
 				split2[counter.j] = value_expand(envp, split2[counter.j]);
 			tmp1 = res;
 			res = ft_strjoin(res, split2[counter.j]);
-			free(tmp1);
-		// 	/*******reach end of word********/
+			/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
 				counter.k++;

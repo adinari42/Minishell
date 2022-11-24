@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/27 16:29:28 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 20:05:39 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <unistd.h>
-# include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "structs.h"
@@ -44,10 +43,11 @@ enum e_tokentype
 	DOUBLE_QUOTE,
 	SINGLE_QUOTE,
 	ASSIGN,
-	SPACE_TKN,
+	SPACE,
 	WORD,
 	STR_DQUOTES,
-	STR_SQUOTES
+	STR_SQUOTES,
+	EQUAL
 };
 
 enum e_builtins
@@ -96,8 +96,6 @@ int		exec_export(t_token **token);
 int		exec_unset(t_token **token);
 int		exec_env(t_token **token);
 int		exec_exit(t_token **token);
-int		builtin_plausible(t_token *token, char *builtin);
-int		print_builtin_error(char *builtin, char *dir);
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
@@ -107,12 +105,11 @@ t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 /*exit.c*/
 void	free_globals(void);
 void	free_and_exit(int signum);
-void	exit_with_value(int retval);
 
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);
-void	init_path(t_token *tklist, t_parse parse);
+void	init_path(t_token *tklist, char *cmdline, t_parse *parse);
 char	*get_path(char **string, char *cmd);
 
 t_token	**read_tokens(char *bashcmd);
@@ -139,8 +136,5 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
 // t_token	**merge_quoted_strings(t_token **list);
 // t_token	*merge_tokens(t_token *first, t_token *last);
 // t_token	*merge_two_tokens(t_token *token1, t_token *token2);
-
-/* spaces.c */
-t_token	*skip_spaces(t_token *token);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 15:11:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 17:38:53 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ int	var_in_env(char *varname)
 // 	return ;
 // }
 
-int	display_env(void)
+void	display_env(void)
 {
 	t_dlist	*var;
 
@@ -148,7 +148,6 @@ int	display_env(void)
 		printf("\n");
 		var = var->next;
 	}
-	return (0);
 }
 
 char	**env_list_to_char_arr(t_dlist **env)
@@ -168,14 +167,12 @@ char	**env_list_to_char_arr(t_dlist **env)
 		if (elem->content && elem->content->key)
 		{
 			buf = ft_strjoin(elem->content->key, "=");
-			if (elem->content->val && (elem->content->val)[0])
+			if (elem->content->val && *(elem->content->val))
 				env_c[i] = ft_strjoin(buf, elem->content->val);
 			else
-				env_c[i] = ft_strdup(buf);
+				env_c[i] = ft_strjoin(buf, "");
 			free(buf);
 		}
-		else
-			env_c[i] = ft_strdup("");
 		i++;
 		elem = elem->next;
 	}
