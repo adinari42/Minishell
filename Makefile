@@ -6,7 +6,11 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2022/11/24 15:28:28 by slakner          ###   ########.fr        #
+=======
+#    Updated: 2022/11/24 17:42:00 by adinari          ###   ########.fr        #
+>>>>>>> anas
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +19,7 @@ NAME = minishell
 SRCS = main.c \
 		signals.c \
 		tokens.c \
+<<<<<<< HEAD
 		ltokens.c \
 		expand.c \
 		quotes.c \
@@ -28,6 +33,14 @@ SRCS = main.c \
 		init.c \
 		dlist.c \
 		exit.c
+=======
+		llist.c \
+		quotes.c\
+		gnl/get_next_line.c\
+		gnl/get_next_line_utils.c\
+		execute_line.c
+# expand.c
+>>>>>>> anas
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))

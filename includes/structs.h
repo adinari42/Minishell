@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 18:22:12 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 17:55:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_token
 	char			*str;
 	int				type;
 	int				id;
+	char			*path;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;

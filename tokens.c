@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 16:33:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 17:53:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,45 @@ int	token_type(char *c)
 		return (WORD);
 }
 
-void	print_list(t_token *tklist)
+void	set_cmd_path(t_token *tklist, t_parse parse)
 {
 	if (!tklist)
 		return ;
-
-	int i = 0;
+	printf("***set path cmd***\n");
 	while (tklist)
 	{
-		printf(">%s %d\n", tklist->str, tklist->type);
+		if (tklist->type == WORD )
+		{	
+			tklist->path = get_path(parse.split_envp, tklist->str);
+			printf("[Debug] path after set is %s\n", tklist->path);
+		}
 		tklist = tklist->next;
-		i++;
 	}
+	return ;
+}
+
+void	print_list(t_token *list)
+{
+	t_token *tklist;
+
+	tklist = list;
+	if (!tklist)
+		return ;
+	while (tklist)
+	{
+		// printf(">%s %d  path-> %s\n", tklist->str, tklist->type, tklist->path);
+		printf("[Debug] current str is %s\n", tklist->str);
+		printf("[Debug] current path is %s\n", tklist->path);
+		printf("[Debug] next is %p\n", tklist->next);
+		if (tklist->next)
+		{
+			printf("[Debug] next str is %s\n", tklist->next->str);
+			printf("[Debug] next type is %d\n", tklist->next->type);
+			printf("[Debug] next path is %s\n", tklist->next->path);
+		}
+		tklist = tklist->next;
+	}
+	printf("end printlist\n");
 	return ;
 }
 
@@ -109,6 +136,6 @@ t_token	**read_tokens(char *bashcmd)
 		tappend(tk_list, token_new(tokenstr));
 		free(tokenstr);
 	}
-	print_list(*tk_list);
+	// print_list(*tk_list);
 	return (tk_list);
 }
