@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 17:33:06 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:33:04 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 16:50:10 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*inpt;
 	//t_parse	parse;
 	t_token	**list;
-	//char	**envp_c;
+	char	**envp_c;
 
 	if (argc != 1)
 		return (1);
@@ -61,33 +61,26 @@ int	main(int argc, char **argv, char **envp)
 			add_history(inpt);
 			printf("%s\n", inpt);
 			list = read_tokens(inpt);
-			// list = merge_quoted_strings(list);
-			// printf("After quotes treatment: \n");
-			// print_list(*list);
+			list = merge_quoted_strings(list);
+			printf("After quotes treatment: \n");
+			print_list(*list);
 			// printf("After removing spaces: \n");
 			// list = remove_spaces(list);
 			// print_list(*list);
 
-			
-			
 			// char *args[2];
 			// args[0] = "/bin/cat";
 			// args[1] = "ps";
 			//exec("/bin/cat", args, envp);
 
 			//exec(NULL, NULL, envp);
-			
-			//system("leaks minishell");
-			// printf("After quotes treatment: \n");
-			// print_list(*list);
-			// printf("After removing spaces: \n");
-			
-			
-			// envp_c = env_list_to_char_arr(g_env);
-			// for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
-			// 	printf("envp: %s\n", envp[i]);
+		
+					
+			envp_c = env_list_to_char_arr(g_env);
+			for (int i = 0; envp[i] && ft_strncmp(envp[i], "", 1); i++)
+				printf("envp: %s\n", envp[i]);
 			// //check_value(*list, envp_c);
-			// free(envp_c);
+			free_char_arr(envp_c);
 
 			
 			// we need a function here that deletes empty nodes
