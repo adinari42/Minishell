@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/24 15:01:13 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/24 15:28:28 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,11 +71,11 @@ fclean:
 
 re: fclean all
 
-debugmain: $(OBJS) mlx ft_fractol.h
+debugmain: $(OBJS) 
 	$(CC) $(CFLAGS) -O0 -g3 $(OBJS)  $(LFLAGS) -o $(NAME) -fsanitize=address
 
 .PHONY: libft
 
-debug: $(OBJECTS)
+debug: $(OBJS)
 	make -C libft
 	$(CC) $(CFLAGS) -O0 -g3 $(OBJS) -I$(LIBFTHEADERS) $(LFLAGS) -o $(NAME) -fsanitize=address $(LEAKFLAGS)
