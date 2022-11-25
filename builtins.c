@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 22:53:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 14:51:07 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ int	is_builtin(char *str)
 	size_t	i;
 
 	i = 0;
-	while (i < sizeof(g_builtins)
-		/sizeof(const char *const))
+	while (i < sizeof(g_builtins) / sizeof(const char *const))
 	{
 		if (!ft_strncmp(str, g_builtins[i], ft_strlen(g_builtins[i] + 1)))
 			return (1);
@@ -30,59 +29,68 @@ int	is_builtin(char *str)
 // these functions are emtpy dummy functions for now so it compiles
 int	exec_echo(t_token **list)
 {
-	int	ret;
+	t_token	*token;
+	int		newline;
 
 	token = tlist_start(list);
-	ret = 0;
 	newline = 1;
-	if (ft_strncmp(token->str, "echo", 5))
-	{
-		printf("Something went wrong here, %s is not the echo command\n",
-			token->str);
+	if (!builtin_plausible(token, "echo"))
 		return (1);
-	}
-	if (token->next && !ft_strncmp(token->next->str, "-n", 3))
+	token = skip_spaces(token);
+	if (token && !ft_strncmp(token->str, "-n", 3))
 	{
-		token = token->next;
 		newline = 0;
+		token = skip_spaces(token);
 	}
-	while (token->next)
+	while (token)
 	{
-		token = token->next;
 		write(1, token->str, ft_strlen(token->str));
+		token = token->next;
 	}
 	if (newline)
 		printf("\n");
-	return (ret);
+	return (0);
 }
 
+int	update_var(char *varname, char *value)
+{
+	t_dlist	*var;
+
+	var = *g_env;
+	while (var)
+	{
+		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
+		{
+			if (var->content->val)
+				free(var->content->val);
+			var->content->val = ft_strdup(value);
+			return (0);
+		}
+		var = var->next;
+	}
+	return (1);
+}
+
+
+// if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
+// -> we don't have to do any special handling of too many arguments
 int	exec_cd(t_token **list)
 {
-	int	ret;
+	int		ret;
+	t_token	*token;
+	char	pwd[1024];
 
 	token = tlist_start(list);
-	dir_found = 0;
-	if (ft_strncmp(token->str, "cd", 3))
-	{
-		printf("Something went wrong here, %s is not the cd command\n",
-			token->str);
+	if (!builtin_plausible(token, "cd"))
 		return (1);
-	}
-	token = token->next;
-	while (token->next)
-	{
-		token = token->next;
-		if (token->type == WORD || token->type == STR_DQUOTES || token->type == STR_SQUOTES)
-		{
-			if (dir_found)
-				printf("cd: string not in pwd: %s\n", tlist_start(list)->next->str);
-			else
-				dir_found = 1;
-		}
-	}
-	ret = chdir(tlist_start(list)->next->str);
+	token = skip_spaces(token);
+	if (token->type == WORD 
+		|| token->type == STR_DQUOTES || token->type == STR_SQUOTES)
+		ret = chdir(token->str);
 	if (ret == -1)
-		printf("cd: no such file or directory: %s\n", tlist_start(list)->next->str);
+		ret = print_builtin_error("cd", token->str);
+	getcwd(pwd, 1024);
+	update_var("PWD", pwd);
 	return (ret);
 }
 
@@ -105,30 +113,18 @@ int update_var(char *varname, char *value)
 
 int	exec_export(t_token **list)
 {
-	int		ret;
 	t_token	*token;
-	char	*varname;
-	char	*value;
 	t_dlist	*var;
 
-	varname = NULL;
+
 	token = tlist_start(list);
-	ret = 0;
-	var = malloc(sizeof(var));
-	if (ft_strncmp(token->str, "export", 7))
-	{
-		printf("Something went wrong here, %s is not the export command\n",
-			token->str);
+	var = malloc(sizeof(t_dlist));
+	var->content = malloc(sizeof(t_kval));
+	if (!builtin_plausible(token, "export"))
 		return (1);
-	}
-	while (token->next && token->next->type == SPACE)	// skip over spaces
-		token = token->next;
-	if (!token->next)
-	{
-		display_env();
-		return (0);
-	}
-	token = token->next;
+	token = skip_spaces(token);
+	if (!token)
+		return (display_env());
 	if (token->type == WORD && ft_strlen(token->str))
 	{
 		varname = ft_strdup(token->str);
@@ -187,31 +183,54 @@ int	exec_env(t_token **list)
 	t_token	*token;
 
 	token = tlist_start(list);
-	if (ft_strncmp(token->str, "env", 7))
-	{
-		printf("Something went wrong here, %s is not the cd command\n",
-			token->str);
+	if (!builtin_plausible(token, "env"))
 		return (1);
-	}
-	while (token->next)
+	token = skip_spaces(token);
+	if (token) // env command does not take arguments
 	{
-		if (token->next->type != SPACE)
-		{
-			printf("env: %s: No such file or directory\n", token->next->str);
-			return (1);
-		}
+		printf("env: %s: No such file or directory\n", token->next->str);
+		return (1);
 	}
 	display_env();
 	return (0);
 }
- 
+
 int	exec_exit(t_token **list)
 {
-	int	ret;
+	t_token	*token;
+	char	*tokenstr;
+	int		ret;
 
-	(void) list;
+	token = tlist_start(list);
 	ret = 0;
-	return (ret);
+	if (!builtin_plausible(token, "exit"))
+		return (1);
+	token = skip_spaces(token);
+	if (token && token->next)
+	{
+		token = skip_spaces(token);
+		if (token)
+		{
+			printf("minishell: exit: too many arguments\n");
+			return (1);
+		}
+	}
+	else if (token)
+	{
+		tokenstr = token->str;
+		while (*tokenstr)
+		{
+			if (!ft_isdigit(*tokenstr))
+			{
+				printf("minishell: exit: %s: numeric argument required\n",
+					token->str);
+			}
+			tokenstr ++;
+		}
+		ret = ft_atoi(token->str);
+	}
+	exit_with_value(ret);
+	return (0);
 }
 
 int	exec_pwd(t_token **list)
@@ -220,12 +239,9 @@ int	exec_pwd(t_token **list)
 	char	buf[1024];
 
 	token = tlist_start(list);
-	if (ft_strncmp(token->str, "pwd", 4))
-	{
-		printf("Something went wrong here, %s is not the pwd command\n",
-			token->str);
+	if (!builtin_plausible(token, "pwd"))
 		return (1);
-	}
+	token = skip_spaces(token);
 	while (token->next)
 	{
 		token = token->next;
@@ -240,3 +256,28 @@ int	exec_pwd(t_token **list)
 	return (0);
 }
 
+int	builtin_plausible(t_token *token, char *builtin)
+{
+	if (ft_strncmp(token->str, builtin, ft_strlen(builtin) + 1))
+	{
+		printf("Something went wrong here, %s is not the %s command.\n",
+			token->str, builtin);
+		return (0);
+	}
+	return (1);
+}
+
+int	print_builtin_error(char *builtin, char *dir)
+{
+	if (ft_strncmp(builtin, "cd", 3))
+		access(dir, X_OK);
+	if (errno == EACCES)
+		printf("minishell: %s: %s/: permission denied\n", builtin, dir);
+	else if (errno == ENOTDIR)
+		printf("minishell: %s: %s: Not a directory\n", builtin, dir);
+	else if (errno == ENAMETOOLONG)
+		printf("minishell: %s: %s: File name too long\n", builtin, dir);
+	else if (errno == ENOENT)
+		printf("minishell: %s: %s: No such file or directory\n", builtin, dir);
+	return (1);
+}

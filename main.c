@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:10:27 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/25 13:13:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,10 +169,10 @@ int main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (1);
 	init_signals();
+	//(void) envp;
 	init_env_llist(envp);
 	//parse.split_envp = envp_parse(envp);
-	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env 
-	//g_envp = envp;
+	(void) argv;//to silence unused argv error and not use dislay env 
 	//display_splitenvp(parse, argv);
 	while (1)
 	{

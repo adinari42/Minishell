@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/23 21:05:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 13:38:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ int	var_in_env(char *varname)
 // 	return ;
 // }
 
-void	display_env(void)
+int	display_env(void)
 {
 	t_dlist	*var;
 	
@@ -146,6 +146,7 @@ void	display_env(void)
 		printf("%s=%s\n", var->content->key, var->content->val);
 		var = var->next;
 	}
+	return (0);
 }
 
 char	**env_list_to_char_arr(t_dlist **env)
