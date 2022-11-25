@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:33:27 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 23:17:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 20:43:16 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ void	lstadd_back(t_dlist **lst, t_dlist *new);
 void	lstadd_front(t_dlist **lst, t_dlist *new);
 t_dlist	*lstlast(t_dlist *lst);
 t_dlist	*lstnew(t_kval *content);
+void	lstdel_elem(t_dlist **lst, t_dlist *elem);
 
 #endif

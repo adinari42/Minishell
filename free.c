@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 15:18:50 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 17:27:00 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,7 @@ void	free_dlist(t_dlist *list)
 	while (elem)
 	{
 		if (elem->content)
-		{
-			if (elem->content->key)
-				free(elem->content->key);
-			if (elem->content->val)
-				free(elem->content->val);
-			free(elem->content);
-		}
+			free_kval(elem->content);
 		tmp = elem;
 		elem = elem->next;
 		free(tmp);

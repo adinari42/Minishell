@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/25 13:13:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 16:54:37 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int	main(int argc, char **argv, char **envp)
 			list = read_tokens(inpt);
 			list = merge_quoted_strings(list);
 			//printf("After quotes treatment: \n");
-			//print_list(*list);
+			print_list(*list);
 			// printf("After removing spaces: \n");
 			// list = remove_spaces(list);
 			// print_list(*list);
