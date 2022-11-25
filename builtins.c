@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 22:53:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 20:50:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ int	exec_echo(t_token *list, t_dlist *env)
 	t_token	*tkn;
 	int		newline;
 
-	(void) env;
-	tkn = list;
+	tkn = tlist_start(list);
 	newline = 1;
 	if (!builtin_plausible(tkn, "echo"))
 		return (1);
@@ -55,10 +54,7 @@ int	exec_echo(t_token *list, t_dlist *env)
 	while (tkn)
 	{
 		write(1, tkn->str, ft_strlen(tkn->str));
-		if (tkn->type == SPACE_TKN)
-			tkn = skip_spaces(tkn);
-		else
-			tkn = tkn->next;
+		tkn = tkn->next;
 	}
 	if (newline)
 		printf("\n");
@@ -325,13 +321,12 @@ int	exec_cd(t_token *list, t_dlist *env)
 	t_token	*tkn;
 	char	pwd[1024];
 
-	ret = 0;
 	tkn = tlist_start(list);
 	if (!builtin_plausible(tkn, "cd"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn && (tkn->type == WORD
-			|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
+	if (tkn->type == WORD 
+		|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 		ret = chdir(tkn->str);
 	if (ret == -1)
 		ret = print_builtin_error("cd", tkn->str);
@@ -343,28 +338,23 @@ int	exec_cd(t_token *list, t_dlist *env)
 int	exec_export(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
-	t_kval	*cntnt;
+	t_kval	*content;
 
 	tkn = tlist_start(list);
-	cntnt = malloc(sizeof(t_kval));
+	content = malloc(sizeof(t_kval));
 	if (!builtin_plausible(tkn, "export"))
 		return (1);
 	tkn = skip_spaces(tkn);
 	if (!tkn)
-		return (display_env(env));
-	if (!valid_identifier(tkn->str))
+		return (display_env());
+	if (tkn->type == WORD && ft_strlen(tkn->str))
 	{
-		free(cntnt);
-		return (prnt_err("export", tkn->str, "not a valid identifier"));
-	}
-	if (tkn->type == WORD && ft_strlen(tkn->str)) //case: varname before 
-	{
-		cntnt->key = ft_strdup(tkn->str);
+		content->key = ft_strdup(tkn->str);
 		if (tkn->next && tkn->next->type == ASSIGN) // found the equal sign, next tkn please
 		{
 			tkn = tkn->next;
 			if (tkn->next && tkn->next->str)
-				cntnt->val = ft_strdup(tkn->next->str);
+				content->val = ft_strdup(tkn->next->str);
 			else
 				cntnt->val = ft_strdup("");
 		}
@@ -377,13 +367,13 @@ int	exec_export(t_token *list, t_dlist *env)
 	}
 	else if (tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 	{
-		cntnt->key = extract_varname_quoted(tkn->next->str);
-		cntnt->val = extract_value(tkn->next->str);
+		content->key = extract_varname_quoted(tkn->next->str);
+		content->val = extract_value(tkn->next->str);
 	}
 	else
 	{
-		free(cntnt); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
-		display_env(env);
+		free(content); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
+		display_env();
 		return (0);
 	}
 	if (!var_in_env(cntnt->key, env))
@@ -397,13 +387,15 @@ int	exec_export(t_token *list, t_dlist *env)
 }
 
 // unset without an argument returns 0
-int	exec_unset(t_token *list, t_dlist *env)
+int	exec_unset(t_token **list)
 {
 	t_token	*tkn;
 	t_dlist	*var;
+	char	*varname;
+	char	**splitres;
 
 	tkn = tlist_start(list);
-	var = env;
+	var = *g_env;
 	if (!builtin_plausible(tkn, "unset"))
 		return (1);
 	tkn = skip_spaces(tkn);
@@ -411,18 +403,18 @@ int	exec_unset(t_token *list, t_dlist *env)
 	{
 		if (!ft_strncmp(var->content->key, tkn->str, ft_strlen(tkn->str)))
 		{
-			if (!tkn->next || tkn->next->type == SPACE_TKN)
+			if (!tkn->next || tkn->next->type == SPACE)
 			{
-				lstdel_elem(&env, var);
+				lstdel_elem(g_env, var);
 				return (0);
 			}
 		}
 		var = var->next;
 	}
-	return (0);
+	return (1);
 }
 
-int	exec_env(t_token *list, t_dlist *env)
+int	exec_env(t_token **list)
 {
 	t_token	*tkn;
 
@@ -435,39 +427,44 @@ int	exec_env(t_token *list, t_dlist *env)
 		printf("env: %s: No such file or directory\n", tkn->next->str);
 		return (1);
 	}
-	display_env(env);
+	display_env();
 	return (0);
 }
 
-void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
+int	exec_exit(t_token **list)
 {
 	t_token	*tkn;
 	char	*tokenstr;
+	int		ret;
 
-	tkn = list;
+	tkn = tlist_start(list);
+	ret = 0;
 	if (!builtin_plausible(tkn, "exit"))
-		return ;
+		return (1);
 	tkn = skip_spaces(tkn);
 	if (tkn && tkn->next)
 	{
+		tkn = skip_spaces(tkn);
+		if (tkn)
+		{
+			if (!tkn->next || tkn->next->type == SPACE_TKN)
+			{
+				lstdel_elem(&env, var);
+				return (0);
+			}
+		}
+		var = var->next;
+	}
+	else if (tkn)
+	{
 		tokenstr = tkn->str;
-		while (*(tokenstr))
+		while (*tokenstr)
 		{
 			if (!ft_isdigit(*tokenstr))
-			{
 				printf("minishell: exit: %s: numeric argument required\n", tkn->str);
-				exit_with_value(255, env);
-			}
 			tokenstr ++;
 		}
-		data->error_code = ft_atoi(tkn->str);
-		tkn = skip_spaces(tkn);
-		if (tkn && tkn->type != SPACE_TKN)
-		{
-			printf("minishell: exit: too many arguments\n");
-			data->error_code = 1;
-			return ;
-		}
+		ret = ft_atoi(tkn->str);
 	}
 	exit_with_value(data->error_code, env);
 }
@@ -477,15 +474,18 @@ int	exec_pwd(t_token *list, t_dlist *env)
 	t_token	*tkn;
 	char	pwd[1024];
 
-	(void) env;
 	tkn = tlist_start(list);
 	if (!builtin_plausible(tkn, "pwd"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn)
+	while (tkn->next)
 	{
-		printf("pwd: too many arguments");
-		return (1);
+		tkn = tkn->next;
+		if (tkn->type != SPACE)
+		{
+			printf("pwd: too many arguments");
+			return (1);
+		}
 	}
 	getcwd(pwd, 1024);
 	printf("%s \n", pwd);
@@ -523,7 +523,7 @@ int	print_builtin_error(char *builtin, char *dir)
 int	valid_identifier(char *varname)
 {
 	if (ft_isdigit(*varname))
-		return (0);
+		return (1);
 	while (*varname)
 	{
 		if (!ft_isalpha(*varname) && !ft_isdigit(*varname)
@@ -534,8 +534,7 @@ int	valid_identifier(char *varname)
 	return (1);
 }
 
-int	prnt_err(char *cmd, char *arg, char *errstr)
-{
-	printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
-	return (1);
-}
+// int	print_error(int err)
+// {
+// 	if (errno == )
+// }
