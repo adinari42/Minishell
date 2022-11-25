@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 13:38:15 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 15:11:00 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,10 +168,10 @@ char	**env_list_to_char_arr(t_dlist **env)
 		if (elem->content && elem->content->key)
 		{
 			buf = ft_strjoin(elem->content->key, "=");
-			if (elem->content->val && *(elem->content->val))
+			if (elem->content->val && (elem->content->val)[0])
 				env_c[i] = ft_strjoin(buf, elem->content->val);
 			else
-				env_c[i] = ft_strjoin(buf, "");
+				env_c[i] = ft_strdup(buf);
 			free(buf);
 		}
 		else

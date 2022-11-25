@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 14:51:07 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/25 15:22:50 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,10 @@ int	exec_cd(t_token **list)
 int	exec_export(t_token **list)
 {
 	t_token	*token;
-	t_dlist	*var;
-
+	t_kval	*content;
 
 	token = tlist_start(list);
-	var = malloc(sizeof(t_dlist));
-	var->content = malloc(sizeof(t_kval));
+	content = malloc(sizeof(t_kval));
 	if (!builtin_plausible(token, "export"))
 		return (1);
 	token = skip_spaces(token);
@@ -109,36 +107,40 @@ int	exec_export(t_token **list)
 		return (display_env());
 	if (token->type == WORD && ft_strlen(token->str))
 	{
-		var->content->key = ft_strdup(token->str);
+		content->key = ft_strdup(token->str);
 		if (token->next && token->next->type == ASSIGN) // found the equal sign, next token please
 		{
 			token = token->next;
 			if (token->next && token->next->str)
-				var->content->val = ft_strdup(token->next->str);
+				content->val = ft_strdup(token->next->str);
 			else
-				var->content->val = ft_strdup("");
+				content->val = ft_strdup("");
+		}
+		else
+		{
+			free(content->key);
+			free(content);
+			return (0);
 		}
 	}
 	else if (token->type == STR_DQUOTES || token->type == STR_SQUOTES)
 	{
-		var->content->key = extract_varname_quoted(token->next->str);
-		var->content->val = extract_value(token->next->str);
+		content->key = extract_varname_quoted(token->next->str);
+		content->val = extract_value(token->next->str);
 	}
 	else
 	{
-		free(var); // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
+		free_kval(content); // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
 		display_env();
 		return (0);
 	}
 
-	if (!var_in_env(var->content->key))
-		lstadd_back(g_env, var);
+	if (!var_in_env(content->key))
+		lstadd_back(g_env, lstnew(content));
 	else
 	{
-		update_var(var->content->key, var->content->val);
-		free(var->content->key);
-		free(var->content);
-		free(var);
+		update_var(content->key, content->val);
+		free_kval(content);
 	}
 	// 	;// TODO: add variable names here, if there is an EQUAL sign
 	// do nothing if there is no assignment operator
