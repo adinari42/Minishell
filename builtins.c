@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 20:50:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/26 15:31:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,51 +96,55 @@ int	exec_cd(t_token **list)
 int	exec_export(t_token **list)
 {
 	t_token	*tkn;
-	t_kval	*content;
+	t_kval	*cntnt;
 
 	tkn = tlist_start(list);
-	content = malloc(sizeof(t_kval));
+	cntnt = malloc(sizeof(t_kval));
 	if (!builtin_plausible(tkn, "export"))
 		return (1);
 	tkn = skip_spaces(tkn);
 	if (!tkn)
 		return (display_env());
-	if (tkn->type == WORD && ft_strlen(tkn->str))
+	if (!valid_identifier(tkn->str))
 	{
-		content->key = ft_strdup(tkn->str);
+		free(cntnt);
+		return (prnt_err("export", tkn->str, "not a valid identifier"));
+	}
+	if (tkn->type == WORD && ft_strlen(tkn->str)) //case: varname before 
+	{
+		cntnt->key = ft_strdup(tkn->str);
 		if (tkn->next && tkn->next->type == ASSIGN) // found the equal sign, next tkn please
 		{
 			tkn = tkn->next;
 			if (tkn->next && tkn->next->str)
-				content->val = ft_strdup(tkn->next->str);
+				cntnt->val = ft_strdup(tkn->next->str);
 			else
-				content->val = ft_strdup("");
+				cntnt->val = ft_strdup("");
 		}
 		else
 		{
-			free(content->key);
-			free(content);
+			free(cntnt->key);
+			free(cntnt);
 			return (0);
 		}
 	}
 	else if (tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 	{
-		content->key = extract_varname_quoted(tkn->next->str);
-		content->val = extract_value(tkn->next->str);
+		cntnt->key = extract_varname_quoted(tkn->next->str);
+		cntnt->val = extract_value(tkn->next->str);
 	}
 	else
 	{
-		free(content); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
+		free(cntnt); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
 		display_env();
 		return (0);
 	}
-
-	if (!var_in_env(content->key))
-		lstadd_back(g_env, lstnew(content));
+	if (!var_in_env(cntnt->key))
+		lstadd_back(g_env, lstnew(cntnt));
 	else
 	{
-		update_var(content->key, content->val);
-		free_kval(content);
+		update_var(cntnt->key, cntnt->val);
+		free_kval(cntnt);
 	}
 	return (0);
 }
@@ -279,7 +283,7 @@ int	print_builtin_error(char *builtin, char *dir)
 int	valid_identifier(char *varname)
 {
 	if (ft_isdigit(*varname))
-		return (1);
+		return (0);
 	while (*varname)
 	{
 		if (!ft_isalpha(*varname) && !ft_isdigit(*varname)
@@ -290,7 +294,8 @@ int	valid_identifier(char *varname)
 	return (1);
 }
 
-// int	print_error(int err)
-// {
-// 	if (errno == )
-// }
+int	prnt_err(char *cmd, char *arg, char *errstr)
+{
+	printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
+	return (1);
+}
