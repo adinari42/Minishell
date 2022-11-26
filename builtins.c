@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/26 16:01:06 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/26 19:23:56 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	exec_cd(t_token **list)
 	t_token	*tkn;
 	char	pwd[1024];
 
+	ret = 0;
 	tkn = tlist_start(list);
 	if (!builtin_plausible(tkn, "cd"))
 		return (1);
@@ -154,8 +155,6 @@ int	exec_unset(t_token **list)
 {
 	t_token	*tkn;
 	t_dlist	*var;
-	char	*varname;
-	char	**splitres;
 
 	tkn = tlist_start(list);
 	var = *g_env;
