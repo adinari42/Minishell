@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 20:51:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/26 18:35:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	print_list(t_token *list)
 		return ;
 	while (tklist)
 	{
-		printf(">%s type: %d \n", tklist->str, tklist->type);// tklist->path);
+		printf("%s type: %d \n", tklist->str, tklist->type);// tklist->path);
 		//printf("[Debug] current str is %s\n", tklist->str);
 		//printf("[Debug] current path is %s\n", tklist->path);
 		//printf("[Debug] next is %p\n", tklist->next);
@@ -117,10 +117,10 @@ t_token	**read_tokens(char *bashcmd)
 			}
 			//now save the char that we just found
 			if (i < ft_strlen(bashcmd) - 1
-				&& bashcmd[i] == '<' && bashcmd[i + 1] == '<' && i++)
+				&& bashcmd[i] == '<' && bashcmd[i + 1] == '<' && ++i)
 				tokenstr = ft_strdup("<<");
 			else if (i < ft_strlen(bashcmd) - 1
-				&& bashcmd[i] == '>' && bashcmd[i + 1] == '>' && i++)
+				&& bashcmd[i] == '>' && bashcmd[i + 1] == '>' && ++i)
 				tokenstr = ft_strdup(">>");
 			else
 				tokenstr = ft_substr(bashcmd, i, 1);
