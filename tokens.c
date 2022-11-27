@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 20:51:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/27 16:29:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	token_type(char *c)
 	else if (!ft_strncmp(c, "|", 1))
 		return (PIPE);
 	else if (!ft_strncmp(c, " ", 1))
-		return (SPACE);
+		return (SPACE_TKN);
 	else if (!ft_strncmp(c, "=", 1))
 		return (ASSIGN);
 	else
