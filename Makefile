@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/26 19:25:28 by slakner          ###   ########.fr        #
+#    Updated: 2022/11/27 16:36:54 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,11 +38,11 @@ ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
 CC		= cc
 CFLAGS	= -Wall -Werror -Wextra -O0 -g3
-IFLAGS	= -Iincludes -I$(LIBFTHEADERS)
+IFLAGS	= -Iincludes -I$(LIBFTHEADERS) -I/${HOME}/.brew/opt/readline/include
 LIBFTDIR = libft
 LIBFTOBJS = ft_isalpha.o ft_isdigit.o ft_isalnum.o ft_isascii.o ft_isprint.o ft_strlen.o ft_memset.o ft_bzero.o ft_memcpy.o ft_memmove.o ft_strlcpy.o ft_strlcat.o ft_toupper.o ft_tolower.o ft_strchr.o ft_strrchr.o ft_strncmp.o ft_memchr.o ft_memcmp.o ft_strnstr.o ft_atoi.o ft_calloc.o ft_strdup.o ft_substr.o ft_strjoin.o ft_strtrim.o ft_split.o ft_itoa.o ft_strmapi.o ft_striteri.o ft_putchar_fd.o ft_putstr_fd.o ft_putendl_fd.o ft_putnbr_fd.o
 LIBFT	= libft.a
-LFLAGS	= -L$(LIBFTDIR) -lft -L${HOME}/homebrew/Cellar/readline/8.2.1/lib -lreadline
+LFLAGS	= -L$(LIBFTDIR) -lft -L${HOME}/.brew/opt/readline/lib -lreadline
 LIBFTHEADERS = $(LIBFTDIR)/libft.h 
 
 all: $(NAME)

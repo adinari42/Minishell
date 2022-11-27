@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 12:05:25 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 12:41:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/27 16:30:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 t_token	*skip_spaces(t_token *token)
 {
 	token = token->next;
-	while (token && token->type == SPACE)
+	while (token && token->type == SPACE_TKN)
 		token = token->next;
 	return (token);
 }

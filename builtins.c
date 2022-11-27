@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/26 19:23:56 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/27 16:31:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ int	exec_unset(t_token **list)
 	{
 		if (!ft_strncmp(var->content->key, tkn->str, ft_strlen(tkn->str)))
 		{
-			if (!tkn->next || tkn->next->type == SPACE)
+			if (!tkn->next || tkn->next->type == SPACE_TKN)
 			{
 				lstdel_elem(g_env, var);
 				return (0);
@@ -240,7 +240,7 @@ int	exec_pwd(t_token **list)
 	while (tkn->next)
 	{
 		tkn = tkn->next;
-		if (tkn->type != SPACE)
+		if (tkn->type != SPACE_TKN)
 		{
 			printf("pwd: too many arguments");
 			return (1);

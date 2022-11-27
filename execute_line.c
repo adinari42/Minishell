@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_line.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:46:52 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/27 16:33:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	init_path(t_token *tklist, t_parse parse)
 	{
 		if (tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES || tmp->type == WORD)
 			parse.path = tmp->path;
-		else if (tmp->type == SPACE)
+		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
 		{
@@ -124,7 +124,7 @@ int	init_here_doc(t_token *tklist, t_pipe *pipe)
 		fd_err(1);
 	str = get_next_line(0);
 	tmp = tmp->next;
-	while (tmp->type == SPACE)
+	while (tmp->type == SPACE_TKN)
 		tmp = tmp->next;
 	while (1)
 	{
@@ -157,7 +157,7 @@ int	init_infile(t_token *tklist, t_pipe *pipe)
 	else
 	{
 		tmp = tmp->next;
-		while (tmp->type == SPACE)
+		while (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		printf("found infile : %s\n", tmp->str);
 		pipe->file.infile = open(tmp->str, O_RDONLY);
