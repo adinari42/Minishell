@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_line.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 19:43:34 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/27 16:33:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,25 +43,25 @@ char	*get_path(char **string, char *cmd)
 // 	t_token *tmp;
 // 	int		iscmd;
 
-// 	iscmd = 1;
-// 	tmp = tklist;
-// 	printf("init path\b");
-// 	while (tmp && tmp->type != PIPE)
-// 	{
-// 		if (tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES || tmp->type == WORD)
-// 			parse.path = tmp->path;
-// 		else if (tmp->type == SPACE)
-// 			tmp = tmp->next;
-// 		else
-// 		{
-// 			perror("no such file of directory\n");
-// 			exit(1);
-// 		}
-// 	}
-// 			// parse.path = ret_path(parse.split_envp, tmp->str);
-// 	perror("parse error\n");
-// 	exit(1);
-// }
+	iscmd = 1;
+	tmp = tklist;
+	printf("init path\b");
+	while (tmp && tmp->type != PIPE)
+	{
+		if (tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES || tmp->type == WORD)
+			parse.path = tmp->path;
+		else if (tmp->type == SPACE_TKN)
+			tmp = tmp->next;
+		else
+		{
+			perror("no such file of directory\n");
+			exit(1);
+		}
+	}
+			// parse.path = ret_path(parse.split_envp, tmp->str);
+	perror("parse error\n");
+	exit(1);
+}
 
 void	fd_err(int i)
 {
@@ -124,7 +124,7 @@ int	init_here_doc(t_token *tklist, t_pipe *pipe)
 		fd_err(1);
 	str = get_next_line(0);
 	tmp = tmp->next;
-	while (tmp->type == SPACE)
+	while (tmp->type == SPACE_TKN)
 		tmp = tmp->next;
 	while (1)
 	{
@@ -157,7 +157,7 @@ int	init_infile(t_token *tklist, t_pipe *pipe)
 	else
 	{
 		tmp = tmp->next;
-		while (tmp->type == SPACE)
+		while (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		printf("found infile : %s\n", tmp->str);
 		pipe->file.infile = open(tmp->str, O_RDONLY);
