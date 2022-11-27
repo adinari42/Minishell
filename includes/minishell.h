@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 20:05:39 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/24 20:35:24 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ void	free_and_exit(int signum);
 void	execute_line(t_token *list, t_parse parse, char **envp);
 void	init_path(t_token *tklist, char *cmdline, t_parse *parse);
 char	*get_path(char **string, char *cmd);
-
+void	fd_err(int i);
+/*******/
 t_token	**read_tokens(char *bashcmd);
 void	set_cmd_path(t_token *tklist, t_parse parse);
 int		token_type(char *c);

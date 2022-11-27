@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/22 00:00:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/24 22:28:45 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ char	*value_expand(char **envp, char *var)
 	j = -1;
 	while (envp[++j])
 	{
-		//if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
-		if (envp[j] && *(envp[j]))
+		if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
 		{
 			len += ft_strlen(var);
 			break ;
