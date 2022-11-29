@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/29 17:15:28 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/29 20:23:07 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,20 +81,18 @@ void	init_outfile(t_pipe *pipe)
 	if (dup2(pipe->file.outfile, 1) == -1)
 		fd_err(2);
 }
-void	child(t_pipe *pipe)
+void	child(t_pipe *pipe, int i)
 {
-	// if (i < argc - 2)
-	// {	
-	// 	if (dup2(pipe->fd[1], 1) == -1)
-	// 		fd_err(2);
-	// }
-	// pipe->parse.out_fd = NULL;
-	// printf("1  out_fd = %s\n", pipe->out_fd);
+	if (i != pipe->cmd_pos)
+	{	
+		if (dup2(pipe->fd[1], 1) == -1)
+			fd_err(2);
+	}
 	if (pipe->out_fd != NULL)
 	{
 		init_outfile(pipe);
 	}
-	// close (pipe->fd[0]);
+	close (pipe->fd[0]);
 }
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 {
@@ -171,10 +169,14 @@ char	*get_cmd(t_token *list, t_pipe *data)
 }
 void	free_and_close(t_pipe *pipe)
 {
-	free_2d(&pipe->parse.split_envp);
-	// close(pipe->fd[0]);
-	// close(pipe->fd[1]);
+	close(pipe->fd[0]);
+	close(pipe->fd[1]);
 	unlink("tmp");
+}
+void	parent(t_pipe *pipe)
+{
+	dup2(pipe->fd[0], 0);
+	close (pipe->fd[1]);
 }
 int	main(int argc, char **argv, char **envp)
 {
@@ -185,25 +187,32 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 	t_pipe	data;
 	int		stdin_restore;
-	
+	int		stdout_restore;
+
 	if (argc != 1)
 		return (1);
 	init_signals();
 	data.parse.split_envp = envp_parse(envp);
 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env
-	stdin_restore = dup(1);
+	stdin_restore = dup(0);
+	stdout_restore = dup(1);
 	while (1)
 	{
-
-		// dup2(stdin_restore, 1);
-		
+		dup2(stdin_restore, 0);
+		dup2(stdout_restore, 1);
+		// close(stdin_restore);
 		inpt = readline("Minishell$ ");
+		add_history(inpt);
+		inpt_split = ft_split(inpt, '|');
+		free(inpt);
 		if (inpt && inpt[0])
 		{
-			add_history(inpt);
 			// printf("%s\n", inpt);
-			inpt_split = ft_split(inpt, '|');
-			free(inpt);
+			i = 0;
+			while (inpt_split[i])
+				i++;
+			printf("pos = %d\n", i);
+			data.cmd_pos = i;
 			i = 0;
 			while(inpt_split[i])
 			{
@@ -218,11 +227,12 @@ int	main(int argc, char **argv, char **envp)
 					fd_err(4);
 				if (data.pid == 0)
 				{
-					child(&data);
+					child(&data, i);
 					exec_cmd(&data, envp);
 				}
 				else
 				{
+					parent(&data);
 					waitpid(0, &data.pid, 0);
 				}
 				/***********************************************/
@@ -230,14 +240,15 @@ int	main(int argc, char **argv, char **envp)
 				free_parse(&data.parse);
 				i++;
 			}
+			// close(stdin_restore);
 		}
 		free_2d(&inpt_split);
 		unlink("tmp");
-		// free_and_close(&data);
 		
 		// exit(1);
 		// system("leaks minishell");
 	}
+	free_and_close(&data);
 	free_2d(&data.parse.split_envp);
 	return (argc);
 }
