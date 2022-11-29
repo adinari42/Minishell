@@ -6,26 +6,11 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/27 17:50:34 by adinari          ###   ########.fr       */
+/*   Updated: 2022/11/29 17:15:28 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// char	**envp_parse(char **envp)
-// {
-// 	int		j;
-// 	char	**envp_parse;
-
-// 	j = -1;
-// 	while (envp[++j])
-// 	{
-// 		if (!ft_strncmp(envp[j], "PATH=", 5))
-// 			break ;
-// 	}
-// 	envp_parse = ft_split(*(envp + j) + 5, ':');
-// 	return (envp_parse);
-// }
 
 void	display_splitenvp(t_parse parse, char **argv)
 {
@@ -41,8 +26,6 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse)
 	t_token	*tklist;
 
 	tklist = list;
-	// printf("full_cmd = %s\n", cmdline);
-	// free(full_cmd);
 	parse->cmd = ft_split(cmdline, ' ');
 	parse->path = get_path(parse->split_envp, parse->cmd[0]);
 }
@@ -52,17 +35,6 @@ void	free_parse(t_parse *parse)
 	free_2d(&parse->cmd);
 }
 
-// void	child(char *argv[], int argc, int i, t_pipe *pipe)
-// {
-// 	if (i < argc - 2)
-// 	{	
-// 		if (dup2(pipe->fd[1], 1) == -1)
-// 			fd_err(2);
-// 	}
-// 	if (i == argc - 2)
-// 		init_outfile(argv, argc, pipe);
-// 	close (pipe->fd[0]);
-// }
 void	exec_cmd(t_pipe *pipe, char *envp[])
 {
 	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
@@ -95,19 +67,42 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 	close(pipe->file.tmp);
 	return (3);
 }
-
+void	init_outfile(t_pipe *pipe)
+{
+	if (pipe->append == 0)
+		pipe->file.outfile = open(pipe->out_fd,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else
+		pipe->file.outfile = open(pipe->out_fd,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	pipe->append = 0;
+	if (pipe->file.outfile == -1)
+		fd_err(1);
+	if (dup2(pipe->file.outfile, 1) == -1)
+		fd_err(2);
+}
+void	child(t_pipe *pipe)
+{
+	// if (i < argc - 2)
+	// {	
+	// 	if (dup2(pipe->fd[1], 1) == -1)
+	// 		fd_err(2);
+	// }
+	// pipe->parse.out_fd = NULL;
+	// printf("1  out_fd = %s\n", pipe->out_fd);
+	if (pipe->out_fd != NULL)
+	{
+		init_outfile(pipe);
+	}
+	// close (pipe->fd[0]);
+}
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 {
-	t_token *tmp;
-
-	tmp = list;
-	// if (ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0)
-	// {
-	// 	argc_err(argc, 6, pipe);
-	// 	return (init_here_doc(argv, pipe));
-	// }
-	// else
-	// {
+		if (pipe->out_fd)
+			free(pipe->out_fd);
+		pipe->out_fd = NULL;
+		// printf("2  out_fd = %s\n", pipe->out_fd);
+		// printf("str = %s\n", list->str);
 		if (redir_type == APPEND_IN)
 			init_here_doc(list, pipe);
 		else if (redir_type == REDIR_IN)
@@ -120,21 +115,23 @@ void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 		}
 		else if (redir_type == APPEND_OUT)
 		{
-			;
+			pipe->append = 1;
+			pipe->out_fd = list->str;
 		}
 		else if (redir_type == REDIR_OUT)
 		{
-			;
+			pipe->append = 0;
+			pipe->out_fd = list->str;
 		}
 }
 
-t_token	*skip_redir(t_token *tmp, t_pipe data, int redir_type)
+t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
 	while (tmp)
 	{
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
 		{
-			init_infile(tmp, &data, redir_type);
+			init_infile(tmp, data, redir_type);
 			tmp = tmp->next;
 			return (tmp);
 		}
@@ -147,7 +144,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe data, int redir_type)
 	return (tmp);
 }
 
-char	*get_cmd(t_token *list, t_pipe data)
+char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token *tmp;
 	char	*cmd_line;
@@ -160,21 +157,16 @@ char	*get_cmd(t_token *list, t_pipe data)
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
 		{
 			redir_type = tmp->type;
-			printf("tmp = %s\n", tmp->str);
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
-			// if (tmp == NULL)
-			// 	fd_err(5);
 		}
 		else	
 		{
-			printf("tmp = %s\n", tmp->str);
 			cmd_line = ft_strjoin(cmd_line, tmp->str);
 			cmd_line = ft_strjoin(cmd_line, " ");
 			tmp = tmp->next;
 		}
 	}
-	// printf("cmdline = %s \n", cmd_line);
 	return (cmd_line);
 }
 void	free_and_close(t_pipe *pipe)
@@ -192,51 +184,43 @@ int	main(int argc, char **argv, char **envp)
 	t_token	**list;
 	int		i;
 	t_pipe	data;
+	int		stdin_restore;
 	
 	if (argc != 1)
 		return (1);
 	init_signals();
 	data.parse.split_envp = envp_parse(envp);
 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env
-	// display_splitenvp(parse, argv);
+	stdin_restore = dup(1);
 	while (1)
 	{
-		// dup2(0, 0);
-		dup2(1, 0);
-		// close(data.file.infile);
+
+		// dup2(stdin_restore, 1);
+		
 		inpt = readline("Minishell$ ");
 		if (!inpt)
 			free_and_exit(SIGINT);
 		if (inpt && inpt[0])
 		{
 			add_history(inpt);
-			printf("%s\n", inpt);
-			// write(stdin_restore, inpt, ft_strlen(inpt));
+			// printf("%s\n", inpt);
 			inpt_split = ft_split(inpt, '|');
-			// printf("intsplit[0] = %s\n", inpt_split[0]);
 			free(inpt);
 			i = 0;
 			while(inpt_split[i])
 			{
 				list = read_tokens(inpt_split[i]);
 				list = merge_quoted_strings(list);
-				// printf("token node = %s\n", *list.str);
 				check_value(*list, envp);
-				// printf("%d--------:\n", i);
-				pipe(data.fd);
-				// if (i == 0)
-				// 	i = init_infile(argv, argc, &pip);
-				// printf("printing list :\n");
-				print_list(*list);
-				init_path(*list, get_cmd(*list, data), &data.parse);
-				// int j = -1;//display parse.cmd and parse.path
+				init_path(*list, get_cmd(*list, &data), &data.parse);
 				/***********************************************/
 				data.pid = fork();
+				dup2(stdin_restore, 1);
 				if (data.pid == -1)
 					fd_err(4);
 				if (data.pid == 0)
 				{
-					// child(argv, argc, i, &pip);
+					child(&data);
 					exec_cmd(&data, envp);
 				}
 				else
