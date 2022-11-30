@@ -6,7 +6,7 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/11/27 15:18:47 by adinari          ###   ########.fr        #
+#    Updated: 2022/11/27 18:10:23 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ LIBFTHEADERS = $(LIBFTDIR)/libft.h
 
 all: $(NAME)
 			
-$(NAME): $(OBJS) $(LIBFTDIR)/$(LIBFT)
+$(NAME): $(OBJS) $(LIBFTDIR)/$(LIBFT) brew
 	$(CC) $(CFLAGS) -I$(LIBFTHEADERS) $(OBJS) $(IFLAGS) $(LFLAGS) -o $(NAME)
 
 print-%: 
@@ -61,6 +61,12 @@ $(ODIR)/%.o: %.c $(ODIR)
 
 $(LIBFTDIR)/$(LIBFT):
 	make -C $(LIBFTDIR)
+
+brew:
+	@test -d ${HOME}/.brew/bin/brew && curl -fsSL https://rawgit.com/kube/42homebrew/master/install.sh | zsh
+
+readline:
+	@test -d ${HOME}/.brew/opt/readline/lib && brew install readline && brew link --force readline
 
 libftclean:
 	make -C $(LIBFTDIR) clean
