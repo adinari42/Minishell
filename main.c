@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/30 21:24:35 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/01 18:34:04 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse)
 
 	tklist = list;
 	parse->cmd = ft_split(cmdline, ' ');
+	free(cmdline);
 	parse->path = get_path(parse->split_envp, parse->cmd[0]);
 }
 void	free_parse(t_parse *parse)
@@ -75,6 +76,7 @@ void	init_outfile(t_pipe *pipe)
 	else
 		pipe->file.outfile = open(pipe->out_fd,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	free(pipe->out_fd);
 	pipe->append = 0;
 	if (pipe->file.outfile == -1)
 		fd_err(1);
@@ -84,7 +86,6 @@ void	init_outfile(t_pipe *pipe)
 }
 void	child(t_pipe *pipe, int i)
 {
-	// printf("i = %d, cmd_pos = %d\n", i, pipe->cmd_pos);
 	if (i != pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
@@ -101,13 +102,10 @@ void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 		if (pipe->out_fd)
 			free(pipe->out_fd);
 		pipe->out_fd = NULL;
-		// printf("2  out_fd = %s\n", pipe->out_fd);
-		// printf("str = %s\n", list->str);
 		if (redir_type == APPEND_IN)
 			init_here_doc(list, pipe);
 		else if (redir_type == REDIR_IN)
 		{
-			write (2, "qwer", 4);
 			pipe->file.infile = open(list->str, O_RDONLY);
 			if (pipe->file.infile == -1)
 				fd_err(1);
@@ -153,6 +151,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 
 	tmp = list;
 	cmd_line = ft_strdup("");
+	data->out_fd = NULL;
 	while (tmp)
 	{
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
@@ -163,8 +162,15 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		}
 		else	
 		{
+			char *tmp1;
+			tmp1 = cmd_line;
 			cmd_line = ft_strjoin(cmd_line, tmp->str);
+			free(tmp1);
+			tmp1 = cmd_line;
+			// printf("ptr : %p\n", cmd_line);
 			cmd_line = ft_strjoin(cmd_line, " ");
+			free(tmp1);
+			// printf("ptr : %p\n", cmd_line);
 			tmp = tmp->next;
 		}
 	}
@@ -203,10 +209,6 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		dup2(stdin_restore, 0);
-		dup2(stdout_restore, 1);
-		// write(2, "i get here", 10);
-		// close(stdin_restore);
-		// close(stdout_restore);
 		inpt = readline("Minishell$ ");
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
@@ -224,9 +226,9 @@ int	main(int argc, char **argv, char **envp)
 				list = read_tokens(inpt_split[i]);
 				list = merge_quoted_strings(list);
 				check_value(*list, envp);
-				init_path(*list, get_cmd(*list, &data), &data.parse);
-				/***********************************************/
 				data.pid = fork();
+				init_path(*list, get_cmd(*list, &data), &data.parse);
+				dup2(stdout_restore, 1);
 				if (data.pid == -1)
 					fd_err(4);
 				if (data.pid == 0)
@@ -239,18 +241,13 @@ int	main(int argc, char **argv, char **envp)
 					parent(&data);	
 					waitpid(data.pid, &err, 0);
 				}
-				/***********************************************/
 				free_token_list(list);
 				free_parse(&data.parse);
 				i++;
 			}
-			//for each pipe
-					//waitpid(0, &data.pid, 0);
 		}
 		free_2d(&inpt_split);
 		unlink("tmp");
-		// exit(1);
-		// system("leaks minishell");
 	}
 	free_and_close(&data);
 	free_2d(&data.parse.split_envp);
