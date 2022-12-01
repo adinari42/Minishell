@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 17:27:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/01 16:22:55 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,13 @@ void	free_token_list(t_token **list)
 	if (!list)
 		return ;
 	elem = *list;
-	while (elem)
+	while (elem && elem->str && ft_strncmp(elem->str, "", 1))
 	{
 		next = elem->next;
 		free_token(elem);
 		elem = next;
 	}
+	free_token(elem);
 	free(list);
 }
 
@@ -78,9 +79,9 @@ void	free_2d(char ***to_free)
 	size_t	i;
 
 	i = 0;
-	if (*to_free == NULL)
+	if (!to_free || !(*to_free))
 		return ;
-	while (*(to_free)[i] != NULL)
+	while (*(to_free)[i] && ft_strncmp(*(to_free)[i], "", 1))
 	{
 		free(*(to_free)[i]);
 		++i;
