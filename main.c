@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 18:34:04 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/01 20:24:55 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,6 +338,16 @@ void main_loop(int stdin_restore, t_pipe	data)
 	system("leaks minishell");
 }
 
+int	count_split_elems(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i] && arr[i][0])
+		i ++;
+	return (i);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	// t_parse	parse;
@@ -348,8 +358,10 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (1);
 	init_signals();
+	init_env_llist(envp);
+	(void) argv;//to silence unused argv error and not use dislay env 
+	//display_splitenvp(parse, argv);
 	data.parse.split_envp = envp_parse(envp);
-	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env
 	stdin_restore = dup(0);
 	stdout_restore = dup(1);
 	while (1)
@@ -361,12 +373,9 @@ int	main(int argc, char **argv, char **envp)
 		free(inpt);
 		if (inpt && inpt[0])
 		{
+			data.cmd_pos = count_split_elems(inpt);
 			i = 0;
 			while (inpt_split[i])
-				i++;
-			data.cmd_pos = i;
-			i = 0;
-			while(inpt_split[i])
 			{
 				pipe(data.fd);
 				list = read_tokens(inpt_split[i]);
