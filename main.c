@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 17:13:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/01 17:59:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,23 +268,18 @@ void main_loop(int stdin_restore, t_pipe	data)
 	t_token	**list;
 	int		i;
 	char	**envp_c;
-	
+
 	inpt = readline("Minishell$ ");
 	if (!inpt)
 		free_and_exit(SIGINT);
 	inpt_split = ft_split(inpt, '|');
+
 	if (inpt && inpt[0])
 	{
 		i = 0;
 		while (inpt_split[i])
 			i++;
 		add_history(inpt);
-		list = read_tokens(inpt);
-		list = merge_quoted_strings(list);
-		print_list(*list);
-		// printf("After removing spaces: \n");
-		// list = remove_spaces(list);
-		// print_list(*list);
 
 		// char *args[2];
 		// args[0] = "/bin/cat";
@@ -298,20 +293,19 @@ void main_loop(int stdin_restore, t_pipe	data)
 
 					// printf("%s\n", inpt);
 			
-		printf("pos = %d\n", i);
+	// 	printf("pos = %d\n", i);
 		data.cmd_pos = i;
 		i = 0;
-		while(inpt_split[i])
+		while (inpt_split[i])
 		{
 			list = read_tokens(inpt_split[i]);
 			list = merge_quoted_strings(list);
 			list = remove_empty(list); // deletes empty nodes
 			envp_c = env_list_to_char_arr(g_env);
-			// for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
-			// 	printf("envp: %s\n", envp[i]);
+	// 		// for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
+	// 		// 	printf("envp: %s\n", envp[i]);
 			check_value(*list, envp_c);
 			init_path(*list, get_cmd(*list, &data), &data.parse);
-			/***********************************************/
 			data.pid = fork();
 			dup2(stdin_restore, 1);
 			if (data.pid == -1)
@@ -326,13 +320,12 @@ void main_loop(int stdin_restore, t_pipe	data)
 				parent(&data);
 				waitpid(0, &data.pid, 0);
 			}
-			/***********************************************/
 			free_char_arr(envp_c);
 			free_token_list(list);
 			free_parse(&data.parse);
 			i++;
 		}
-			// close(stdin_restore);
+	// 		// close(stdin_restore);
 	}
 	free(inpt);
 	free_char_arr(inpt_split);
@@ -343,7 +336,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	// t_parse	parse;
 	int		stdin_restore;
-	int		stdout_restore;
+	//int		stdout_restore;
 	t_pipe	data;
 	
 
@@ -357,18 +350,11 @@ int	main(int argc, char **argv, char **envp)
 	{
 		dup2(stdin_restore, 0);
 		dup2(stdout_restore, 1);
-		close(stdin_restore);
 		main_loop(stdin_restore, data);
-		//add_history(inpt);
-
-
-
+		close(stdin_restore);
 		unlink("tmp");
-		// free_and_close(&data);
-		
-		// exit(1);
-		// system("leaks minishell");
 	}
-	free_2d(&data.parse.split_envp);
+	free_and_close(&data);
+	free_char_arr(data.parse.split_envp);
 	return (argc);
 }
