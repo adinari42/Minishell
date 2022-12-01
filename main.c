@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 15:47:43 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/01 17:13:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse)
 void	free_parse(t_parse *parse)
 {
 	free(parse->path);
-	free_2d(&parse->cmd);
+	free_char_arr(parse->cmd);
 }
 
 void	exec_cmd(t_pipe *pipe, char *envp[])
@@ -292,10 +292,6 @@ void main_loop(int stdin_restore, t_pipe	data)
 		//exec("/bin/cat", args, envp);
 		//exec(NULL, NULL, envp);
 
-
-
-		// deletes empty nodes
-		//list = remove_empty(list);
 		//printf("After check_value, printing list:\n");
 		//print_list(*list);
 		//handle_commandstr(list);
@@ -309,6 +305,7 @@ void main_loop(int stdin_restore, t_pipe	data)
 		{
 			list = read_tokens(inpt_split[i]);
 			list = merge_quoted_strings(list);
+			list = remove_empty(list); // deletes empty nodes
 			envp_c = env_list_to_char_arr(g_env);
 			// for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
 			// 	printf("envp: %s\n", envp[i]);
@@ -336,10 +333,9 @@ void main_loop(int stdin_restore, t_pipe	data)
 			i++;
 		}
 			// close(stdin_restore);
-		free_token_list(list);
 	}
-		free(inpt);
-		free_2d(&inpt_split);
+	free(inpt);
+	free_char_arr(inpt_split);
 	system("leaks minishell");
 }
 
