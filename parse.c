@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 18:18:57 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/01 15:50:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_token	*remove_spaces(t_token *list)
 	token = tlist_start(list);
 	while (token)
 	{
-		if (token->type == SPACE)
+		if (token->type == SPACE_TKN)
 			delete(token);
 		token = token->next;
 	}
