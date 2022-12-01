@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/27 15:32:14 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/01 15:49:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,15 @@ void	print_list(t_token *list)
 		return ;
 	while (tklist)
 	{
-		printf("%s type: %d \n", tklist->str, tklist->type);// tklist->path);
-		//printf("[Debug] current str is %s\n", tklist->str);
-		//printf("[Debug] current path is %s\n", tklist->path);
-		//printf("[Debug] next is %p\n", tklist->next);
+		printf(">%s %d\n", tklist->str, tklist->type);
+		// printf("[Debug] current str is %s\n", tklist->str);
+		// printf("[Debug] current path is %s\n", tklist->path);
+		// printf("[Debug] next is %p\n", tklist->next);
 		// if (tklist->next)
 		// {
 		// 	printf("[Debug] next str is %s\n", tklist->next->str);
 		// 	printf("[Debug] next type is %d\n", tklist->next->type);
-		// 	//printf("[Debug] next path is %s\n", tklist->next->path);
+		// 	printf("[Debug] next path is %s\n", tklist->next->path);
 		// }
 		tklist = tklist->next;
 	}
