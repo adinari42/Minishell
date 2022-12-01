@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 20:24:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/01 20:30:44 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,10 +370,9 @@ int	main(int argc, char **argv, char **envp)
 		inpt = readline("Minishell$ ");
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
-		free(inpt);
 		if (inpt && inpt[0])
 		{
-			data.cmd_pos = count_split_elems(inpt);
+			data.cmd_pos = count_split_elems(inpt_split);
 			i = 0;
 			while (inpt_split[i])
 			{
@@ -401,7 +400,9 @@ int	main(int argc, char **argv, char **envp)
 				i++;
 			}
 		}
-		free_2d(&inpt_split);
+		if (inpt)
+			free(inpt);
+		free_char_arr(inpt_split);
 		unlink("tmp");
 	}
 	free_and_close(&data);
