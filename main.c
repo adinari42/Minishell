@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 17:59:11 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/30 21:24:35 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,11 @@ void	init_outfile(t_pipe *pipe)
 		fd_err(1);
 	if (dup2(pipe->file.outfile, 1) == -1)
 		fd_err(2);
+	close (pipe->file.outfile);
 }
 void	child(t_pipe *pipe, int i)
 {
+	// printf("i = %d, cmd_pos = %d\n", i, pipe->cmd_pos);
 	if (i != pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
@@ -105,6 +107,7 @@ void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 			init_here_doc(list, pipe);
 		else if (redir_type == REDIR_IN)
 		{
+			write (2, "qwer", 4);
 			pipe->file.infile = open(list->str, O_RDONLY);
 			if (pipe->file.infile == -1)
 				fd_err(1);
@@ -333,9 +336,8 @@ int	main(int argc, char **argv, char **envp)
 {
 	// t_parse	parse;
 	int		stdin_restore;
-	//int		stdout_restore;
-	t_pipe	data;
-	
+	int		stdout_restore;
+	int	err;
 
 	if (argc != 1)
 		return (1);
@@ -348,9 +350,53 @@ int	main(int argc, char **argv, char **envp)
 	{
 		dup2(stdin_restore, 0);
 		dup2(stdout_restore, 1);
-		main_loop(stdin_restore, data);
-		close(stdin_restore);
+		// write(2, "i get here", 10);
+		// close(stdin_restore);
+		// close(stdout_restore);
+		inpt = readline("Minishell$ ");
+		add_history(inpt);
+		inpt_split = ft_split(inpt, '|');
+		free(inpt);
+		if (inpt && inpt[0])
+		{
+			i = 0;
+			while (inpt_split[i])
+				i++;
+			data.cmd_pos = i;
+			i = 0;
+			while(inpt_split[i])
+			{
+				pipe(data.fd);
+				list = read_tokens(inpt_split[i]);
+				list = merge_quoted_strings(list);
+				check_value(*list, envp);
+				init_path(*list, get_cmd(*list, &data), &data.parse);
+				/***********************************************/
+				data.pid = fork();
+				if (data.pid == -1)
+					fd_err(4);
+				if (data.pid == 0)
+				{
+					child(&data, i + 1);
+					exec_cmd(&data, envp);
+				}
+				else
+				{
+					parent(&data);	
+					waitpid(data.pid, &err, 0);
+				}
+				/***********************************************/
+				free_token_list(list);
+				free_parse(&data.parse);
+				i++;
+			}
+			//for each pipe
+					//waitpid(0, &data.pid, 0);
+		}
+		free_2d(&inpt_split);
 		unlink("tmp");
+		// exit(1);
+		// system("leaks minishell");
 	}
 	free_and_close(&data);
 	free_char_arr(data.parse.split_envp);
