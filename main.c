@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 17:13:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/01 16:48:11 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 
 	tmp = list;
 	cmd_line = ft_strdup("");
+	data->out_fd = NULL;
 	while (tmp)
 	{
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
@@ -356,7 +357,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		dup2(stdin_restore, 0);
-		dup2(stdout_restore, 1);
+		// dup2(stdout_restore, 1);
 		// write(2, "i get here", 10);
 		// close(stdin_restore);
 		// close(stdout_restore);
@@ -377,9 +378,11 @@ int	main(int argc, char **argv, char **envp)
 				list = read_tokens(inpt_split[i]);
 				list = merge_quoted_strings(list);
 				check_value(*list, envp);
+				data.pid = fork();
 				init_path(*list, get_cmd(*list, &data), &data.parse);
 				/***********************************************/
-				data.pid = fork();
+				// dup2(stdin_restore, 0);
+				dup2(stdout_restore, 1);
 				if (data.pid == -1)
 					fd_err(4);
 				if (data.pid == 0)
