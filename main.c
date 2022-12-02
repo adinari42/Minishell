@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 14:29:46 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 14:49:44 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,6 +407,8 @@ int	main(int argc, char **argv, char **envp)
 	{
 		dup2(stdin_restore, 0);
 		inpt = readline("Minishell$ ");
+		if (!inpt)
+			free_and_exit(SIGINT);		// this does the exit on Ctrl-D
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
