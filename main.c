@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 15:49:18 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:54:10 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,7 +397,6 @@ int	main(int argc, char **argv, char **envp)
 	init_signals();
 	init_env_llist(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	//display_splitenvp(parse, argv);
 	data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
@@ -410,41 +409,12 @@ int	main(int argc, char **argv, char **envp)
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
-		{
-			i = 0;
-			while (inpt_split[i])
-				i++;
-			data.cmd_pos = i;
-			i = 0;
-			while(inpt_split[i])
-			{
-				pipe(data.fd);
-				list = read_tokens(inpt_split[i]);
-				list = merge_quoted_strings(list);
-				check_value(*list, envp);
-				data.pid = fork();
-				init_path(*list, get_cmd(*list, &data), &data.parse);
-				dup2(stdout_restore, 1);
-				if (data.pid == -1)
-					fd_err(4);
-				if (data.pid == 0)
-				{
-					child(&data, i + 1);
-					exec_cmd(&data, envp);
-				}
-				else
-				{
-					parent(&data);	
-					waitpid(data.pid, &err, 0);
-				}
-				free_token_list(list);
-				free_parse(&data.parse);
-				i++;
-			}
-		}
-		free_2d(&inpt_split);
+			err = handle_input(inpt_split, &data, envp, stdout_restore);
+		if (inpt)
+			free(inpt);
+		free_char_arr(inpt_split);
 		free_and_close(&data);
 	}
-	free_2d(&data.parse.split_envp);
+	free_char_arr(data.parse.split_envp);
 	return (argc);
 }
