@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 20:35:24 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 23:01:52 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "llist.h"
 # include "env.h"
 # include "init.h"
+# include "exec.h"
 # include "../gnl/get_next_line.h"
 
 # define TOKENS " $'<>\""
@@ -85,7 +86,8 @@ int		exec(char *program, char **args, char *const *envp);
 /*command.c*/
 int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token **list);
-int		handle_command(t_token **list);
+int		handle_command(t_token **list, t_pipe *data, 
+			int stdout_restore, int i);
 
 /*builtin.c*/
 int		is_builtin(char *str);
@@ -137,5 +139,10 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
 // t_token	**merge_quoted_strings(t_token **list);
 // t_token	*merge_tokens(t_token *first, t_token *last);
 // t_token	*merge_two_tokens(t_token *token1, t_token *token2);
+
+/* current main.c */
+char	*get_cmd(t_token *list, t_pipe *data);
+void	exec_cmd(t_pipe *pipe);
+void	parent(t_pipe *pipe);
 
 #endif

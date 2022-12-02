@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 16:29:49 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 23:04:24 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,21 @@
 // I'm assuming that pipes have already been handled at this point
 // The argument here would be one 'command' or builtin
 
-int	handle_commandstr(t_token **list)
-{
-	char	*str;
+// int	handle_commandstr(t_token **list)
+// {
+// 	char	*str;
 
-	list = merge_quoted_strings(list);
-	if (list && *list)
-	{
-		str = (tlist_start(list))->str;
-		if (is_builtin(str))
-			return (handle_builtin(list));
-		else
-			return (handle_command(list));
-	}
-	return (1);
-}
+// 	list = merge_quoted_strings(list);
+// 	if (list && *list)
+// 	{
+// 		str = (tlist_start(list))->str;
+// 		if (is_builtin(str))
+// 			return (handle_builtin(list));
+// 		else
+// 			return (handle_command(list));
+// 	}
+// 	return (1);
+// }
 
 int	handle_builtin(t_token **list)
 {
@@ -55,12 +55,26 @@ int	handle_builtin(t_token **list)
 	return (ret);
 }
 
-int	handle_command(t_token **list)
+int	handle_command(t_token **list, t_pipe *data, int stdout_restore, int i)
 {
-	int	ret;
+	int	err;
 
-	ret = 0;
-
-	(void) list;
-	return (ret);
+	err = 0;
+	data->pid = fork();
+	init_path(*list, get_cmd(*list, data), &(data->parse));
+	dup2(stdout_restore, 1);
+	if (data->pid == -1)
+		fd_err(4);
+	if (data->pid == 0)
+	{
+		child(data, i + 1);
+		exec_cmd(data);
+	}
+	else
+	{
+		parent(data);
+		waitpid(data->pid, &err, 0);
+	}
+	free_parse(&(data->parse));
+	return (err);
 }
