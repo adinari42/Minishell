@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 16:51:08 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 17:27:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,6 +369,7 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		cmd_line = get_cmd(*list, data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list);
+		builtin_list = remove_empty(builtin_list);
 		// if (is_builtin((*builtin_list)->str))
 		// 	handle_builtin(builtin_list);
 		if (is_builtin(cmd_line))
