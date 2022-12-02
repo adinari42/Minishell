@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 18:13:11 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:49:18 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	t_token	*tmp;
 	char	*cmd_line;
 	int		redir_type;
+	char *tmp1;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
@@ -179,12 +180,13 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		}
 		else
 		{
-			if (tmp->str) // we only need this if tmp->str can be empty
-				cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
-			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
-			if (tmp->type != ASSIGN && tmp->next && tmp->next->type != ASSIGN)
-				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
-			// printf("cmd_line : %s.\n", cmd_line);
+			tmp1 = cmd_line;
+			cmd_line = ft_strjoin(cmd_line, tmp->str);
+			free(tmp1);
+			tmp1 = cmd_line;
+			cmd_line = ft_strjoin(cmd_line, " ");
+			printf("cmd_line = %p\n", cmd_line);
+			free(tmp1);
 			tmp = tmp->next;
 		}
 	}
@@ -271,6 +273,11 @@ int	handle_input(t_token **pipes, t_pipe *data)
 
 int	main(int argc, char **argv, char **envp)
 {
+	char	*inpt;
+	char	**inpt_split;
+	t_token	**list;
+	int		i;
+	t_pipe	data;
 	int		stdin_restore;
 	int		stdout_restore;
 	int		err;
@@ -304,10 +311,41 @@ int	main(int argc, char **argv, char **envp)
 		//printf("Pipes:\n%s\n%s\n%s\n", pipes[0]->str, pipes[1]->str, pipes[2]->str);
 		// inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
-			err = handle_input(pipes, &data);
-		if (inpt)
-			free(inpt);
-		// free_char_arr(inpt_split);
+		{
+			i = 0;
+			while (inpt_split[i])
+				i++;
+			data.cmd_pos = i;
+			i = 0;
+			while(inpt_split[i])
+			{
+				pipe(data.fd);
+				list = read_tokens(inpt_split[i]);
+				list = merge_quoted_strings(list);
+				check_value(*list, envp);
+				data.pid = fork();
+				init_path(*list, get_cmd(*list, &data), &data.parse);
+				dup2(stdout_restore, 1);
+				if (data.pid == -1)
+					fd_err(4);
+				if (data.pid == 0)
+				{
+					child(&data, i + 1);
+					exec_cmd(&data, envp);
+				}
+				else
+				{
+					parent(&data);	
+					waitpid(data.pid, &err, 0);
+				}
+				free_token_list(list);
+				free_parse(&data.parse);
+				i++;
+			}
+		}
+		free_2d(&inpt_split);
+		free_and_close(&data);
 	}
+	free_2d(&data.parse.split_envp);
 	return (argc);
 }
