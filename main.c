@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 16:57:23 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 17:11:04 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -388,9 +388,9 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 				parent(data);
 				waitpid(data->pid, &err, 0);
 			}
+			free_parse(&(data->parse));
 		}
 		free_token_list(list);
-		free_parse(&(data->parse));
 		// if (builtin_list)
 		// 	free_token_list(builtin_list);
 		i++;
