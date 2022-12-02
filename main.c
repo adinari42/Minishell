@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 20:30:44 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 14:29:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,21 +348,60 @@ int	count_split_elems(char **arr)
 	return (i);
 }
 
+int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
+{
+	int		i;
+	int		err;
+	t_token	**list;
+
+	data->cmd_pos = count_split_elems(inpt_split);
+	i = 0;
+	err = 0;
+	while (inpt_split[i])
+	{
+		pipe(data->fd);
+		list = read_tokens(inpt_split[i]);
+		list = merge_quoted_strings(list);
+		check_value(*list, envp);
+		data->pid = fork();
+		init_path(*list, get_cmd(*list, data), &(data->parse));
+		dup2(stdout_restore, 1);
+		if (data->pid == -1)
+			fd_err(4);
+		if (data->pid == 0)
+		{
+			child(data, i + 1);
+			exec_cmd(data, envp);
+		}
+		else
+		{
+			parent(data);
+			waitpid(data->pid, &err, 0);
+		}
+		free_token_list(list);
+		free_parse(&(data->parse));
+		i++;
+	}
+	return (err);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	// t_parse	parse;
 	int		stdin_restore;
 	int		stdout_restore;
-	int	err;
+	int		err;
+	t_pipe	data;
+	char	*inpt;
+	char	**inpt_split;
 
 	if (argc != 1)
 		return (1);
 	init_signals();
 	init_env_llist(envp);
-	(void) argv;//to silence unused argv error and not use dislay env 
+	(void) argv; //to silence unused argv error and not use dislay env 
 	//display_splitenvp(parse, argv);
 	data.parse.split_envp = envp_parse(envp);
-	stdin_restore = dup(0);
+	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
 	while (1)
 	{
@@ -371,35 +410,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
-		{
-			data.cmd_pos = count_split_elems(inpt_split);
-			i = 0;
-			while (inpt_split[i])
-			{
-				pipe(data.fd);
-				list = read_tokens(inpt_split[i]);
-				list = merge_quoted_strings(list);
-				check_value(*list, envp);
-				data.pid = fork();
-				init_path(*list, get_cmd(*list, &data), &data.parse);
-				dup2(stdout_restore, 1);
-				if (data.pid == -1)
-					fd_err(4);
-				if (data.pid == 0)
-				{
-					child(&data, i + 1);
-					exec_cmd(&data, envp);
-				}
-				else
-				{
-					parent(&data);	
-					waitpid(data.pid, &err, 0);
-				}
-				free_token_list(list);
-				free_parse(&data.parse);
-				i++;
-			}
-		}
+			err = handle_input(inpt_split, &data, envp, stdout_restore);
 		if (inpt)
 			free(inpt);
 		free_char_arr(inpt_split);
