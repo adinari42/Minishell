@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 15:54:10 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 16:51:08 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,6 +352,8 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	int		i;
 	int		err;
 	t_token	**list;
+	char	*cmd_line;
+	t_token	**builtin_list;
 
 	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
@@ -362,23 +364,35 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		list = read_tokens(inpt_split[i]);
 		list = merge_quoted_strings(list);
 		check_value(*list, envp);
-		data->pid = fork();
-		init_path(*list, get_cmd(*list, data), &(data->parse));
-		dup2(stdout_restore, 1);
-		if (data->pid == -1)
-			fd_err(4);
-		if (data->pid == 0)
-		{
-			child(data, i + 1);
-			exec_cmd(data, envp);
-		}
+		cmd_line = get_cmd(*list, data);
+		builtin_list = read_tokens(cmd_line);
+		builtin_list = merge_quoted_strings(builtin_list);
+		// if (is_builtin((*builtin_list)->str))
+		// 	handle_builtin(builtin_list);
+		if (is_builtin(cmd_line))
+			handle_builtin(builtin_list);
 		else
 		{
-			parent(data);
-			waitpid(data->pid, &err, 0);
+			data->pid = fork();
+			init_path(*list, get_cmd(*list, data), &(data->parse));
+			dup2(stdout_restore, 1);
+			if (data->pid == -1)
+				fd_err(4);
+			if (data->pid == 0)
+			{
+				child(data, i + 1);
+				exec_cmd(data, envp);
+			}
+			else
+			{
+				parent(data);
+				waitpid(data->pid, &err, 0);
+			}
 		}
 		free_token_list(list);
 		free_parse(&(data->parse));
+		// if (builtin_list)
+		// 	free_token_list(builtin_list);
 		i++;
 	}
 	return (err);
