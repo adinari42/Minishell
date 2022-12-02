@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 23:39:31 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 16:29:49 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 // {
 // 	char	*str;
 
+	list = merge_quoted_strings(list);
 	if (list && *list)
 	{
 		str = (tlist_start(list))->str;
