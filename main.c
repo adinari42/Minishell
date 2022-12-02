@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 14:49:44 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:54:10 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,7 +399,6 @@ int	main(int argc, char **argv, char **envp)
 	init_signals();
 	init_env_llist(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	//display_splitenvp(parse, argv);
 	data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
@@ -416,9 +415,8 @@ int	main(int argc, char **argv, char **envp)
 		if (inpt)
 			free(inpt);
 		free_char_arr(inpt_split);
-		unlink("tmp");
+		free_and_close(&data);
 	}
-	free_and_close(&data);
 	free_char_arr(data.parse.split_envp);
 	return (argc);
 }
