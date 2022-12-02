@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 16:51:08 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 16:57:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,76 +267,76 @@ void	parent(t_pipe *pipe)
 	close (pipe->fd[1]);
 }
 
-void main_loop(int stdin_restore, t_pipe	data)
-{
-	char	*inpt;
-	char	**inpt_split;
-	t_token	**list;
-	int		i;
-	char	**envp_c;
+// void main_loop(int stdin_restore, t_pipe	data)
+// {
+// 	char	*inpt;
+// 	char	**inpt_split;
+// 	t_token	**list;
+// 	int		i;
+// 	char	**envp_c;
 
-	inpt = readline("Minishell$ ");
-	if (!inpt)
-		free_and_exit(SIGINT);
-	inpt_split = ft_split(inpt, '|');
+// 	inpt = readline("Minishell$ ");
+// 	if (!inpt)
+// 		free_and_exit(SIGINT);
+// 	inpt_split = ft_split(inpt, '|');
 
-	if (inpt && inpt[0])
-	{
-		i = 0;
-		while (inpt_split[i])
-			i++;
-		add_history(inpt);
+// 	if (inpt && inpt[0])
+// 	{
+// 		i = 0;
+// 		while (inpt_split[i])
+// 			i++;
+// 		add_history(inpt);
 
-		// char *args[2];
-		// args[0] = "/bin/cat";
-		// args[1] = "ps";
-		//exec("/bin/cat", args, envp);
-		//exec(NULL, NULL, envp);
+// 		// char *args[2];
+// 		// args[0] = "/bin/cat";
+// 		// args[1] = "ps";
+// 		//exec("/bin/cat", args, envp);
+// 		//exec(NULL, NULL, envp);
 
-		//printf("After check_value, printing list:\n");
-		//print_list(*list);
-		//handle_commandstr(list);
+// 		//printf("After check_value, printing list:\n");
+// 		//print_list(*list);
+// 		//handle_commandstr(list);
 
-					// printf("%s\n", inpt);
+// 					// printf("%s\n", inpt);
 			
-	// 	printf("pos = %d\n", i);
-		data.cmd_pos = i;
-		i = 0;
-		while (inpt_split[i])
-		{
-			list = read_tokens(inpt_split[i]);
-			list = merge_quoted_strings(list);
-			list = remove_empty(list); // deletes empty nodes
-			envp_c = env_list_to_char_arr(g_env);
-	// 		// for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
-	// 		// 	printf("envp: %s\n", envp[i]);
-			check_value(*list, envp_c);
-			init_path(*list, get_cmd(*list, &data), &data.parse);
-			data.pid = fork();
-			dup2(stdin_restore, 1);
-			if (data.pid == -1)
-				fd_err(4);
-			if (data.pid == 0)
-			{
-				child(&data, i);
-				exec_cmd(&data, envp_c);
-			}
-			else
-			{
-				parent(&data);
-				waitpid(0, &data.pid, 0);
-			}
-			free_char_arr(envp_c);
-			free_token_list(list);
-			free_parse(&data.parse);
-			i++;
-		}
-	// 		// close(stdin_restore);
-	}
-	free(inpt);
-	free_char_arr(inpt_split);
-	system("leaks minishell");
-}
+// 	// 	printf("pos = %d\n", i);
+// 		data.cmd_pos = i;
+// 		i = 0;
+// 		while (inpt_split[i])
+// 		{
+// 			list = read_tokens(inpt_split[i]);
+// 			list = merge_quoted_strings(list);
+// 			list = remove_empty(list); // deletes empty nodes
+// 			envp_c = env_list_to_char_arr(g_env);
+// 	// 		// for (int i = 0; envp[i]; i++) //  && ft_strncmp(envp[i], "", 1)
+// 	// 		// 	printf("envp: %s\n", envp[i]);
+// 			check_value(*list, envp_c);
+// 			init_path(*list, get_cmd(*list, &data), &data.parse);
+// 			data.pid = fork();
+// 			dup2(stdin_restore, 1);
+// 			if (data.pid == -1)
+// 				fd_err(4);
+// 			if (data.pid == 0)
+// 			{
+// 				child(&data, i);
+// 				exec_cmd(&data, envp_c);
+// 			}
+// 			else
+// 			{
+// 				parent(&data);
+// 				waitpid(0, &data.pid, 0);
+// 			}
+// 			free_char_arr(envp_c);
+// 			free_token_list(list);
+// 			free_parse(&data.parse);
+// 			i++;
+// 		}
+// 	// 		// close(stdin_restore);
+// 	}
+// 	free(inpt);
+// 	free_char_arr(inpt_split);
+// 	system("leaks minishell");
+// }
 
 int	count_split_elems(char **arr)
 {
