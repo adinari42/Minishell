@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/01 18:34:04 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 15:49:18 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	t_token *tmp;
 	char	*cmd_line;
 	int		redir_type;
+	char *tmp1;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
@@ -162,15 +163,13 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		}
 		else	
 		{
-			char *tmp1;
 			tmp1 = cmd_line;
 			cmd_line = ft_strjoin(cmd_line, tmp->str);
 			free(tmp1);
 			tmp1 = cmd_line;
-			// printf("ptr : %p\n", cmd_line);
 			cmd_line = ft_strjoin(cmd_line, " ");
+			printf("cmd_line = %p\n", cmd_line);
 			free(tmp1);
-			// printf("ptr : %p\n", cmd_line);
 			tmp = tmp->next;
 		}
 	}
@@ -191,7 +190,6 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*inpt;
 	char	**inpt_split;
-	// t_parse	parse;
 	t_token	**list;
 	int		i;
 	t_pipe	data;
@@ -247,9 +245,8 @@ int	main(int argc, char **argv, char **envp)
 			}
 		}
 		free_2d(&inpt_split);
-		unlink("tmp");
+		free_and_close(&data);
 	}
-	free_and_close(&data);
 	free_2d(&data.parse.split_envp);
 	return (argc);
 }
