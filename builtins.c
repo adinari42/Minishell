@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 16:36:04 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 17:07:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,21 +223,14 @@ int	exec_pwd(t_token **list)
 	t_token	*token;
 	char	buf[1024];
 
-	token = tlist_start(list);
-	if (ft_strncmp(token->str, "pwd", 4))
-	{
-		printf("Something went wrong here, %s is not the pwd command\n",
-			token->str);
+	tkn = tlist_start(list);
+	if (!builtin_plausible(tkn, "pwd"))
 		return (1);
-	}
-	while (token->next)
+	tkn = skip_spaces(tkn);
+	if (tkn)
 	{
-		token = token->next;
-		if (token->type != SPACE)
-		{
-			printf("pwd: too many arguments");
-			return (1);
-		}
+		printf("pwd: too many arguments");
+		return (1);
 	}
 	getcwd(buf, 1024);
 	printf("%s \n", buf);
