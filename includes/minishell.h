@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 20:35:24 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/02 23:01:52 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@
 # include "env.h"
 # include "init.h"
 # include "exec.h"
-# include "string_utils.h"
-# include <termios.h>
 # include "../gnl/get_next_line.h"
 # include "pipes.h"
 # include <fcntl.h>
@@ -89,11 +87,10 @@ void	init_signals(void);
 int		exec(char *program, char **args, char *const *envp);
 
 /*command.c*/
-//int		handle_commandstr(t_token **list);
-int		handle_builtin(t_token *list, t_dlist **env, t_pipe *data);
-int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int builtin_id);
-int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
-
+int		handle_commandstr(t_token **list);
+int		handle_builtin(t_token **list);
+int		handle_command(t_token **list, t_pipe *data, 
+			int stdout_restore, int i);
 
 /*builtin.c*/
 int		is_builtin(char *str);
@@ -131,5 +128,10 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
+
+/* current main.c */
+char	*get_cmd(t_token *list, t_pipe *data);
+void	exec_cmd(t_pipe *pipe);
+void	parent(t_pipe *pipe);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/01 16:22:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 23:03:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ void	free_token(t_token *token)
 
 void	free_parse(t_parse *parse)
 {
-	if (parse->path)
-		free(parse->path);
+	free(parse->path);
 	free_char_arr(parse->cmd);
 }
 
