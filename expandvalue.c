@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:09:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:35:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ char	*expand_value(char *str, char **envp)
 	t_expand	counter;
 	char		*res;
 	char		*tmp;
-//	char		*tmp1;
 
 	i = 0;
 	k = 0;
@@ -98,6 +97,8 @@ void	check_value(t_token *list, char **envp)
 	t_token	*tmp1;
 	char	*str_tmp;
 
+	// (void) envp;
+	// str_tmp = NULL;
 	tmp1 = list;
 	while (tmp1)
 	{

@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:05:05 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:18:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,84 +157,6 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	return (tmp);
 }
 
-// char	*get_cmd(t_token *list, t_pipe *data)
-// {
-// 	t_token *tmp;
-// 	char	*cmd_line;
-// 	int		redir_type;
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	char	*inpt;
-// 	char	**inpt_split;
-// 	t_parse	parse;
-// 	t_token	**list;
-// 	int		i;
-
-// 	if (argc != 1)
-// 		return (1);
-// 	init_signals();
-// 	parse.split_envp = envp_parse(envp);
-// 	printf("%c", argv[0][0]);//to silence unused argv error and not use dislay env
-// 	// display_splitenvp(parse, argv);
-// 	while (1)
-// 	{
-// 		inpt = readline("Minishell$ ");
-// 		if (inpt && inpt[0])
-// 		{
-// 			add_history(inpt);
-// 			printf("%s\n", inpt);
-// 			inpt_split = ft_split(inpt, '|');
-// 			free(inpt);
-// 			i = 0;
-// 			while(inpt_split[i])
-// 			{
-// 				list = read_tokens(inpt_split[i]);
-// 				list = merge_quoted_strings(list);
-// 				check_value(*list, envp);
-// 				printf("1--------:\n");
-// 				set_cmd_path(*list, parse);
-// 				printf("printing list :\n");
-// 				print_list(*list);
-// 				// execute_line(*list, parse, envp);
-// 				free_token_list(list);
-// 				sleep(1);
-// 				i++;
-// 			}
-// 		}
-// 		free_2d(&inpt_split);
-// 		// exit(1);
-// 		// system("leaks minishell");
-// 	}
-// 	return (argc);
-// }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	char	*inpt;
-// 	//t_parse	parse;
-// 	t_token	**list;
-// 	char	**envp_c;
-// 	tmp = list;
-// 	cmd_line = ft_strdup("");
-// 	while (tmp)
-// 	{
-// 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
-// 		{
-// 			redir_type = tmp->type;
-// 			tmp = tmp->next;
-// 			tmp = skip_redir(tmp, data, redir_type);//break ;
-// 		}
-// 		else	
-// 		{
-// 			cmd_line = ft_strjoin(cmd_line, tmp->str);
-// 			cmd_line = ft_strjoin(cmd_line, " ");
-// 			tmp = tmp->next;
-// 		}
-// 	}
-// 	return (cmd_line);
-// }
-
 char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token *tmp;
@@ -271,16 +193,6 @@ void	parent(t_pipe *pipe)
 {
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
-}
-
-void main_loop(int stdin_restore, t_pipe	data)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i] && arr[i][0])
-		i ++;
-	return (i);
 }
 
 int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
