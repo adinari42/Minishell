@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:36:28 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:58:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,8 +201,8 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	t_token	**list;
 	char	*cmd_line;
 	t_token	**builtin_list;
-	(void) envp;
-	(void) stdout_restore;
+	// (void) envp;
+	// (void) stdout_restore;
 
 	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
