@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 17:38:53 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 14:14:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,40 +28,15 @@ char	**envp_parse(char **envp)
 	return (envp_parse);
 }
 
-char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
+char	*get_value_from_key(t_dlist *var, char *varname)
 {
-	char	*value;
-	char	*str;
-	int		count;
-
-	//iterate through varname, count the length from beginning to first s_quote******
-	count = 0;
-	while (varname[count] && (ft_isalnum(varname[count]) || varname[count] == '_'))
-		count++;
-	//printf("varname %s, count %d\n", varname, count);
-	//extract that first string*****/
-	str = ft_substr(varname, 0, count);
-	//check and replace with env value***/
-	value = NULL;
-	if (!ft_strncmp("?", str, ft_strlen(str)))
-		value = ft_itoa(data->error_code);
-	else
+	while (var)
 	{
-		while (var)
-		{
-			if (!ft_strncmp(var->content->key, str, ft_strlen(str) + 1))		// +1 so we also compare the terminating null byte
-			{
-				value = ft_strdup(var->content->val);
-				break ;
-			}
-			var = var->next;
-		}
-		if (!value)
-			value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
+		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
+			return (var->content->val);
+		var = var->next;
 	}
-	free(str);
-	value = ft_strjoin_free_str1(value, varname + count);
-	return (value);
+	return (NULL);
 }
 
 //assumption here: quotes have been stripped already

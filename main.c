@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 23:17:18 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 14:24:28 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,17 @@
 void	init_path(t_token *list, char *cmdline, t_parse *parse)
 {
 	t_token	*tklist;
+	char	*var_path;
+	char	**split_path;
 
 	tklist = list;
 	parse->cmd = ft_split(cmdline, ' ');
 	free(cmdline);
-	parse->path = get_path(parse->split_envp, parse->cmd[0]);
+	var_path = get_value_from_key(*g_env, "PATH");
+	split_path = ft_split(var_path, ':');
+	parse->path = get_path(split_path, parse->cmd[0]);
+	free_split(split_path);
 }
-
 
 void	exec_cmd(t_pipe *pipe)
 {
@@ -258,8 +262,7 @@ int	main(int argc, char **argv, char **envp)
 	init_signals();
 	init_env_llist(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	//display_splitenvp(parse, argv);
-	data.parse.split_envp = envp_parse(envp);
+	//data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
 	while (1)
