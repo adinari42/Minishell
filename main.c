@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:18:08 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:13:43 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 			tmp = tmp->next;
 			return (tmp);
 		}
-		else if (tmp->type == SPACE)
+		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
 			fd_err(5);
@@ -170,15 +170,11 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		}
 		else	
 		{
-			char *tmp1;
-			tmp1 = cmd_line;
-			cmd_line = ft_strjoin(cmd_line, tmp->str);
-			free(tmp1);
-			tmp1 = cmd_line;
-			// printf("ptr : %p\n", cmd_line);
-			cmd_line = ft_strjoin(cmd_line, " ");
-			free(tmp1);
-			// printf("ptr : %p\n", cmd_line);
+			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
+			if (tmp->type != ASSIGN && (!tmp->next || tmp->next->type != ASSIGN))
+				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
+			// printf("cmd_line : %s.\n", cmd_line);
 			tmp = tmp->next;
 		}
 	}
@@ -204,8 +200,8 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	int		i;
 	int		err;
 	t_token	**list;
-	// char	*cmd_line;
-	// t_token	**builtin_list;
+	char	*cmd_line;
+	t_token	**builtin_list;
 	(void) envp;
 	(void) stdout_restore;
 
@@ -219,17 +215,17 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		list = read_tokens(inpt_split[i]);
 		list = merge_quoted_strings(list);
 		check_value(*list, envp);
-		// cmd_line = get_cmd(*list, data);
-		// builtin_list = read_tokens(cmd_line);
-		// builtin_list = merge_quoted_strings(builtin_list);
-		// builtin_list = remove_empty(builtin_list);
-		// if (is_builtin(cmd_line))
-		// 	handle_builtin(builtin_list);
-		// else
-		// 	handle_command(list, data, stdout_restore, i);
-		// free(cmd_line);
+		cmd_line = get_cmd(*list, data);
+		builtin_list = read_tokens(cmd_line);
+		builtin_list = merge_quoted_strings(builtin_list);
+		builtin_list = remove_empty(builtin_list);
+		if (is_builtin(cmd_line))
+			handle_builtin(builtin_list);
+		else
+			handle_command(list, data, stdout_restore, i);
+		free(cmd_line);
 		free_token_list(list);
-		// free_token_list(builtin_list);
+		free_token_list(builtin_list);
 		i++;
 	}
 	return (err);
@@ -249,7 +245,7 @@ int	main(int argc, char **argv, char **envp)
 	init_signals();
 	init_env_llist(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	//data.parse.split_envp = envp_parse(envp);
+	data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
 	while (1)
@@ -266,6 +262,6 @@ int	main(int argc, char **argv, char **envp)
 		free_char_arr(inpt_split);
 		unlink("tmp");
 	}
-	//free_char_arr(data.parse.split_envp);
+	free_char_arr(data.parse.split_envp);
 	return (argc);
 }

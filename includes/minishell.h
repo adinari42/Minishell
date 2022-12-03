@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:14:12 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 17:31:45 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ enum e_tokentype
 
 enum e_builtins
 {
-	ECHO42,
+	// ECHO,
 	CD,
 	PWD,
 	EXPORT,
@@ -69,8 +69,8 @@ enum e_builtins
 	EXIT	
 };
 
-static const char *const	g_builtins[] = {
-	"echo",
+const static char *const	g_builtins[] = {
+	// "echo",
 	"cd",
 	"pwd",
 	"export",
