@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 14:24:28 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 14:36:18 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,9 +151,20 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	return (tmp);
 }
 
+char *ft_strjoin_free_str1(char *str1, char *str2)
+{
+	char	*tmp;
+	char	*joined;
+	
+	tmp = str1;
+	joined = ft_strjoin(str1, str2);
+	free(tmp);
+	return (joined);
+}
+
 char	*get_cmd(t_token *list, t_pipe *data)
 {
-	t_token *tmp;
+	t_token	*tmp;
 	char	*cmd_line;
 	int		redir_type;
 
@@ -168,17 +179,11 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 		}
-		else	
+		else
 		{
-			char *tmp1;
-			tmp1 = cmd_line;
-			cmd_line = ft_strjoin(cmd_line, tmp->str);
-			free(tmp1);
-			tmp1 = cmd_line;
-			// printf("ptr : %p\n", cmd_line);
-			cmd_line = ft_strjoin(cmd_line, " ");
-			free(tmp1);
-			// printf("ptr : %p\n", cmd_line);
+			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+			cmd_line = ft_strjoin_free_str1(cmd_line, " ");
+			//printf("cmd_line : %s\n", cmd_line);
 			tmp = tmp->next;
 		}
 	}
@@ -216,7 +221,6 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	char	*cmd_line;
 	t_token	**builtin_list;
 
-	//(void) stdout_restore;
 	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
 	err = 0;
@@ -231,17 +235,12 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		builtin_list = merge_quoted_strings(builtin_list);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
-		{
 			handle_builtin(builtin_list);
-		}
 		else
-		{
 			handle_command(list, data, stdout_restore, i);
-		}
 		free(cmd_line);
 		free_token_list(list);
-		if (builtin_list)
-			free_token_list(builtin_list);
+		free_token_list(builtin_list);
 		i++;
 	}
 	return (err);
