@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 22:28:45 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:09:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ char	*expand_value(char *str, char **envp)
 	t_expand	counter;
 	char		*res;
 	char		*tmp;
-	char		*tmp1;
+//	char		*tmp1;
 
 	counter.i = 0;
 	counter.k = 0;
@@ -121,17 +121,14 @@ char	*expand_value(char *str, char **envp)
 			/********add necessary spaces*******/
 			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
 			{
-				tmp1 = res;
-				res = ft_strjoin(res, " ");
-				free(tmp1);
+				res = ft_strjoin_free_str1(res, " ");
 				counter.k++;
 			}
 		// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 				split2[counter.j] = value_expand(envp, split2[counter.j]);
-			tmp1 = res;
-			res = ft_strjoin(res, split2[counter.j]);
-			/*******reach end of word********/
+			res = ft_strjoin_free_str1(res, split2[counter.j]);
+		// 	/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
 				counter.k++;

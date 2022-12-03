@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 23:04:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 14:59:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,16 @@ int	handle_builtin(t_token **list)
 
 int	handle_command(t_token **list, t_pipe *data, int stdout_restore, int i)
 {
-	int	err;
+	int		err;
+	//char	*cmd;
 
 	err = 0;
+	// (void) list;
+	// (void) i;
+	// (void) stdout_restore;
+	// (void) data;
 	data->pid = fork();
+	//cmd = get_cmd(*list, data);
 	init_path(*list, get_cmd(*list, data), &(data->parse));
 	dup2(stdout_restore, 1);
 	if (data->pid == -1)

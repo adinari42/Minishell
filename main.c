@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 14:24:28 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:05:05 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,8 +214,10 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	int		i;
 	int		err;
 	t_token	**list;
-	char	*cmd_line;
-	t_token	**builtin_list;
+	// char	*cmd_line;
+	// t_token	**builtin_list;
+	(void) envp;
+	(void) stdout_restore;
 
 	//(void) stdout_restore;
 	data->cmd_pos = count_split_elems(inpt_split);
@@ -227,22 +229,17 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		list = read_tokens(inpt_split[i]);
 		list = merge_quoted_strings(list);
 		check_value(*list, envp);
-		cmd_line = get_cmd(*list, data);
-		builtin_list = read_tokens(cmd_line);
-		builtin_list = merge_quoted_strings(builtin_list);
-		builtin_list = remove_empty(builtin_list);
-		if (is_builtin(cmd_line))
-		{
-			handle_builtin(builtin_list);
-		}
-		else
-		{
-			handle_command(list, data, stdout_restore, i);
-		}
-		free(cmd_line);
+		// cmd_line = get_cmd(*list, data);
+		// builtin_list = read_tokens(cmd_line);
+		// builtin_list = merge_quoted_strings(builtin_list);
+		// builtin_list = remove_empty(builtin_list);
+		// if (is_builtin(cmd_line))
+		// 	handle_builtin(builtin_list);
+		// else
+		// 	handle_command(list, data, stdout_restore, i);
+		// free(cmd_line);
 		free_token_list(list);
-		if (builtin_list)
-			free_token_list(builtin_list);
+		// free_token_list(builtin_list);
 		i++;
 	}
 	return (err);
