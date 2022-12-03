@@ -6,7 +6,11 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2022/12/03 17:31:45 by adinari          ###   ########.fr       */
+=======
+/*   Updated: 2022/12/03 17:17:55 by slakner          ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +95,9 @@ int		exec(char *program, char **args, char *const *envp);
 /*command.c*/
 int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token **list);
-int		handle_command(t_token **list, t_pipe *data, 
+int		handle_command(t_token **list, t_pipe *data,
+			int stdout_restore, int i);
+int		handle_builtinstr(t_token **list, t_pipe *data,
 			int stdout_restore, int i);
 
 /*builtin.c*/
@@ -118,7 +124,7 @@ void	free_and_exit(int signum);
 void	execute_line(t_token *list, t_parse parse, char **envp);
 void	init_path(t_token *tklist, char *cmdline, t_parse *parse);
 char	*get_path(char **string, char *cmd);
-void	fd_err(int i);
+void	ms_fd_err(int i);
 /*******/
 t_token	**read_tokens(char *bashcmd);
 void	set_cmd_path(t_token *tklist, t_parse parse);

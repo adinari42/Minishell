@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 18:17:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:18:29 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	exec_cmd(t_pipe *pipe)
 
 	envp = env_list_to_char_arr(g_env);
 	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
-		fd_err(3);
+		ms_fd_err(3);
 	free_split(envp);
 }
 
@@ -55,10 +55,10 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 
 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (pipe->file.infile == -1)
-		fd_err(1);
+		ms_fd_err(1);
 	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
 	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
-		fd_err(2);
+		ms_fd_err(2);
 	str = get_next_line(0);
 	while (1)
 	{
@@ -71,11 +71,12 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 	free(str);
 	pipe->append = 1;
 	if (dup2(pipe->file.tmp, 0) == -1)
-		fd_err(2);
+		ms_fd_err(2);
 	close(pipe->file.infile);
 	close(pipe->file.tmp);
 	return (3);
 }
+
 void	init_outfile(t_pipe *pipe)
 {
 	if (pipe->append == 0)
@@ -87,17 +88,18 @@ void	init_outfile(t_pipe *pipe)
 	free(pipe->out_fd);
 	pipe->append = 0;
 	if (pipe->file.outfile == -1)
-		fd_err(1);
+		ms_fd_err(1);
 	if (dup2(pipe->file.outfile, 1) == -1)
-		fd_err(2);
+		ms_fd_err(2);
 	close (pipe->file.outfile);
 }
-void	child(t_pipe *pipe)
+
+void	child(t_pipe *pipe, int i)
 {
 	if (i != pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
-			fd_err(2);
+			ms_fd_err(2);
 	}
 	if (pipe->out_fd != NULL)
 	{
@@ -105,6 +107,7 @@ void	child(t_pipe *pipe)
 	}
 	// close (pipe->fd[0]);
 }
+
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 {
 		if (pipe->out_fd)
@@ -116,7 +119,7 @@ void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 		{
 			pipe->file.infile = open(list->str, O_RDONLY);
 			if (pipe->file.infile == -1)
-				fd_err(1);
+				ms_fd_err(1);
 			dup2(pipe->file.infile, 0);
 			close(pipe->file.infile);
 		}
@@ -145,9 +148,9 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
-			fd_err(5);
+			ms_fd_err(5);
 	}
-	fd_err(5);
+	ms_fd_err(5);
 	return (tmp);
 }
 
@@ -220,7 +223,7 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		builtin_list = merge_quoted_strings(builtin_list);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
-			handle_builtin(builtin_list);
+			handle_builtinstr(builtin_list, data, stdout_restore, i);
 		else
 			handle_command(list, data, stdout_restore, i);
 		free(cmd_line);

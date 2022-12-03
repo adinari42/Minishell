@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:35:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:05:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ char	*value_expand(char **envp, char *var)
 
 	len = 0;
 	tmp = var;
-	j = -1;
-	while (envp[++j])
+	j = 0;
+	while (envp[j] && envp[j][0])// && ft_strncmp(envp[j], "", 1))
 	{
 		if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
 		{
@@ -67,29 +67,24 @@ void	free_strings(char *str, char **split1)
 }
 
 /********add necessary spaces*******/
-char	*add_space(char *tmp, char *res)
-{
-	char	*tmp1;
-	while (*tmp && *tmp == ' ')//add spaces
-	{
-		tmp1 = res;
-		res = ft_strjoin(res, " ");
-		free(tmp1);
-		tmp++;
-	}
-	return (res);
-}
+// char	*add_space(char *tmp, char *res)
+// {
+// 	while (*tmp && *tmp == ' ') //add spaces
+// 	{
+// 		res = ft_strjoin_free_str1(res, " ");
+// 		tmp++;
+// 	}
+// 	return (res);
+// }
+
 char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 {
-	char	*tmp1;
-
 	if (j != 0 || (j == 0 && *tmp == '$'))
 		split2[j] = value_expand(envp, split2[j]);
-	tmp1 = res;
-	res = ft_strjoin(res, split2[j]);
-	free(tmp1);
+	res = ft_strjoin_free_str1(res, split2[j]);
 	return (res);
 }
+
 /*
 -split the token twice, once using spaces to seperate words,
 -then split the words using $ to seperate variables from non variables,
@@ -149,7 +144,7 @@ void	check_value(t_token *list, char **envp)
 	char	*str_tmp;
 
 	// (void) envp;
-	// str_tmp = NULL;
+	// (void) list;
 	tmp1 = list;
 	while (tmp1)
 	{

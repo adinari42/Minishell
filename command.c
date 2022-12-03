@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 17:30:13 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:19:03 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,17 @@
 // 	}
 // 	return (1);
 // }
+
+int	handle_builtinstr(t_token **list, t_pipe *data, int stdout_restore, int i)
+{
+	// int	err;
+
+	dup2(stdout_restore, 1);
+	child(data, i);
+	handle_builtin(list);
+	parent(data);
+	return (0);
+}
 
 int	handle_builtin(t_token **list)
 {
@@ -70,7 +81,7 @@ int	handle_command(t_token **list, t_pipe *data, int stdout_restore, int i)
 	init_path(*list, get_cmd(*list, data), &(data->parse));
 	dup2(stdout_restore, 1);
 	if (data->pid == -1)
-		fd_err(4);
+		ms_fd_err(4);
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
