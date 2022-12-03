@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 13:57:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:44:48 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	exec_echo(t_token **list)
 	tkn = tlist_start(list);
 	newline = 1;
 	if (!builtin_plausible(tkn, "echo"))
-		return (1);
+		// return (1);
 	tkn = skip_spaces(tkn);
 	if (tkn && !ft_strncmp(tkn->str, "-n", 3))
 	{
