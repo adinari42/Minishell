@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:36:28 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:58:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 			tmp = tmp->next;
 			return (tmp);
 		}
-		else if (tmp->type == SPACE)
+		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
 			fd_err(5);
@@ -198,10 +198,10 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	int		i;
 	int		err;
 	t_token	**list;
-	// char	*cmd_line;
-	// t_token	**builtin_list;
-	(void) envp;
-	(void) stdout_restore;
+	char	*cmd_line;
+	t_token	**builtin_list;
+	// (void) envp;
+	// (void) stdout_restore;
 
 	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
