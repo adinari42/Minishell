@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 19:17:19 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 20:18:18 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 // 	return (1);
 // }
 
-int	handle_builtinstr(t_token **list, t_pipe *data, int stdout_restore, int i)
+int	handle_builtinstr(t_token **list, t_pipe *data, int i) //int stdout_restore, int i)
 {
 	// (void) data;
-	 (void) stdout_restore;
+	// (void) stdout_restore;
 	// (void) i;
 
 	// int	err;
@@ -43,7 +43,7 @@ int	handle_builtinstr(t_token **list, t_pipe *data, int stdout_restore, int i)
 	child(data, i + 1);
 	handle_builtin(list);
 	parent(data);
-	dup2(stdout_restore, 1);
+	//dup2(stdout_restore, 1);
 	return (0);
 }
 
@@ -71,7 +71,7 @@ int	handle_builtin(t_token **list)
 	return (ret);
 }
 
-int	handle_command(t_token **list, t_pipe *data, int stdout_restore, int i)
+int	handle_command(t_token **list, t_pipe *data, int i) //int stdout_restore
 {
 	int		err;
 	//char	*cmd;
@@ -84,7 +84,6 @@ int	handle_command(t_token **list, t_pipe *data, int stdout_restore, int i)
 	data->pid = fork();
 	//cmd = get_cmd(*list, data);
 	init_path(*list, get_cmd(*list, data), &(data->parse));
-	dup2(stdout_restore, 1);
 	if (data->pid == -1)
 		ms_fd_err(4);
 	if (data->pid == 0)

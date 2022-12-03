@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 18:20:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 20:16:45 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,15 @@ t_token	**remove_empty(t_token **list);
 int		exec(char *program, char **args, char *const *envp);
 
 /*command.c*/
-int		handle_commandstr(t_token **list);
+//int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token **list);
-int		handle_command(t_token **list, t_pipe *data,
-			int stdout_restore, int i);
-int		handle_builtinstr(t_token **list, t_pipe *data,
-			int stdout_restore, int i);
+// int		handle_command(t_token **list, t_pipe *data,
+// 			int stdout_restore, int i);
+// int		handle_builtinstr(t_token **list, t_pipe *data,
+// 			int stdout_restore, int i);
+int		handle_builtinstr(t_token **list, t_pipe *data, int i);
+int		handle_command(t_token **list, t_pipe *data, int i);
+
 
 /*builtin.c*/
 int		is_builtin(char *str);
