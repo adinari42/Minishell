@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:05:05 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:18:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,16 +197,6 @@ void	parent(t_pipe *pipe)
 {
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
-}
-
-int	count_split_elems(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i] && arr[i][0])
-		i ++;
-	return (i);
 }
 
 int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
