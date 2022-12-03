@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/30 21:24:35 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:05:05 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,6 +275,54 @@ void	parent(t_pipe *pipe)
 
 void main_loop(int stdin_restore, t_pipe	data)
 {
+	int	i;
+
+	i = 0;
+	while (arr[i] && arr[i][0])
+		i ++;
+	return (i);
+}
+
+int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
+{
+	int		i;
+	int		err;
+	t_token	**list;
+	// char	*cmd_line;
+	// t_token	**builtin_list;
+	(void) envp;
+	(void) stdout_restore;
+
+	data->cmd_pos = count_split_elems(inpt_split);
+	i = 0;
+	err = 0;
+	while (inpt_split[i])
+	{
+		pipe(data->fd);
+		list = read_tokens(inpt_split[i]);
+		list = merge_quoted_strings(list);
+		check_value(*list, envp);
+		// cmd_line = get_cmd(*list, data);
+		// builtin_list = read_tokens(cmd_line);
+		// builtin_list = merge_quoted_strings(builtin_list);
+		// builtin_list = remove_empty(builtin_list);
+		// if (is_builtin(cmd_line))
+		// 	handle_builtin(builtin_list);
+		// else
+		// 	handle_command(list, data, stdout_restore, i);
+		// free(cmd_line);
+		free_token_list(list);
+		// free_token_list(builtin_list);
+		i++;
+	}
+	return (err);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int		stdin_restore;
+	//int		stdout_restore;
+	t_pipe	data;
 	char	*inpt;
 	char	**inpt_split;
 	t_parse	parse;

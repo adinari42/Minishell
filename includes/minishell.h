@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/25 14:41:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:14:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@
 # include "llist.h"
 # include "env.h"
 # include "init.h"
+# include "exec.h"
+# include "string_utils.h"
 # include "../gnl/get_next_line.h"
+
 
 # define TOKENS " $'<>\""
 

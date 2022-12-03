@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/22 00:00:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:09:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,12 @@ char	*value_expand(char **envp, char *var)
 
 char	*expand_value(char *str, char **envp)
 {
-	char	**split1;
-	char	**split2;
-	int		i;
-	int		j;
-	int		k;
-	char	*res;
-	char	*tmp;
-	char 	*tmp1;
+	char		**split1;
+	char		**split2;
+	t_expand	counter;
+	char		*res;
+	char		*tmp;
+//	char		*tmp1;
 
 	i = 0;
 	k = 0;
@@ -72,18 +70,15 @@ char	*expand_value(char *str, char **envp)
 			/********add necessary spaces*******/
 			while (tmp[k] && tmp[k] == ' ')//add spaces
 			{
-				tmp1 = res;
-				res = ft_strjoin(res, " ");
-				free(tmp1);
-				k++;
+				res = ft_strjoin_free_str1(res, " ");
+				counter.k++;
 			}
-			/*******expand values*******/
-			if (j != 0  ||  (j == 0 && tmp[k] == '$'))
-				split2[j] = value_expand(envp, split2[j]);
-			tmp1 = res;
-			res = ft_strjoin(res, split2[counter.j]);
-			/*******reach end of word********/
-			while (tmp[k] && tmp[k] != ' ')
+		// 	/*******expand values*******/
+			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
+				split2[counter.j] = value_expand(envp, split2[counter.j]);
+			res = ft_strjoin_free_str1(res, split2[counter.j]);
+		// 	/*******reach end of word********/
+			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
 				k++;
 				if (tmp[k + 1] == '$')
