@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 18:55:12 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 20:18:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
+int	handle_input(char **inpt_split, t_pipe *data, char **envp)
 {
 	int		i;
 	int		err;
@@ -223,9 +223,9 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		builtin_list = merge_quoted_strings(builtin_list);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
-			handle_builtinstr(builtin_list, data, stdout_restore, i);
+			handle_builtinstr(builtin_list, data, i);
 		else
-			handle_command(list, data, stdout_restore, i);
+			handle_command(list, data, i);
 		free(cmd_line);
 		free_token_list(list);
 		free_token_list(builtin_list);
@@ -253,13 +253,14 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		dup2(stdin_restore, 0);
+		dup2(stdout_restore, 1);
 		inpt = readline("Minishell$ ");
-		// if (!inpt)
-		// 	free_and_exit(SIGINT);		// this does the exit on Ctrl-D
+		if (!inpt)
+			free_and_exit(SIGINT);		// this does the exit on Ctrl-D
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
-			err = handle_input(inpt_split, &data, envp, stdout_restore);
+			err = handle_input(inpt_split, &data, envp);
 		if (inpt)
 			free(inpt);
 		free_char_arr(inpt_split);
