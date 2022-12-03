@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 18:18:29 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:55:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,13 @@ void	child(t_pipe *pipe, int i)
 	close (pipe->fd[0]);
 }
 
+void	parent(t_pipe *pipe)
+{
+	dup2(pipe->fd[0], 0);
+	close (pipe->fd[1]);
+}
+
+
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 {
 		if (pipe->out_fd)
@@ -191,12 +198,6 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-void	parent(t_pipe *pipe)
-{
-	dup2(pipe->fd[0], 0);
-	close (pipe->fd[1]);
-}
-
 int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
 {
 	int		i;
@@ -253,8 +254,8 @@ int	main(int argc, char **argv, char **envp)
 	{
 		dup2(stdin_restore, 0);
 		inpt = readline("Minishell$ ");
-		if (!inpt)
-			free_and_exit(SIGINT);		// this does the exit on Ctrl-D
+		// if (!inpt)
+		// 	free_and_exit(SIGINT);		// this does the exit on Ctrl-D
 		add_history(inpt);
 		inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
@@ -262,8 +263,6 @@ int	main(int argc, char **argv, char **envp)
 		if (inpt)
 			free(inpt);
 		free_char_arr(inpt_split);
-		free_and_close(&data);
 	}
-	free_char_arr(data.parse.split_envp);
 	return (argc);
 }
