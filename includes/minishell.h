@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-<<<<<<< Updated upstream
-/*   Updated: 2022/12/03 17:31:45 by adinari          ###   ########.fr       */
-=======
-/*   Updated: 2022/12/03 17:17:55 by slakner          ###   ########.fr       */
->>>>>>> Stashed changes
+/*   Updated: 2022/12/03 18:20:42 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

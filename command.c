@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 18:19:03 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:23:05 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,16 @@
 
 int	handle_builtinstr(t_token **list, t_pipe *data, int stdout_restore, int i)
 {
+	(void) data;
+	(void) stdout_restore;
+	(void) i;
+
 	// int	err;
 
-	dup2(stdout_restore, 1);
-	child(data, i);
+	// dup2(stdout_restore, 1);
+	// child(data, i);
 	handle_builtin(list);
-	parent(data);
+	// parent(data);
 	return (0);
 }
 
