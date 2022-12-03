@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/27 17:31:20 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 16:36:44 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ char	*get_path(char **string, char *cmd)
 	return (NULL);
 }
 
-
-void	fd_err(int i)
+void	ms_fd_err(int i)
 {
 	if (i == 1)
 		perror("Unable to open infile\n");
