@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string_utils.h                                     :+:      :+:    :+:   */
+/*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/03 15:12:20 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 15:18:48 by slakner          ###   ########.fr       */
+/*   Created: 2022/12/02 22:33:25 by slakner           #+#    #+#             */
+/*   Updated: 2022/12/02 22:34:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strjoin_free_str1(char *str1, char *str2);
-int		count_split_elems(char **arr);
+#include "minishell.h"
+
+void	child(t_pipe *pipe, int i);

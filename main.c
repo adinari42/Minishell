@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:05:05 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 15:18:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,17 +151,6 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	return (tmp);
 }
 
-char *ft_strjoin_free_str1(char *str1, char *str2)
-{
-	char	*tmp;
-	char	*joined;
-	
-	tmp = str1;
-	joined = ft_strjoin(str1, str2);
-	free(tmp);
-	return (joined);
-}
-
 char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token	*tmp;
@@ -201,16 +190,6 @@ void	parent(t_pipe *pipe)
 {
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
-}
-
-int	count_split_elems(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i] && arr[i][0])
-		i ++;
-	return (i);
 }
 
 int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
