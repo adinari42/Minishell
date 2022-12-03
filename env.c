@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 15:11:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 14:14:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,17 @@ char	**envp_parse(char **envp)
 	}
 	envp_parse = ft_split(*(envp + j) + 5, ':');
 	return (envp_parse);
+}
+
+char	*get_value_from_key(t_dlist *var, char *varname)
+{
+	while (var)
+	{
+		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
+			return (var->content->val);
+		var = var->next;
+	}
+	return (NULL);
 }
 
 //assumption here: quotes have been stripped already
