@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 15:44:48 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 18:18:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,9 @@ int	exec_echo(t_token **list)
 	}
 	if (token->next && !ft_strncmp(token->next->str, "-n", 3))
 	{
-		token = token->next;
-		newline = 0;
-	}
-	while (token->next)
-	{
-		token = token->next;
-		write(1, token->str, ft_strlen(token->str));
+		//write(1, tkn->str, ft_strlen(tkn->str));
+		printf("%s", tkn->str);
+		tkn = tkn->next;
 	}
 	if (newline)
 		printf("\n");
