@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 18:18:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 16:06:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	is_builtin(char *str)
 
 	i = 0;
 	split = ft_split(str, ' ');
-	while (i < sizeof(g_builtins) / sizeof(const char *const))
+	while (split && split[0] && split[0][0]
+		&& i < sizeof(g_builtins) / sizeof(const char *const))
 	{
 		if (!ft_strncmp(split[0], g_builtins[i], ft_strlen(g_builtins[i]) + 1))
 		{
@@ -28,7 +29,8 @@ int	is_builtin(char *str)
 		}
 		i++;
 	}
-	free_split(split);
+	if (split)
+		free_split(split);
 	return (0);
 }
 
@@ -91,8 +93,8 @@ int	exec_cd(t_token **list)
 	if (!builtin_plausible(tkn, "cd"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn->type == WORD 
-		|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
+	if (tkn && (tkn->type == WORD 
+		|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
 		ret = chdir(tkn->str);
 	if (ret == -1)
 		ret = print_builtin_error("cd", tkn->str);

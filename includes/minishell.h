@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 20:16:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 20:12:03 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include "init.h"
 # include "exec.h"
 # include "string_utils.h"
+# include <termios.h>
 # include "../gnl/get_next_line.h"
 
 
@@ -137,18 +138,8 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
-/*expandvalue.c*/
-char	*value_expand(char **envp, char *var);
-char	*expand_value(char *str, char **envp);
-void	check_value(t_token *list, char **envp);
-void	free_2d(char ***to_free);
-void	free_strings(char *str, char **split1);
-char	*add_space(char *tmp, char *res);
-char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
-/*quotes.c*/
-// t_token	**merge_quoted_strings(t_token **list);
-// t_token	*merge_tokens(t_token *first, t_token *last);
-// t_token	*merge_two_tokens(t_token *token1, t_token *token2);
+
+
 
 /* spaces.c */
 t_token	*skip_spaces(t_token *token);

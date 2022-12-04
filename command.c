@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 20:46:08 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 21:46:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ int	handle_command(t_token **list, t_pipe *data, int i) //int stdout_restore
 	err = 0;
 	// (void) list;
 	// (void) i;
-	(void) stdout_restore;
 	// (void) data;
 	data->pid = fork();
 	init_path(*list, get_cmd(*list, data), &(data->parse));

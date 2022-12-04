@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 15:32:21 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 20:31:53 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,22 @@
 // 	while (envp[i])
 // 		g_envp[i] = ft_strdup(envp[i]);
 // }
+
+void	init_minishell(char **envp)
+{
+	init_term();
+	init_env_llist(envp);
+	init_signals();
+}
+
+void	init_term(void)
+{
+	struct termios	t_settings;
+
+	tcgetattr(1, &t_settings);
+	t_settings.c_lflag &= ~(ECHOCTL);
+	tcsetattr(1, 0, &t_settings);
+}
 
 int	init_env_llist(char **envp)
 {
