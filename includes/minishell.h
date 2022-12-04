@@ -6,11 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-<<<<<<< Updated upstream
-/*   Updated: 2022/12/03 17:31:45 by adinari          ###   ########.fr       */
-=======
-/*   Updated: 2022/12/03 17:17:55 by slakner          ###   ########.fr       */
->>>>>>> Stashed changes
+/*   Updated: 2022/12/04 20:12:03 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +30,7 @@
 # include "init.h"
 # include "exec.h"
 # include "string_utils.h"
+# include <termios.h>
 # include "../gnl/get_next_line.h"
 # include "pipes.h"
 # include <fcntl.h>
@@ -136,6 +133,11 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
+
+
+
+/* spaces.c */
+t_token	*skip_spaces(t_token *token);
 
 /* current main.c */
 char	*get_cmd(t_token *list, t_pipe *data);

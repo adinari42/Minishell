@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 18:18:29 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 20:21:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		{
 			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
 			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
-			if (tmp->type != ASSIGN && (!tmp->next || tmp->next->type != ASSIGN))
+			if (tmp->type != ASSIGN && tmp->next && tmp->next->type != ASSIGN)
 				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
 			// printf("cmd_line : %s.\n", cmd_line);
 			tmp = tmp->next;
@@ -192,13 +192,7 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-void	parent(t_pipe *pipe)
-{
-	dup2(pipe->fd[0], 0);
-	close (pipe->fd[1]);
-}
-
-int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
+int	handle_input(char **inpt_split, t_pipe *data)
 {
 	int		i;
 	int		err;
@@ -217,15 +211,15 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 		pipe(data->fd);
 		list = read_tokens(inpt_split[i]);
 		list = merge_quoted_strings(list);
-		check_value(*list, envp);
+		check_value(*list);
 		cmd_line = get_cmd(*list, data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
-			handle_builtinstr(builtin_list, data, stdout_restore, i);
-		else
-			handle_command(list, data, stdout_restore, i);
+			handle_builtinstr(builtin_list, data, i);
+		else if (cmd_line && cmd_line[0])
+			handle_command(list, data, i);
 		free(cmd_line);
 		free_token_list(list);
 		free_token_list(builtin_list);
@@ -245,8 +239,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc != 1)
 		return (1);
-	init_signals();
-	init_env_llist(envp);
+	init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
 	data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
@@ -259,7 +252,7 @@ int	main(int argc, char **argv, char **envp)
 		inpt_split = ft_split(inpt, '|');
 		free(inpt);
 		if (inpt && inpt[0])
-			err = handle_input(inpt_split, &data, envp, stdout_restore);
+			err = handle_input(inpt_split, &data);
 		if (inpt)
 			free(inpt);
 		free_char_arr(inpt_split);

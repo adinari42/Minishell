@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 18:19:03 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/03 21:46:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ int	handle_command(t_token **list, t_pipe *data, int stdout_restore, int i)
 	err = 0;
 	// (void) list;
 	// (void) i;
-	// (void) stdout_restore;
 	// (void) data;
 	data->pid = fork();
 	//cmd = get_cmd(*list, data);

@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 18:05:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 15:41:49 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,14 @@ or after every word depending on the original format(tmp works as a reference)
 -then check if the word starts with $ and expand it then join to to result
 -skip the letters of the word in tmp and repeat
 */
-char	*expand_value(char *str, char **envp)
+char	*expand_value(char *str)
 {
 	char		**split1;
 	char		**split2;
 	t_expand	counter;
 	char		*res;
 	char		*tmp;
+	char		*val;
 
 	counter.i = 0;
 	counter.k = 0;
@@ -109,7 +110,7 @@ char	*expand_value(char *str, char **envp)
 	while (split1[counter.i])
 	{
 		counter.j = 0;
-		split2 = ft_split(split1[counter.i], '$');//split using $
+		split2 = ft_split(split1[counter.i], '$'); //split using $
 		while (split2[counter.j])
 		{
 			/********add necessary spaces*******/
@@ -120,7 +121,15 @@ char	*expand_value(char *str, char **envp)
 			}
 		// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
-				split2[counter.j] = value_expand(envp, split2[counter.j]);
+				//split2[counter.j] = value_expand(envp, split2[counter.j]);
+			{
+				val = get_value_from_key(*g_env, split2[counter.j]);
+				// if (val)
+					split2[counter.j] = ft_strdup(get_value_from_key(*g_env, split2[counter.j]));
+				// else
+				// 	split2[counter.j] = ft_strdup("");
+				// split2[counter.j] = ft_strdup(get_value_from_key(*g_env, split2[counter.j]));
+			}
 			res = ft_strjoin_free_str1(res, split2[counter.j]);
 		// 	/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
@@ -138,7 +147,7 @@ char	*expand_value(char *str, char **envp)
 	return (res);
 }
 
-void	check_value(t_token *list, char **envp)
+void	check_value(t_token *list)
 {
 	t_token	*tmp1;
 	char	*str_tmp;
@@ -148,7 +157,7 @@ void	check_value(t_token *list, char **envp)
 	tmp1 = list;
 	while (tmp1)
 	{
-		str_tmp = expand_value(tmp1->str, envp);
+		str_tmp = expand_value(tmp1->str);
 		tmp1->str = str_tmp;
 		tmp1 = tmp1->next;
 	}
