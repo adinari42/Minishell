@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 16:36:44 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 14:43:43 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*get_path(char **string, char *cmd)
 	char	*path_temp;
 
 	i = 0;
-	while (string[i] != 0)
+	while (cmd && string[i] != 0)
 	{
 		path_temp = ft_strjoin(string[i], "/");
 		if (!path_temp)
