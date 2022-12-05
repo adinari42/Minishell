@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 21:46:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/06 00:13:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ int	handle_builtin(t_token **list)
 int	handle_command(t_token **list, t_pipe *data, int i) //int stdout_restore
 {
 	int		err;
-	//char	*cmd;
+	char	**envp;
+	
+	envp = env_list_to_char_arr(g_env);
+
 
 	err = 0;
 	// (void) list;
