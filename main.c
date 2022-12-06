@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/04 20:21:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/06 00:22:21 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,21 +32,20 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse)
 
 	tklist = list;
 	parse->cmd = ft_split(cmdline, ' ');
-	free(cmdline);
 	var_path = get_value_from_key(*g_env, "PATH");
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
 	free_split(split_path);
 }
 
-void	exec_cmd(t_pipe *pipe)
+void	exec_cmd(t_pipe *pipe, char **envp)
 {
-	char	**envp;
+	// char	**envp;
 
-	envp = env_list_to_char_arr(g_env);
+	// envp = env_list_to_char_arr(g_env);
 	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
 		ms_fd_err(3);
-	free_split(envp);
+	//free_split(envp);
 }
 
 int	init_here_doc(t_token *list, t_pipe *pipe)
@@ -173,7 +172,8 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		}
 		else	
 		{
-			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+			if (tmp->str) // we only need this if tmp->str can be empty
+				cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
 			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
 			if (tmp->type != ASSIGN && tmp->next && tmp->next->type != ASSIGN)
 				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
@@ -196,9 +196,9 @@ int	handle_input(char **inpt_split, t_pipe *data)
 {
 	int		i;
 	int		err;
-	t_token	**list;
+	t_token	*list;
 	char	*cmd_line;
-	t_token	**builtin_list;
+	t_token	*builtin_list;
 	// (void) envp;
 	// (void) stdout_restore;
 
@@ -211,15 +211,15 @@ int	handle_input(char **inpt_split, t_pipe *data)
 		pipe(data->fd);
 		list = read_tokens(inpt_split[i]);
 		list = merge_quoted_strings(list);
-		check_value(*list);
-		cmd_line = get_cmd(*list, data);
+		check_value(list);
+		cmd_line = get_cmd(list, data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
 			handle_builtinstr(builtin_list, data, i);
 		else if (cmd_line && cmd_line[0])
-			handle_command(list, data, i);
+			handle_command(list, data, cmd_line, i);
 		free(cmd_line);
 		free_token_list(list);
 		free_token_list(builtin_list);
@@ -236,7 +236,10 @@ int	main(int argc, char **argv, char **envp)
 	t_pipe	data;
 	char	*inpt;
 	char	**inpt_split;
-
+	
+	t_token	**pipes;
+	t_token *list;
+	
 	if (argc != 1)
 		return (1);
 	init_minishell(envp);
@@ -244,11 +247,16 @@ int	main(int argc, char **argv, char **envp)
 	data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
+	//list = malloc(sizeof(t_token *));
 	while (1)
 	{
 		dup2(stdin_restore, 0);
 		inpt = readline("Minishell$ ");
 		add_history(inpt);
+
+		list = read_tokens(inpt);
+		pipes = list_to_pipes(list);
+		
 		inpt_split = ft_split(inpt, '|');
 		free(inpt);
 		if (inpt && inpt[0])

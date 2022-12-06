@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/29 16:49:19 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/05 21:50:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ typedef struct s_token
 	char			*str;
 	int				type;
 	int				id;
-	char			*path;
+//	char			*path;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
