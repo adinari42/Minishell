@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/04 16:06:14 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 21:13:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	is_builtin(char *str)
 	return (0);
 }
 
-int	exec_echo(t_token **list)
+int	exec_echo(t_token *list)
 {
 	t_token	*token;
 	int		ret;
@@ -118,7 +118,7 @@ int update_var(char *varname, char *value)
 
 // if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
-int	exec_cd(t_token **list)
+int	exec_cd(t_token *list)
 {
 	int		ret;
 	t_token	*tkn;
@@ -139,7 +139,7 @@ int	exec_cd(t_token **list)
 	return (ret);
 }
 
-int	exec_export(t_token **list)
+int	exec_export(t_token *list)
 {
 	int		ret;
 	t_token	*token;
@@ -205,8 +205,8 @@ int	exec_export(t_token **list)
 	return (0);
 }
 
-// these functions are emtpy dummy functions for now so it compiles
-int	exec_unset(t_token **list)
+// unset without an argument returns 0
+int	exec_unset(t_token *list)
 {
 	int	ret;
 
@@ -215,7 +215,7 @@ int	exec_unset(t_token **list)
 	return (ret);
 }
 
-int	exec_env(t_token **list)
+int	exec_env(t_token *list)
 {
 	t_token	*token;
 
@@ -237,8 +237,8 @@ int	exec_env(t_token **list)
 	display_env();
 	return (0);
 }
- 
-int	exec_exit(t_token **list)
+
+int	exec_exit(t_token *list)
 {
 	int	ret;
 
@@ -247,7 +247,7 @@ int	exec_exit(t_token **list)
 	return (ret);
 }
 
-int	exec_pwd(t_token **list)
+int	exec_pwd(t_token *list)
 {
 	t_token	*token;
 	char	buf[1024];
