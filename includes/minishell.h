@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/06 00:14:33 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 20:09:01 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int		handle_builtin(t_token **list);
 // int		handle_builtinstr(t_token **list, t_pipe *data,
 // 			int stdout_restore, int i);
 int		handle_builtinstr(t_token **list, t_pipe *data, int i);
-int		handle_command(t_token **list, t_pipe *data, int i);
+int		handle_command(t_token **list, t_pipe *data, int i, char *cmd_line);
 
 
 /*builtin.c*/
@@ -118,7 +118,6 @@ t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 void	free_globals(void);
 void	free_and_exit(int signum);
 void	exit_with_value(int retval);
-
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/06 00:14:14 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/06 20:11:50 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,16 @@ void	exec_cmd(t_pipe *pipe)
 	char	**envp;
 
 	envp = env_list_to_char_arr(g_env);
+	// printf("path = %s, cmd = %s\n", pipe->parse.path, pipe->parse.cmd[0]);
+	// int i = 0;
+	// while (envp[i++])
+		// printf("envp :*******************************\n%s\n", envp[i]);
 	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
+	{
+		printf("execve error\n");
 		ms_fd_err(3);
-	free_split(envp);
+	}
+	// free_split(envp);
 }
 
 int	init_here_doc(t_token *list, t_pipe *pipe)
@@ -62,7 +69,7 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 	str = get_next_line(0);
 	while (1)
 	{
-		if (ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
+		if (str && ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
 			break ;
 		ft_putstr_fd(str, pipe->file.infile);
 		free(str);
@@ -146,6 +153,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
 	while (tmp)
 	{
+		// printf("skip_redir : while tmp, tmp->str = %s\n", tmp->str);
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
 		{
 			init_infile(tmp, data, redir_type);
@@ -166,13 +174,13 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	t_token	*tmp;
 	char	*cmd_line;
 	int		redir_type;
-	char *tmp1;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
 	data->out_fd = NULL;
 	while (tmp)
 	{
+		// printf("get_cmd : while tmp, tmp->str = %s\n", tmp->str);
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
 		{
 			redir_type = tmp->type;
@@ -182,10 +190,8 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		else
 		{
 			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
-			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
-			if (tmp->type != ASSIGN && tmp->next && tmp->next->type != ASSIGN)
+			if (tmp->type != ASSIGN && (!tmp->next || tmp->next->type != ASSIGN))
 				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
-			// printf("cmd_line : %s.\n", cmd_line);
 			tmp = tmp->next;
 		}
 	}
@@ -225,8 +231,8 @@ int	handle_input(char **inpt_split, t_pipe *data)
 		if (is_builtin(cmd_line))
 			handle_builtinstr(builtin_list, data, i);
 		else if (cmd_line && cmd_line[0])
-			handle_command(list, data, i);
-		free(cmd_line);
+			handle_command(list, data, i, cmd_line);
+		// free(cmd_line);
 		free_token_list(list);
 		free_token_list(builtin_list);
 		i++;
@@ -237,7 +243,8 @@ int	handle_input(char **inpt_split, t_pipe *data)
 int	main(int argc, char **argv, char **envp)
 {
 	int		stdin_restore;
-	//int		stdout_restore;
+	int		stdout_restore;
+	int		err;
 	t_pipe	data;
 	char	*inpt;
 	char	**inpt_split;
