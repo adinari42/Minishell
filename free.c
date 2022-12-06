@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/05 23:31:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/02 23:03:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,17 @@ void	free_split(char **splitret)
 {
 	int	i;
 
+	if (!splitret)
+		return ;
 	i = 0;
-	while (splitret[i])
+	while (splitret[i] && ft_strncmp(splitret[i], "", 1))
 	{
 		free(splitret[i]);
 		i++;
 	}
-	free (splitret);
+	free(splitret[i]);
+	free(splitret);
+	return ;
 }
 
 void	free_token_list(t_token *list)
@@ -32,7 +36,7 @@ void	free_token_list(t_token *list)
 
 	if (!list)
 		return ;
-	elem = list;
+	elem = *list;
 	while (elem && elem->str && ft_strncmp(elem->str, "", 1))
 	{
 		next = elem->next;
@@ -40,7 +44,7 @@ void	free_token_list(t_token *list)
 		elem = next;
 	}
 	free_token(elem);
-	//free(list);
+	free(list);
 }
 
 void	free_token(t_token *token)
@@ -55,8 +59,7 @@ void	free_token(t_token *token)
 
 void	free_parse(t_parse *parse)
 {
-	if (parse->path)
-		free(parse->path);
+	free(parse->path);
 	free_char_arr(parse->cmd);
 }
 
@@ -67,11 +70,12 @@ void	free_char_arr(char **to_free)
 	i = 0;
 	if (to_free == NULL)
 		return ;
-	while (to_free[i] != NULL) //&& *(to_free[i]) != '\0')
+	while (to_free[i] && ft_strncmp(to_free[i], "", 1))
 	{
 		free(to_free[i]);
 		++i;
 	}
+	free(to_free[i]);
 	free(to_free);
 	to_free = NULL;
 }
@@ -85,7 +89,7 @@ void	free_2d(char ***to_free)
 		return ;
 	while (*(to_free)[i] && ft_strncmp(*(to_free)[i], "", 1))
 	{
-		free((*to_free)[i]);
+		free(*(to_free)[i]);
 		++i;
 	}
 	free(*to_free);
@@ -95,7 +99,7 @@ void	free_2d(char ***to_free)
 void	free_strings(char *str, char **split1)
 {
 	free(str);
-	free_2d(&split1);
+	free_split(split1);
 }
 
 void	free_dlist(t_dlist *list)
@@ -107,15 +111,21 @@ void	free_dlist(t_dlist *list)
 	while (elem)
 	{
 		if (elem->content)
-		{
-			if (elem->content->key)
-				free(elem->content->key);
-			if (elem->content->val)
-				free(elem->content->val);
-			free(elem->content);
-		}
+			free_kval(elem->content);
 		tmp = elem;
 		elem = elem->next;
 		free(tmp);
+	}
+}
+
+void	free_kval(t_kval *kval)
+{
+	if (kval)
+	{
+		if (kval->key)
+			free(kval->key);
+		if (kval->val)
+			free(kval->val);
+		free(kval);
 	}
 }

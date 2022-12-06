@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
 /*   Updated: 2022/12/04 15:41:49 by slakner          ###   ########.fr       */
