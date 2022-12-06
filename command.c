@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/06 20:40:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 20:15:18 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 // 	return (1);
 // }
 
-int	handle_builtinstr(t_token *list, t_pipe *data, int i) //int stdout_restore, int i)
+int	handle_builtinstr(t_token **list, t_pipe *data, int i) //int stdout_restore, int i)
 {
 	// (void) data;
 	// (void) stdout_restore;
@@ -71,36 +71,30 @@ int	handle_builtin(t_token *list)
 	return (ret);
 }
 
-int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i) //int stdout_restore
+int	handle_command(t_token **list, t_pipe *data, int i, char *cmd_line) //int stdout_restore
 {
 	int		err;
 	//char	*cmd;
-	char	**envp;
-	envp = env_list_to_char_arr(g_env);
 
 	err = 0;
 	// (void) list;
-	(void) i;
+	// (void) i;
 	// (void) data;
 	data->pid = fork();
-
-
-	
-	
-	init_path(list, cmd_line, &(data->parse));
+	init_path(*list, cmd_line, &(data->parse));
 	if (data->pid == -1)
 		ms_fd_err(4);
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		exec_cmd(data, envp);
+		exec_cmd(data);
 	}
 	else
 	{
 		parent(data);
 		waitpid(data->pid, &err, 0);
 	}
+	// free(cmd_line);
 	free_parse(&(data->parse));
-	free_split(envp);
 	return (err);
 }

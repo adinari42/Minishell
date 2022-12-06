@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/05 21:13:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/04 16:06:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,10 @@ int	is_builtin(char *str)
 
 int	exec_echo(t_token *list)
 {
-	t_token	*token;
-	int		ret;
+	t_token	*tkn;
 	int		newline;
 
-	token = tlist_start(list);
-	ret = 0;
+	tkn = tlist_start(list);
 	newline = 1;
 	if (!builtin_plausible(tkn, "echo"))
 		// return (1);
@@ -51,7 +49,7 @@ int	exec_echo(t_token *list)
 		newline = 0;
 		tkn = skip_spaces(tkn);
 	}
-	if (token->next && !ft_strncmp(token->next->str, "-n", 3))
+	while (tkn)
 	{
 		//write(1, tkn->str, ft_strlen(tkn->str));
 		printf("%s", tkn->str);
@@ -59,55 +57,21 @@ int	exec_echo(t_token *list)
 	}
 	if (newline)
 		printf("\n");
-	return (ret);
+	return (0);
 }
 
-
-//TODO: Update the PWD environment variable here
-int	exec_cd(t_token **list)
-{
-	int		ret;
-	int		dir_found;
-	t_token	*token;
-
-	token = tlist_start(list);
-	dir_found = 0;
-	if (ft_strncmp(token->str, "cd", 3))
-	{
-		printf("Something went wrong here, %s is not the cd command\n",
-			token->str);
-		return (1);
-	}
-	token = token->next;
-	while (token->next)
-	{
-		token = token->next;
-		if (token->type == WORD || token->type == STR_DQUOTES || token->type == STR_SQUOTES)
-		{
-			if (dir_found)
-				printf("cd: string not in pwd: %s\n", tlist_start(list)->next->str);
-			else
-				dir_found = 1;
-		}
-	}
-	ret = chdir(tlist_start(list)->next->str);
-	if (ret == -1)
-		printf("cd: no such file or directory: %s\n", tlist_start(list)->next->str);
-	return (ret);
-}
-
-int update_var(char *varname, char *value)
+int	update_var(char *varname, char *value)
 {
 	t_dlist	*var;
-	
+
 	var = *g_env;
 	while (var)
 	{
 		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
 		{
-			if(var->content->val)
+			if (var->content->val)
 				free(var->content->val);
-			var->content->val = value;
+			var->content->val = ft_strdup(value);
 			return (0);
 		}
 		var = var->next;
@@ -118,7 +82,7 @@ int update_var(char *varname, char *value)
 
 // if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
-int	exec_cd(t_token *list)
+int	exec_cd(t_token **list)
 {
 	int		ret;
 	t_token	*tkn;
@@ -139,118 +103,144 @@ int	exec_cd(t_token *list)
 	return (ret);
 }
 
-int	exec_export(t_token *list)
+int	exec_export(t_token **list)
 {
-	int		ret;
-	t_token	*token;
-	// char	*varname;
-	// char	*value;
-	t_dlist	*var;
-	//t_kval	*content;
+	t_token	*tkn;
+	t_kval	*cntnt;
 
-	//varname = NULL;
-	token = tlist_start(list);
-	ret = 0;
-	var = malloc(sizeof(t_dlist));
-	var->content = malloc(sizeof(t_kval));
-	if (ft_strncmp(token->str, "export", 7))
-	{
-		printf("Something went wrong here, %s is not the export command\n",
-			token->str);
+	tkn = tlist_start(list);
+	cntnt = malloc(sizeof(t_kval));
+	if (!builtin_plausible(tkn, "export"))
 		return (1);
-	}
-	while (token->next && token->next->type == SPACE)	// skip over spaces
-		token = token->next;
-	if (!token->next)
+	tkn = skip_spaces(tkn);
+	if (!tkn)
+		return (display_env());
+	if (!valid_identifier(tkn->str))
 	{
-		display_env();
-		return (0);
+		free(cntnt);
+		return (prnt_err("export", tkn->str, "not a valid identifier"));
 	}
-	token = token->next;
-	if (token->type == WORD && ft_strlen(token->str))
+	if (tkn->type == WORD && ft_strlen(tkn->str)) //case: varname before 
 	{
-		var->content->key = ft_strdup(token->str);
-		if (token->next && token->next->type == ASSIGN) // found the equal sign, next token please
+		cntnt->key = ft_strdup(tkn->str);
+		if (tkn->next && tkn->next->type == ASSIGN) // found the equal sign, next tkn please
 		{
-			token = token->next;
-			if (token->next && token->next->str)
-				var->content->val = ft_strdup(token->next->str);
+			tkn = tkn->next;
+			if (tkn->next && tkn->next->str)
+				cntnt->val = ft_strdup(tkn->next->str);
 			else
-				var->content->val = ft_strdup("");
+				cntnt->val = ft_strdup("");
+		}
+		else
+		{
+			free(cntnt->key);
+			free(cntnt);
+			return (0);
 		}
 	}
-	else if (token->type == STR_DQUOTES || token->type == STR_SQUOTES)
+	else if (tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 	{
-		var->content->key = extract_varname_quoted(token->next->str);
-		var->content->val = extract_value(token->next->str);
+		cntnt->key = extract_varname_quoted(tkn->next->str);
+		cntnt->val = extract_value(tkn->next->str);
 	}
 	else
 	{
-		free(var); // TODO: needs actual error management if the token after 'export' and some spaces is not WORD or STR_...
+		free(cntnt); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
 		display_env();
 		return (0);
 	}
-
-	if (!var_in_env(var->content->key))
-		lstadd_back(g_env, var);
+	if (!var_in_env(cntnt->key))
+		lstadd_back(g_env, lstnew(cntnt));
 	else
 	{
-		update_var(var->content->key, var->content->val);
-		free(var->content->key);
-		free(var->content);
-		free(var);
+		update_var(cntnt->key, cntnt->val);
+		free_kval(cntnt);
 	}
-	// 	;// TODO: add variable names here, if there is an EQUAL sign
-	// do nothing if there is no assignment operator
 	return (0);
 }
 
 // unset without an argument returns 0
-int	exec_unset(t_token *list)
+int	exec_unset(t_token **list)
 {
-	int	ret;
+	t_token	*tkn;
+	t_dlist	*var;
 
-	(void) list;
-	ret = 0;
-	return (ret);
+	tkn = tlist_start(list);
+	var = *g_env;
+	if (!builtin_plausible(tkn, "unset"))
+		return (1);
+	tkn = skip_spaces(tkn);
+	while (var)
+	{
+		if (!ft_strncmp(var->content->key, tkn->str, ft_strlen(tkn->str)))
+		{
+			if (!tkn->next || tkn->next->type == SPACE_TKN)
+			{
+				lstdel_elem(g_env, var);
+				return (0);
+			}
+		}
+		var = var->next;
+	}
+	return (1);
 }
 
 int	exec_env(t_token *list)
 {
-	t_token	*token;
+	t_token	*tkn;
 
-	token = tlist_start(list);
-	if (ft_strncmp(token->str, "env", 7))
-	{
-		printf("Something went wrong here, %s is not the env command\n",
-			token->str);
+	tkn = tlist_start(list);
+	if (!builtin_plausible(tkn, "env"))
 		return (1);
-	}
-	while (token->next) // env command does not take arguments
+	tkn = skip_spaces(tkn);
+	if (tkn) // env command does not take arguments
 	{
-		if (token->next->type != SPACE)
-		{
-			printf("env: %s: No such file or directory\n", token->next->str);
-			return (1);
-		}
+		printf("env: %s: No such file or directory\n", tkn->next->str);
+		return (1);
 	}
 	display_env();
 	return (0);
 }
 
-int	exec_exit(t_token *list)
+int	exec_exit(t_token **list)
 {
-	int	ret;
+	t_token	*tkn;
+	char	*tokenstr;
+	int		ret;
 
-	(void) list;
+	tkn = tlist_start(list);
 	ret = 0;
-	return (ret);
+	if (!builtin_plausible(tkn, "exit"))
+		return (1);
+	tkn = skip_spaces(tkn);
+	if (tkn && tkn->next)
+	{
+		tkn = skip_spaces(tkn);
+		if (tkn)
+		{
+			printf("minishell: exit: too many arguments\n");
+			return (1);
+		}
+	}
+	else if (tkn)
+	{
+		tokenstr = tkn->str;
+		while (*tokenstr)
+		{
+			if (!ft_isdigit(*tokenstr))
+				printf("minishell: exit: %s: numeric argument required\n", tkn->str);
+			tokenstr ++;
+		}
+		ret = ft_atoi(tkn->str);
+	}
+	exit_with_value(ret);
+	return (0);
 }
 
 int	exec_pwd(t_token *list)
 {
-	t_token	*token;
-	char	buf[1024];
+	t_token	*tkn;
+	char	pwd[1024];
 
 	tkn = tlist_start(list);
 	if (!builtin_plausible(tkn, "pwd"))
@@ -261,8 +251,55 @@ int	exec_pwd(t_token *list)
 		printf("pwd: too many arguments");
 		return (1);
 	}
-	getcwd(buf, 1024);
-	printf("%s \n", buf);
+	getcwd(pwd, 1024);
+	printf("%s \n", pwd);
 	return (0);
 }
 
+int	builtin_plausible(t_token *tkn, char *builtin)
+{
+	if (ft_strncmp(tkn->str, builtin, ft_strlen(builtin) + 1))
+	{
+		printf("Something went wrong here, %s is not the %s command.\n",
+			tkn->str, builtin);
+		return (0);
+	}
+	return (1);
+}
+
+int	print_builtin_error(char *builtin, char *dir)
+{
+	if (ft_strncmp(builtin, "cd", 3))
+		access(dir, X_OK);
+	if (errno == EACCES)
+		printf("minishell: %s: %s/: permission denied\n", builtin, dir);
+	else if (errno == ENOTDIR)
+		printf("minishell: %s: %s: Not a directory\n", builtin, dir);
+	else if (errno == ENAMETOOLONG)
+		printf("minishell: %s: %s: File name too long\n", builtin, dir);
+	else if (errno == ENOENT)
+		printf("minishell: %s: %s: No such file or directory\n", builtin, dir);
+	return (1);
+}
+
+// varnames can contain letters, digits and underscores
+// a varname can't start with a digit
+int	valid_identifier(char *varname)
+{
+	if (ft_isdigit(*varname))
+		return (0);
+	while (*varname)
+	{
+		if (!ft_isalpha(*varname) && !ft_isdigit(*varname)
+			&& *varname != '_')
+			return (0);
+		varname ++;
+	}
+	return (1);
+}
+
+int	prnt_err(char *cmd, char *arg, char *errstr)
+{
+	printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
+	return (1);
+}

@@ -6,11 +6,19 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 21:15:15 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/24 15:29:25 by slakner          ###   ########.fr       */
+/*   Updated: 2022/11/30 21:29:54 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	exit_with_value(int retval)
+{
+	free_globals();
+	system("leaks minishell");
+	exit(retval);
+	return ;
+}
 
 void	free_and_exit(int signum)
 {

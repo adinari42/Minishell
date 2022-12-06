@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/02 15:49:18 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/06 20:11:50 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,28 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse)
 
 	tklist = list;
 	parse->cmd = ft_split(cmdline, ' ');
+	free(cmdline);
 	var_path = get_value_from_key(*g_env, "PATH");
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
 	free_split(split_path);
 }
 
-void	exec_cmd(t_pipe *pipe, char **envp)
+void	exec_cmd(t_pipe *pipe)
 {
-	// char	**envp;
+	char	**envp;
 
-	// envp = env_list_to_char_arr(g_env);
+	envp = env_list_to_char_arr(g_env);
+	// printf("path = %s, cmd = %s\n", pipe->parse.path, pipe->parse.cmd[0]);
+	// int i = 0;
+	// while (envp[i++])
+		// printf("envp :*******************************\n%s\n", envp[i]);
 	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
+	{
+		printf("execve error\n");
 		ms_fd_err(3);
-	//free_split(envp);
+	}
+	// free_split(envp);
 }
 
 int	init_here_doc(t_token *list, t_pipe *pipe)
@@ -61,7 +69,7 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 	str = get_next_line(0);
 	while (1)
 	{
-		if (ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
+		if (str && ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
 			break ;
 		ft_putstr_fd(str, pipe->file.infile);
 		free(str);
@@ -145,6 +153,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
 	while (tmp)
 	{
+		// printf("skip_redir : while tmp, tmp->str = %s\n", tmp->str);
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
 		{
 			init_infile(tmp, data, redir_type);
@@ -165,13 +174,13 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	t_token	*tmp;
 	char	*cmd_line;
 	int		redir_type;
-	char *tmp1;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
 	data->out_fd = NULL;
 	while (tmp)
 	{
+		// printf("get_cmd : while tmp, tmp->str = %s\n", tmp->str);
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
 		{
 			redir_type = tmp->type;
@@ -180,13 +189,9 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		}
 		else
 		{
-			tmp1 = cmd_line;
-			cmd_line = ft_strjoin(cmd_line, tmp->str);
-			free(tmp1);
-			tmp1 = cmd_line;
-			cmd_line = ft_strjoin(cmd_line, " ");
-			printf("cmd_line = %p\n", cmd_line);
-			free(tmp1);
+			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+			if (tmp->type != ASSIGN && (!tmp->next || tmp->next->type != ASSIGN))
+				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
 			tmp = tmp->next;
 		}
 	}
@@ -200,70 +205,34 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-// int	handle_input(char **inpt_split, t_pipe *data)
-// {
-// 	int		i;
-// 	int		err;
-// 	t_token	*list;
-// 	char	*cmd_line;
-// 	t_token	*builtin_list;
-// 	// (void) envp;
-// 	// (void) stdout_restore;
-
-// 	data->cmd_pos = count_split_elems(inpt_split);
-// 	i = 0;
-// 	err = 0;
-// 	while (inpt_split[i])
-// 	{
-// 		pipe(data->fd);
-// 		list = read_tokens(inpt_split[i]);
-// 		list = merge_quoted_strings(list);
-// 		check_value(list);
-// 		cmd_line = get_cmd(list, data);
-// 		builtin_list = read_tokens(cmd_line);
-// 		builtin_list = merge_quoted_strings(builtin_list);
-// 		builtin_list = remove_empty(builtin_list);
-// 		if (is_builtin(cmd_line))
-// 			handle_builtinstr(builtin_list, data, i);
-// 		else if (cmd_line && cmd_line[0])
-// 			handle_command(list, data, cmd_line, i);
-// 		free(cmd_line);
-// 		free_token_list(list);
-// 		free_token_list(builtin_list);
-// 		i++;
-// 	}
-// 	return (err);
-// }
-
-
-int	handle_input(t_token **pipes, t_pipe *data)
+int	handle_input(char **inpt_split, t_pipe *data)
 {
 	int		i;
 	int		err;
-	t_token	*list;
+	t_token	**list;
 	char	*cmd_line;
-	t_token	*builtin_list;
+	t_token	**builtin_list;
 	// (void) envp;
 	// (void) stdout_restore;
 
-	data->cmd_pos = count_pipes(pipes);
+	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
 	err = 0;
-	while (pipes[i])
+	while (inpt_split[i])
 	{
 		pipe(data->fd);
-		//list = read_tokens(pipes[i]);
-		list = merge_quoted_strings(pipes[i]);
-		check_value(list);
-		cmd_line = get_cmd(list, data);
+		list = read_tokens(inpt_split[i]);
+		list = merge_quoted_strings(list);
+		check_value(*list);
+		cmd_line = get_cmd(*list, data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
 			handle_builtinstr(builtin_list, data, i);
 		else if (cmd_line && cmd_line[0])
-			handle_command(list, data, cmd_line, i);
-		free(cmd_line);
+			handle_command(list, data, i, cmd_line);
+		// free(cmd_line);
 		free_token_list(list);
 		free_token_list(builtin_list);
 		i++;
@@ -273,21 +242,13 @@ int	handle_input(t_token **pipes, t_pipe *data)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*inpt;
-	char	**inpt_split;
-	t_token	**list;
-	int		i;
-	t_pipe	data;
 	int		stdin_restore;
 	int		stdout_restore;
 	int		err;
 	t_pipe	data;
 	char	*inpt;
-	// char	**inpt_split;
-	
-	t_token	**pipes;
-	t_token *list;
-	
+	char	**inpt_split;
+
 	if (argc != 1)
 		return (1);
 	init_minishell(envp);
@@ -304,48 +265,12 @@ int	main(int argc, char **argv, char **envp)
 		if (!inpt)
 			free_and_exit(SIGINT);		// this does the exit on Ctrl-D
 		add_history(inpt);
-
-		list = read_tokens(inpt);
-		list = merge_quoted_strings(list);
-		pipes = list_to_pipes(list);
-		//printf("Pipes:\n%s\n%s\n%s\n", pipes[0]->str, pipes[1]->str, pipes[2]->str);
-		// inpt_split = ft_split(inpt, '|');
+		inpt_split = ft_split(inpt, '|');
 		if (inpt && inpt[0])
-		{
-			i = 0;
-			while (inpt_split[i])
-				i++;
-			data.cmd_pos = i;
-			i = 0;
-			while(inpt_split[i])
-			{
-				pipe(data.fd);
-				list = read_tokens(inpt_split[i]);
-				list = merge_quoted_strings(list);
-				check_value(*list, envp);
-				data.pid = fork();
-				init_path(*list, get_cmd(*list, &data), &data.parse);
-				dup2(stdout_restore, 1);
-				if (data.pid == -1)
-					fd_err(4);
-				if (data.pid == 0)
-				{
-					child(&data, i + 1);
-					exec_cmd(&data, envp);
-				}
-				else
-				{
-					parent(&data);	
-					waitpid(data.pid, &err, 0);
-				}
-				free_token_list(list);
-				free_parse(&data.parse);
-				i++;
-			}
-		}
-		free_2d(&inpt_split);
-		free_and_close(&data);
+			err = handle_input(inpt_split, &data);
+		if (inpt)
+			free(inpt);
+		free_char_arr(inpt_split);
 	}
-	free_2d(&data.parse.split_envp);
 	return (argc);
 }
