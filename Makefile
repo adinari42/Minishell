@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/12/03 15:13:31 by slakner          ###   ########.fr        #
+#    Updated: 2022/12/05 20:53:24 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ SRCS = main.c \
 		gnl/get_next_line_utils.c \
 		execute_line.c \
 		spaces.c \
-		string_utils.c
+		string_utils.c \
+		pipes.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))

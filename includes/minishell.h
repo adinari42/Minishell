@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/05 20:09:01 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/06 00:21:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # include "string_utils.h"
 # include <termios.h>
 # include "../gnl/get_next_line.h"
+# include "pipes.h"
 
 
 # define TOKENS " $'<>\""
@@ -76,41 +77,42 @@ const static char *const	g_builtins[] = {
 };
 
 /*tokens.c*/
-t_token	**read_tokens(char *bashcmd);
+t_token	*read_tokens(char *bashcmd);
+void	set_cmd_path(t_token *tklist, t_parse parse);
 int		token_type(char *c);
-
+void	print_list(t_token *tklist);
 void	init_signals(void);
 
-t_token	**remove_spaces(t_token **list);
-t_token	**remove_empty(t_token **list);
+t_token	*remove_spaces(t_token *list);
+t_token	*remove_empty(t_token *list);
 
 int		exec(char *program, char **args, char *const *envp);
 
 /*command.c*/
 //int		handle_commandstr(t_token **list);
-int		handle_builtin(t_token **list);
+int		handle_builtin(t_token *list);
 // int		handle_command(t_token **list, t_pipe *data,
 // 			int stdout_restore, int i);
 // int		handle_builtinstr(t_token **list, t_pipe *data,
 // 			int stdout_restore, int i);
-int		handle_builtinstr(t_token **list, t_pipe *data, int i);
-int		handle_command(t_token **list, t_pipe *data, int i, char *cmd_line);
+int		handle_builtinstr(t_token *list, t_pipe *data, int i);
+int		handle_command(t_token *list, t_pipe *data, char *cmd_line, int i);
 
 
 /*builtin.c*/
 int		is_builtin(char *str);
-int		exec_echo(t_token **token);
-int		exec_cd(t_token **token);
-int		exec_pwd(t_token **token);
-int		exec_export(t_token **token);
-int		exec_unset(t_token **token);
-int		exec_env(t_token **token);
-int		exec_exit(t_token **token);
+int		exec_echo(t_token *token);
+int		exec_cd(t_token *token);
+int		exec_pwd(t_token *token);
+int		exec_export(t_token *token);
+int		exec_unset(t_token *token);
+int		exec_env(t_token *token);
+int		exec_exit(t_token *token);
 int		builtin_plausible(t_token *token, char *builtin);
 int		print_builtin_error(char *builtin, char *dir);
 
 /*quotes.c*/
-t_token	**merge_quoted_strings(t_token **list);
+t_token	*merge_quoted_strings(t_token *list);
 t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
@@ -125,27 +127,18 @@ void	init_path(t_token *tklist, t_parse parse);
 char	*get_path(char **string, char *cmd);
 void	ms_fd_err(int i);
 /*******/
-t_token	**read_tokens(char *bashcmd);
-void	set_cmd_path(t_token *tklist, t_parse parse);
-int		token_type(char *c);
-void	init_signals(void);
-void	print_list(t_token *tklist);
 t_token	*token_new(char *str);
-void	free_token_list(t_token **list);
-void	free_token(t_token *elem);
 void	delete(t_token *del_elem);
-void	append(t_token **token, t_token *new_elem);
-t_token	*list_end(t_token **token);
-t_token	*list_start(t_token **token);
-
-
+void	append(t_token *token, t_token *new_elem);
+t_token	*list_end(t_token *token);
+t_token	*list_start(t_token *token);
 
 /* spaces.c */
 t_token	*skip_spaces(t_token *token);
 
 /* current main.c */
 char	*get_cmd(t_token *list, t_pipe *data);
-void	exec_cmd(t_pipe *pipe);
+void	exec_cmd(t_pipe *pipe, char **envp);
 void	parent(t_pipe *pipe);
 
 #endif

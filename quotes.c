@@ -6,13 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/01 15:49:54 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 21:10:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	**merge_quoted_strings(t_token **list)
+t_token	*merge_quoted_strings(t_token *list)
 {
 	t_token	*token;
 	t_token	*open_quote;

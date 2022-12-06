@@ -6,10 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 22:33:25 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 22:34:12 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 20:51:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef EXEC_H
+# include "minishell.h"
 
 void	child(t_pipe *pipe, int i);
+
+#endif

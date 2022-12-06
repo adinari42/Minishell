@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:35:05 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 23:03:58 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 21:00:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "minishell.h"
 
 void	free_split(char **splitret);
-void	free_token_list(t_token **list);
+void	free_token_list(t_token *list);
 void	free_token(t_token *token);
 void	free_2d(char ***to_free);
 void	free_strings(char *str, char **split1);

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/01 15:50:34 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 21:11:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 // is different from 
 // echo "foo""bar"
 
-t_token	**remove_spaces(t_token **list)
+t_token	*remove_spaces(t_token *list)
 {
 	t_token	*token;
 
@@ -35,7 +35,7 @@ t_token	**remove_spaces(t_token **list)
 	return (list);
 }
 
-t_token	**remove_empty(t_token **list)
+t_token	*remove_empty(t_token *list)
 {
 	t_token	*token;
 

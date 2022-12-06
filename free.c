@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 23:03:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/05 23:31:00 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ void	free_split(char **splitret)
 	return ;
 }
 
-void	free_token_list(t_token **list)
+void	free_token_list(t_token *list)
 {
 	t_token	*elem;
 	t_token	*next;
 
 	if (!list)
 		return ;
-	elem = *list;
+	elem = list;
 	while (elem && elem->str && ft_strncmp(elem->str, "", 1))
 	{
 		next = elem->next;
@@ -44,7 +44,7 @@ void	free_token_list(t_token **list)
 		elem = next;
 	}
 	free_token(elem);
-	free(list);
+	//free(list);
 }
 
 void	free_token(t_token *token)
@@ -59,7 +59,8 @@ void	free_token(t_token *token)
 
 void	free_parse(t_parse *parse)
 {
-	free(parse->path);
+	if (parse->path)
+		free(parse->path);
 	free_char_arr(parse->cmd);
 }
 
