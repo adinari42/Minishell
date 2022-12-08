@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 19:07:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 22:30:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,8 +134,8 @@ void	free_kval(t_kval *kval)
 void	free_pipes(t_token **pipes)
 {
 	int	i;
-	i = 0;
 
+	i = 0;
 	while (pipes && pipes[i])
 	{
 		free_token_list(pipes[i]);

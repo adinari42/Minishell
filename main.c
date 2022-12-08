@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 19:23:54 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 23:39:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,11 +193,14 @@ void	free_and_close(t_pipe *pipe)
 
 int	handle_input(t_token **pipes, t_pipe *data)
 {
+	(void) pipes;
+	// (void) data;
+
 	int		i;
 	int		err;
-	t_token	**list;
-	char	*cmd_line;
-	t_token	*builtin_list;
+	// char	*cmd_line;
+	// t_token	*builtin_list;
+	
 
 	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
@@ -205,11 +208,11 @@ int	handle_input(t_token **pipes, t_pipe *data)
 	while (inpt_split[i])
 	{
 		pipe(data->fd);
-		list = merge_quoted_strings(pipes[i], data);
-		if (list == NULL)
+		pipes[i] = merge_quoted_strings(pipes[i], data);
+		if (pipes[i] == NULL)
 			return (1);
-		check_value(list);
-		cmd_line = get_cmd(list, data);
+		check_value(pipes[i]);
+		cmd_line = get_cmd(pipes[i], data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list, data);
 		builtin_list = remove_empty(builtin_list);
@@ -248,7 +251,6 @@ int	main(int argc, char **argv, char **envp)
 		dup2(stdin_restore, 0);
 		inpt = readline("Minishell$ ");
 		add_history(inpt);
-
 		list = read_tokens(inpt);
 		list = merge_quoted_strings(list, &data);
 		pipes = list_to_pipes(list);
