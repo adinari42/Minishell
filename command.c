@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/06 20:40:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/07 21:37:46 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i) //int std
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		exec_cmd(data, envp);
+		exec_cmd(data);
+		exit(1);
 	}
 	else
 	{
