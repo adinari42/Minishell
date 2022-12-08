@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 16:49:18 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 18:13:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,6 +299,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(inpt);
 
 		list = read_tokens(inpt);
+		list = merge_quoted_strings(list);
 		pipes = list_to_pipes(list);
 		//printf("Pipes:\n%s\n%s\n%s\n", pipes[0]->str, pipes[1]->str, pipes[2]->str);
 		// inpt_split = ft_split(inpt, '|');
