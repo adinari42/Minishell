@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 18:14:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/08 19:23:54 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,42 +198,6 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-// int	handle_input(char **inpt_split, t_pipe *data)
-// {
-// 	int		i;
-// 	int		err;
-// 	t_token	*list;
-// 	char	*cmd_line;
-// 	t_token	*builtin_list;
-// 	// (void) envp;
-// 	// (void) stdout_restore;
-
-// 	data->cmd_pos = count_split_elems(inpt_split);
-// 	i = 0;
-// 	err = 0;
-// 	while (inpt_split[i])
-// 	{
-// 		pipe(data->fd);
-// 		list = read_tokens(inpt_split[i]);
-// 		list = merge_quoted_strings(list);
-// 		check_value(list);
-// 		cmd_line = get_cmd(list, data);
-// 		builtin_list = read_tokens(cmd_line);
-// 		builtin_list = merge_quoted_strings(builtin_list);
-// 		builtin_list = remove_empty(builtin_list);
-// 		if (is_builtin(cmd_line))
-// 			handle_builtinstr(builtin_list, data, i);
-// 		else if (cmd_line && cmd_line[0])
-// 			handle_command(list, data, cmd_line, i);
-// 		free(cmd_line);
-// 		free_token_list(list);
-// 		free_token_list(builtin_list);
-// 		i++;
-// 	}
-// 	return (err);
-// }
-
-
 int	handle_input(t_token **pipes, t_pipe *data)
 {
 	int		i;
@@ -241,8 +205,6 @@ int	handle_input(t_token **pipes, t_pipe *data)
 	t_token	*list;
 	char	*cmd_line;
 	t_token	*builtin_list;
-	// (void) envp;
-	// (void) stdout_restore;
 
 	data->cmd_pos = count_pipes(pipes);
 	i = 0;
@@ -250,17 +212,11 @@ int	handle_input(t_token **pipes, t_pipe *data)
 	while (pipes[i])
 	{
 		pipe(data->fd);
-		list = read_tokens(inpt_split[i]);
-		list = merge_quoted_strings(list, data);
+		list = merge_quoted_strings(pipes[i], data);
 		if (list == NULL)
-		{
-			// printf("Minishell$ ");
 			return (1);
-		}
-        // else
-		// {
-			check_value(*list);
-		cmd_line = get_cmd(*list, data);
+		check_value(list);
+		cmd_line = get_cmd(list, data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list, data);
 		builtin_list = remove_empty(builtin_list);
@@ -269,7 +225,7 @@ int	handle_input(t_token **pipes, t_pipe *data)
 		else if (cmd_line && cmd_line[0])
 			handle_command(list, data, cmd_line, i);
 		free(cmd_line);
-		free_token_list(list);
+		//free_token_list(list);		// this was freeing part of "**pipes" and led to double free later
 		free_token_list(builtin_list);
 		// }
 		i++;
@@ -284,24 +240,18 @@ int	main(int argc, char **argv, char **envp)
 	int		err;
 	t_pipe	data;
 	char	*inpt;
-	// char	**inpt_split;
-	
 	t_token	**pipes;
 	t_token *list;
-	
+
 	if (argc != 1)
 		return (1);
 	err = 0;
 	init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	data.parse.split_envp = envp_parse(envp);
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
-	//list = malloc(sizeof(t_token *));
 	while (1)
 	{
-		// if (err == 1)
-		// 	printf("Minishell$ ");
 		dup2(stdin_restore, 0);
 		dup2(stdout_restore, 1);
 		inpt = readline("Minishell$ ");
@@ -312,18 +262,11 @@ int	main(int argc, char **argv, char **envp)
 		list = read_tokens(inpt);
 		list = merge_quoted_strings(list);
 		pipes = list_to_pipes(list);
-		//printf("Pipes:\n%s\n%s\n%s\n", pipes[0]->str, pipes[1]->str, pipes[2]->str);
-		// inpt_split = ft_split(inpt, '|');
-		if (inpt && inpt[0])
-			err = handle_input(inpt_split, &data);
-
-		dup2(stdin_restore, 0);
-		dup2(stdout_restore, 1);
+		if (pipes && inpt && inpt[0])
+			err = handle_input(pipes, &data);
 		if (inpt)
 			free(inpt);
-		free_char_arr(inpt_split);
-		// dprintf(2, "fuck\n");
-		// exit(1);
+		free_pipes(pipes);
 	}
 	return (argc);
 }
