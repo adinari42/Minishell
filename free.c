@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/02 23:03:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 19:07:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ void	free_token_list(t_token *list)
 
 	if (!list)
 		return ;
-	elem = *list;
-	while (elem && elem->str && ft_strncmp(elem->str, "", 1))
+	elem = list;
+	while (elem && elem->str && (elem->str)[0]
+		&& ft_strncmp(elem->str, "", 1))
 	{
 		next = elem->next;
 		free_token(elem);
@@ -128,4 +129,18 @@ void	free_kval(t_kval *kval)
 			free(kval->val);
 		free(kval);
 	}
+}
+
+void	free_pipes(t_token **pipes)
+{
+	int	i;
+	i = 0;
+
+	while (pipes && pipes[i])
+	{
+		free_token_list(pipes[i]);
+		i ++;
+	}
+	if (pipes)
+		free(pipes);
 }
