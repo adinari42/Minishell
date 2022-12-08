@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/07 21:37:46 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/08 19:45:35 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i) //int std
 {
 	int		err;
 	//char	*cmd;
-	char	**envp;
-	envp = env_list_to_char_arr(g_env);
 
 	err = 0;
 	// (void) list;
