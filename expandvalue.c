@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/04 15:41:49 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 23:39:44 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,25 +94,22 @@ char	*expand_value(char *str)
 		split2 = ft_split(split1[counter.i], '$'); //split using $
 		while (split2[counter.j])
 		{
-			/********add necessary spaces*******/
+	// 		/********add necessary spaces*******/
 			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
 			{
 				res = ft_strjoin_free_str1(res, " ");
 				counter.k++;
 			}
-		// 	/*******expand values*******/
+	// 	// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
-				//split2[counter.j] = value_expand(envp, split2[counter.j]);
 			{
 				val = get_value_from_key(*g_env, split2[counter.j]);
-				// if (val)
-					split2[counter.j] = ft_strdup(get_value_from_key(*g_env, split2[counter.j]));
-				// else
-				// 	split2[counter.j] = ft_strdup("");
-				// split2[counter.j] = ft_strdup(get_value_from_key(*g_env, split2[counter.j]));
+				if (split2[counter.j])
+					free(split2[counter.j]);
+				split2[counter.j] = ft_strdup(val);
 			}
 			res = ft_strjoin_free_str1(res, split2[counter.j]);
-		// 	/*******reach end of word********/
+	// 	// 	/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
 				counter.k++;
@@ -124,22 +121,17 @@ char	*expand_value(char *str)
 		free_split(split2);
 		counter.i++;
 	}
-	free_strings(str, split1);
+	// free_strings(str, split1);
+	free_split(split1);
+	free(str);
 	return (res);
 }
 
 void	check_value(t_token *list)
 {
-	t_token	*tmp1;
-	char	*str_tmp;
-
-	// (void) envp;
-	// (void) list;
-	tmp1 = list;
-	while (tmp1)
+	while (list)
 	{
-		str_tmp = expand_value(tmp1->str);
-		tmp1->str = str_tmp;
-		tmp1 = tmp1->next;
+		list->str = expand_value(list->str);
+		list = list->next;
 	}
 }
