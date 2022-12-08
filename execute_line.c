@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/06 20:05:42 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/07 21:39:17 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ void	ms_fd_err(int i)
 		perror("Fork error\n");
 	else if (i == 5)
 		perror("parse error\n");
+	else if (i == 258)	
+		dprintf(2, "systax error: unclosed quotes\n");
 	else
 		perror("Error\n");
-	exit(1);
+	exit(i);
 }

@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/05 20:09:01 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/07 19:29:16 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int		builtin_plausible(t_token *token, char *builtin);
 int		print_builtin_error(char *builtin, char *dir);
 
 /*quotes.c*/
-t_token	**merge_quoted_strings(t_token **list);
+t_token	**merge_quoted_strings(t_token **list, t_pipe *data);
 t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
