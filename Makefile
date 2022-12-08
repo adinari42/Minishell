@@ -6,18 +6,16 @@
 #    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/12/03 15:13:31 by slakner          ###   ########.fr        #
+#    Updated: 2022/12/07 17:36:34 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRCS = main.c\
-		expandvalue.c \
+SRCS = 	main.c \
 		signals.c \
 		tokens.c \
 		ltokens.c \
-		expand.c \
 		quotes.c \
 		parse.c \
 		exec.c \

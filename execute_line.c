@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 16:46:52 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/07 21:39:17 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,13 @@ void	fd_err(int i)
 		perror("Command error\n");
 	else if (i == 4)
 		perror("Fork error\n");
+	else if (i == 5)
+		perror("parse error\n");
+	else if (i == 258)	
+		dprintf(2, "systax error: unclosed quotes\n");
 	else
 		perror("Error\n");
-	exit(1);
+	exit(i);
 }
 
 // void	exec_cmd(t_pipe *pipe, char *envp[])

@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:18:08 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 18:14:17 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,11 @@ void	display_splitenvp(t_parse parse, char **argv)
 }
 void	free_parse(t_parse *parse)
 {
-	free(parse->path);
-	free_2d(&parse->cmd);
+	// char	**envp;
+
+	envp = env_list_to_char_arr(g_env);
+	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
+		ms_fd_err(3);
 }
 
 void	exec_cmd(t_pipe *pipe, char *envp[])
@@ -212,19 +215,27 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	{
 		pipe(data->fd);
 		list = read_tokens(inpt_split[i]);
-		list = merge_quoted_strings(list);
-		check_value(*list, envp);
-		// cmd_line = get_cmd(*list, data);
-		// builtin_list = read_tokens(cmd_line);
-		// builtin_list = merge_quoted_strings(builtin_list);
-		// builtin_list = remove_empty(builtin_list);
-		// if (is_builtin(cmd_line))
-		// 	handle_builtin(builtin_list);
-		// else
-		// 	handle_command(list, data, stdout_restore, i);
-		// free(cmd_line);
+		list = merge_quoted_strings(list, data);
+		if (list == NULL)
+		{
+			// printf("Minishell$ ");
+			return (1);
+		}
+        // else
+		// {
+			check_value(*list);
+		cmd_line = get_cmd(*list, data);
+		builtin_list = read_tokens(cmd_line);
+		builtin_list = merge_quoted_strings(builtin_list, data);
+		builtin_list = remove_empty(builtin_list);
+		if (is_builtin(cmd_line))
+			handle_builtinstr(builtin_list, data, i);
+		else if (cmd_line && cmd_line[0])
+			handle_command(list, data, cmd_line, i);
+		free(cmd_line);
 		free_token_list(list);
-		// free_token_list(builtin_list);
+		free_token_list(builtin_list);
+		// }
 		i++;
 	}
 	return (err);
@@ -366,14 +377,17 @@ int main(int argc, char **argv, char **envp)
 	
 	if (argc != 1)
 		return (1);
-	init_signals();
-	//(void) envp;
-	init_env_llist(envp);
-	//parse.split_envp = envp_parse(envp);
-	(void) argv;//to silence unused argv error and not use dislay env 
-	//display_splitenvp(parse, argv);
+	err = 0;
+	init_minishell(envp);
+	(void) argv; //to silence unused argv error and not use dislay env 
+	data.parse.split_envp = envp_parse(envp);
+	stdin_restore = dup(0);		// save original stdin/stdout
+	stdout_restore = dup(1);
+	//list = malloc(sizeof(t_token *));
 	while (1)
 	{
+		// if (err == 1)
+		// 	printf("Minishell$ ");
 		dup2(stdin_restore, 0);
 		dup2(stdout_restore, 1);
 		// write(2, "i get here", 10);
@@ -384,45 +398,15 @@ int main(int argc, char **argv, char **envp)
 		inpt_split = ft_split(inpt, '|');
 		free(inpt);
 		if (inpt && inpt[0])
-		{
-			i = 0;
-			while (inpt_split[i])
-				i++;
-			data.cmd_pos = i;
-			i = 0;
-			while(inpt_split[i])
-			{
-				pipe(data.fd);
-				list = read_tokens(inpt_split[i]);
-				list = merge_quoted_strings(list);
-				check_value(*list, envp);
-				init_path(*list, get_cmd(*list, &data), &data.parse);
-				/***********************************************/
-				data.pid = fork();
-				if (data.pid == -1)
-					fd_err(4);
-				if (data.pid == 0)
-				{
-					child(&data, i + 1);
-					exec_cmd(&data, envp);
-				}
-				else
-				{
-					parent(&data);	
-					waitpid(data.pid, &err, 0);
-				}
-				/***********************************************/
-				free_token_list(list);
-				free_parse(&data.parse);
-				i++;
-			}
-			//for each pipe
-					//waitpid(0, &data.pid, 0);
-		}
-		free_2d(&inpt_split);
-		unlink("tmp");
+			err = handle_input(inpt_split, &data);
+
+		dup2(stdin_restore, 0);
+		dup2(stdout_restore, 1);
+		if (inpt)
+			free(inpt);
+		free_char_arr(inpt_split);
+		// dprintf(2, "fuck\n");
 		// exit(1);
-		// system("leaks minishell");
 	}
 	return (argc);
 }
