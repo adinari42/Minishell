@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 19:45:35 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 20:11:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@
 
 int	handle_builtinstr(t_token **list, t_pipe *data, int i) //int stdout_restore, int i)
 {
-	// int	err;
-
-	dup2(stdout_restore, 1);
-	child(data, i);
+	child(data, i + 1);
 	handle_builtin(list);
 	parent(data);
 	return (0);
@@ -69,14 +66,10 @@ int	handle_builtin(t_token *list)
 int	handle_command(t_token **list, t_pipe *data, int i, char *cmd_line) //int stdout_restore
 {
 	int		err;
-	//char	*cmd;
 
 	err = 0;
-	// (void) list;
-	// (void) i;
-	// (void) data;
 	data->pid = fork();
-	init_path(*list, cmd_line, &(data->parse));
+	init_path(list, cmd_line, &(data->parse));
 	if (data->pid == -1)
 		ms_fd_err(4);
 	if (data->pid == 0)
@@ -90,7 +83,6 @@ int	handle_command(t_token **list, t_pipe *data, int i, char *cmd_line) //int st
 		parent(data);
 		waitpid(data->pid, &err, 0);
 	}
-	// free(cmd_line);
 	free_parse(&(data->parse));
 	return (err);
 }
