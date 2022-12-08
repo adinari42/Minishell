@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/11/24 20:35:24 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/07 19:29:16 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <unistd.h>
+# include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "structs.h"
@@ -26,7 +27,11 @@
 # include "llist.h"
 # include "env.h"
 # include "init.h"
+# include "exec.h"
+# include "string_utils.h"
+# include <termios.h>
 # include "../gnl/get_next_line.h"
+
 
 # define TOKENS " $'<>\""
 
@@ -43,7 +48,7 @@ enum e_tokentype
 	DOUBLE_QUOTE,
 	SINGLE_QUOTE,
 	ASSIGN,
-	SPACE,
+	SPACE_TKN,
 	WORD,
 	STR_DQUOTES,
 	STR_SQUOTES
@@ -51,7 +56,7 @@ enum e_tokentype
 
 enum e_builtins
 {
-	ECHO,
+	// ECHO,
 	CD,
 	PWD,
 	EXPORT,
@@ -61,7 +66,7 @@ enum e_builtins
 };
 
 const static char *const	g_builtins[] = {
-	"echo",
+	// "echo",
 	"cd",
 	"pwd",
 	"export",
@@ -82,9 +87,15 @@ t_token	**remove_empty(t_token **list);
 int		exec(char *program, char **args, char *const *envp);
 
 /*command.c*/
-int		handle_commandstr(t_token **list);
+//int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token **list);
-int		handle_command(t_token **list);
+// int		handle_command(t_token **list, t_pipe *data,
+// 			int stdout_restore, int i);
+// int		handle_builtinstr(t_token **list, t_pipe *data,
+// 			int stdout_restore, int i);
+int		handle_builtinstr(t_token **list, t_pipe *data, int i);
+int		handle_command(t_token **list, t_pipe *data, int i, char *cmd_line);
+
 
 /*builtin.c*/
 int		is_builtin(char *str);
@@ -95,22 +106,24 @@ int		exec_export(t_token **token);
 int		exec_unset(t_token **token);
 int		exec_env(t_token **token);
 int		exec_exit(t_token **token);
+int		builtin_plausible(t_token *token, char *builtin);
+int		print_builtin_error(char *builtin, char *dir);
 
 /*quotes.c*/
-t_token	**merge_quoted_strings(t_token **list);
+t_token	**merge_quoted_strings(t_token **list, t_pipe *data);
 t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 /*exit.c*/
 void	free_globals(void);
 void	free_and_exit(int signum);
-
+void	exit_with_value(int retval);
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);
 void	init_path(t_token *tklist, char *cmdline, t_parse *parse);
 char	*get_path(char **string, char *cmd);
-void	fd_err(int i);
+void	ms_fd_err(int i);
 /*******/
 t_token	**read_tokens(char *bashcmd);
 void	set_cmd_path(t_token *tklist, t_parse parse);
@@ -124,17 +137,15 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
-/*expandvalue.c*/
-char	*value_expand(char **envp, char *var);
-char	*expand_value(char *str, char **envp);
-void	check_value(t_token *list, char **envp);
-void	free_2d(char ***to_free);
-void	free_strings(char *str, char **split1);
-char	*add_space(char *tmp, char *res);
-char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
-/*quotes.c*/
-// t_token	**merge_quoted_strings(t_token **list);
-// t_token	*merge_tokens(t_token *first, t_token *last);
-// t_token	*merge_two_tokens(t_token *token1, t_token *token2);
+
+
+
+/* spaces.c */
+t_token	*skip_spaces(t_token *token);
+
+/* current main.c */
+char	*get_cmd(t_token *list, t_pipe *data);
+void	exec_cmd(t_pipe *pipe);
+void	parent(t_pipe *pipe);
 
 #endif

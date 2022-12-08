@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/27 15:32:14 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/03 14:24:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,33 +43,33 @@ int	token_type(char *c)
 	else if (!ft_strncmp(c, "|", 1))
 		return (PIPE);
 	else if (!ft_strncmp(c, " ", 1))
-		return (SPACE);
+		return (SPACE_TKN);
 	else if (!ft_strncmp(c, "=", 1))
 		return (ASSIGN);
 	else
 		return (WORD);
 }
 
-void	set_cmd_path(t_token *tklist, t_parse parse)
-{
-	if (!tklist)
-		return ;
-	printf("***set path cmd***\n");
-	while (tklist)
-	{
-		if (tklist->type == WORD )
-		{	
-			tklist->path = get_path(parse.split_envp, tklist->str);
-			printf("[Debug] path after set is %s\n", tklist->path);
-		}
-		tklist = tklist->next;
-	}
-	return ;
-}
+// void	set_cmd_path(t_token *tklist, t_parse parse)
+// {
+// 	if (!tklist)
+// 		return ;
+// 	printf("***set path cmd***\n");
+// 	while (tklist)
+// 	{
+// 		if (tklist->type == WORD )
+// 		{	
+// 			tklist->path = get_path(parse.split_envp, tklist->str);
+// 			printf("[Debug] path after set is %s\n", tklist->path);
+// 		}
+// 		tklist = tklist->next;
+// 	}
+// 	return ;
+// }
 
 void	print_list(t_token *list)
 {
-	t_token *tklist;
+	t_token	*tklist;
 
 	tklist = list;
 	if (!tklist)
