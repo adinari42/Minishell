@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 23:39:44 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/09 15:05:20 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,44 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 	return (res);
 }
 
+
+// {
+// 	char		*ptr1;
+// 	char		*ptr2;
+// 	char		*tmp1;
+// 	char		*tmp2;
+// 	char		*newstr;
+
+// 	ptr1 = str;
+// 	newstr = str;
+// 	while (*ptr1)
+// 	{
+// 		if (*ptr1 == '$')
+// 		{
+// 			newstr = ft_substr(newstr, 0, ptr1 - newstr);
+// 			ptr2 = ptr1 + 1;
+// 			while (*ptr2 && *ptr2 != ' ')
+// 				ptr2 ++;
+// 			tmp1 = ft_substr(ptr1, 1, ptr2 - ptr1);
+// 			tmp2 = get_value_from_key(*g_env, tmp1);
+// 			if (tmp1)
+// 				free(tmp1);
+// 			newstr = ft_strjoin_free_str1(newstr, tmp2);
+// 			free(tmp2);
+// 			ptr1 = ptr2;
+// 		}
+// 		ptr1++;
+// 	}
+// 	if (str != newstr)
+// 	{
+// 		free(str);
+// 		return (newstr);
+// 	}
+// 	return (str);	
+// }
+
+
+
 /*
 -split the token twice, once using spaces to seperate words,
 -then split the words using $ to seperate variables from non variables,
@@ -121,7 +159,7 @@ char	*expand_value(char *str)
 		free_split(split2);
 		counter.i++;
 	}
-	// free_strings(str, split1);
+	free_strings(str, split1);
 	free_split(split1);
 	free(str);
 	return (res);
