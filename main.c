@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 23:39:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/09 13:18:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,14 +193,13 @@ void	free_and_close(t_pipe *pipe)
 
 int	handle_input(t_token **pipes, t_pipe *data)
 {
-	(void) pipes;
+	// (void) pipes;
 	// (void) data;
 
 	int		i;
 	int		err;
-	// char	*cmd_line;
-	// t_token	*builtin_list;
-	
+	char	*cmd_line;
+	t_token	*builtin_list;
 
 	data->cmd_pos = count_split_elems(inpt_split);
 	i = 0;
@@ -219,7 +218,7 @@ int	handle_input(t_token **pipes, t_pipe *data)
 		if (is_builtin(cmd_line))
 			handle_builtinstr(builtin_list, data, i);
 		else if (cmd_line && cmd_line[0])
-			handle_command(list, data, cmd_line, i);
+			handle_command(pipes[i], data, cmd_line, i);
 		free(cmd_line);
 		//free_token_list(list);		// this was freeing part of "**pipes" and led to double free later
 		free_token_list(builtin_list);
