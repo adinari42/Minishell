@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/09 20:26:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 21:07:30 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,6 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 // 	return (str);	
 // }
 
-
-
 /*
 -split the token twice, once using spaces to seperate words,
 -then split the words using $ to seperate variables from non variables,
@@ -151,7 +149,7 @@ char	*expand_value(char *str, t_dlist *env)
 		split2 = ft_split(split1[counter.i], '$'); //split using $
 		while (split2[counter.j])
 		{
-	// 		/********add necessary spaces*******/
+			/********add necessary spaces*******/
 			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
 			{
 				res = ft_strjoin_free_str1(res, " ");
@@ -166,7 +164,7 @@ char	*expand_value(char *str, t_dlist *env)
 				split2[counter.j] = ft_strdup(val);
 			}
 			res = ft_strjoin_free_str1(res, split2[counter.j]);
-	// 	// 	/*******reach end of word********/
+		// 	/*******reach end of word********/
 			while (tmp[counter.k] && tmp[counter.k] != ' ')
 			{
 				counter.k++;
@@ -184,6 +182,7 @@ char	*expand_value(char *str, t_dlist *env)
 
 void	check_value(t_token *list, t_dlist *env)
 {
+	(void) env;
 	while (list)
 	{
 		list->str = expand_value(list->str, env);

@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 22:30:12 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 21:06:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,13 @@ void	free_token_list(t_token *list)
 	if (!list)
 		return ;
 	elem = list;
-	while (elem && elem->str && (elem->str)[0]
-		&& ft_strncmp(elem->str, "", 1))
+	while (elem && elem->str)
 	{
 		next = elem->next;
 		free_token(elem);
 		elem = next;
 	}
 	free_token(elem);
-	free(list);
 }
 
 void	free_token(t_token *token)
@@ -78,24 +76,23 @@ void	free_char_arr(char **to_free)
 	}
 	free(to_free[i]);
 	free(to_free);
-	to_free = NULL;
 }
 
-void	free_2d(char ***to_free)
-{
-	size_t	i;
+// void	free_2d(char ***to_free)
+// {
+// 	size_t	i;
 
-	i = 0;
-	if (!to_free || !(*to_free))
-		return ;
-	while (*(to_free)[i] && ft_strncmp(*(to_free)[i], "", 1))
-	{
-		free(*(to_free)[i]);
-		++i;
-	}
-	free(*to_free);
-	*to_free = NULL;
-}
+// 	i = 0;
+// 	if (!to_free || !(*to_free))
+// 		return ;
+// 	while (*(to_free)[i] && ft_strncmp(*(to_free)[i], "", 1))
+// 	{
+// 		free(*(to_free)[i]);
+// 		++i;
+// 	}
+// 	free(*to_free);
+// 	*to_free = NULL;
+// }
 
 void	free_strings(char *str, char **split1)
 {
