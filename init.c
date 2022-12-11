@@ -6,30 +6,20 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/04 20:31:53 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/09 20:41:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// int	init_env(char **envp)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (envp[i])
-// 		i++;
-// 	g_envp = calloc(i * sizeof(char *));
-// 	i = 0;
-// 	while (envp[i])
-// 		g_envp[i] = ft_strdup(envp[i]);
-// }
-
-void	init_minishell(char **envp)
+t_dlist	**init_minishell(char **envp)
 {
+	t_dlist	**l_envp;
+
 	init_term();
-	init_env_llist(envp);
+	l_envp = init_env_llist(envp);
 	init_signals();
+	return (l_envp);
 }
 
 void	init_term(void)
@@ -41,17 +31,18 @@ void	init_term(void)
 	tcsetattr(1, 0, &t_settings);
 }
 
-int	init_env_llist(char **envp)
+t_dlist	**init_env_llist(char **envp)
 {
+	t_dlist	**l_envp;
 	int		i;
 	t_kval	*var;
 	char	**tmp;
 
-	i = 0;
 	if (!envp)
-		return (1);
-	g_env = malloc(sizeof(t_dlist *));
-	*g_env = NULL;
+		return (NULL);
+	i = 0;
+	l_envp = malloc(sizeof(t_dlist *));
+	*l_envp = NULL;
 	while (envp[i])
 	{
 		tmp = ft_split(envp[i], '=');
@@ -59,8 +50,8 @@ int	init_env_llist(char **envp)
 		var->key = ft_strdup(tmp[0]);
 		var->val = ft_strdup(tmp[1]);
 		free_split(tmp);
-		lstadd_back(g_env, lstnew(var));
+		lstadd_back(l_envp, lstnew(var));
 		i++;
 	}
-	return (0);
+	return (l_envp);
 }
