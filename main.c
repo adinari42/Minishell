@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/11 19:25:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 21:34:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 {
 	// (void) pipes;
 	// (void) data;
+	//(void) env;
 
 	int		i;
 	int		err;
@@ -234,10 +235,10 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
 	int		err;
-	t_pipe	data;
 	char	*inpt;
-	t_token	**pipes;
 	t_token	*list;
+	t_pipe	data;
+	t_token	**pipes;	
 
 	err = 1;
 	dup2(stdin_restore, 0);
@@ -251,8 +252,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	pipes = list_to_pipes(list);
 	if (pipes && inpt && inpt[0])
 		err = handle_input(pipes, &data, env);
-	if (inpt)
-		free(inpt);
+	free(inpt);
 	free_pipes(pipes);
 	return (err);
 }
