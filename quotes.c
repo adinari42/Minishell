@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 22:38:19 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 18:17:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 					if (data->pid == 0)
 					{
 						ms_fd_err(258);
-						//free_and_close(data);
+						free_and_close(data);
 					}
 					else
 					{
