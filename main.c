@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/11 21:34:17 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 22:39:35 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	init_outfile(t_pipe *pipe)
 	else
 		pipe->file.outfile = open(pipe->out_fd,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
-	free(pipe->out_fd);
+	//free(pipe->out_fd);	pipe->out_fd isn't copied, it is still part of the t_token *list and will be freed together with the rest of the list
 	pipe->append = 0;
 	if (pipe->file.outfile == -1)
 		ms_fd_err(1);
@@ -114,8 +114,8 @@ void	parent(t_pipe *pipe)
 
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 {
-		if (pipe->out_fd)
-			free(pipe->out_fd);
+		// if (pipe->out_fd)		//pipe->out_fd isn't copied, it is still part of the t_token *list and will be freed together with the rest of the list
+		// 	free(pipe->out_fd);
 		pipe->out_fd = NULL;
 		if (redir_type == APPEND_IN)
 			init_here_doc(list, pipe);
@@ -175,7 +175,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		{
 			redir_type = tmp->type;
 			tmp = tmp->next;
-			tmp = skip_redir(tmp, data, redir_type);//break ;
+			tmp = skip_redir(tmp, data, redir_type); //break ;
 		}
 		else
 		{
