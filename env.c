@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 20:11:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/09 21:02:33 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,12 @@ char	*extract_value(char *tokenstr)
 	return (varname);
 }
 
-int	num_vars_env()
+int	num_vars_env(t_dlist *env)
 {
-	return (lstsize(*g_env));
+	return (lstsize(env));
 }
 
-int	var_in_env(char *varname)
+int	var_in_env(char *varname, t_dlist *env)
 {
 	t_dlist	*elem;
 
@@ -102,13 +102,12 @@ int	var_in_env(char *varname)
 	return (0);
 }
 
-int	display_env(void)
+int	display_env(t_dlist *env)
 {
 	t_dlist	*var;
 
 	var = env;
-	while (var && var->content
-		&& ft_strncmp(var->content->key, "?", 2))
+	while (var && var->content)
 	{
 		printf("%s=", var->content->key);
 		if (var->content->val)
@@ -126,12 +125,13 @@ char	**env_list_to_char_arr(t_dlist **env)
 	char	**env_c;
 	char	*buf;
 
-	env_c = malloc(sizeof(char *) * (lstsize(*env) + 1));
-	//printf("lstsize: %d\n", lstsize(*env));
-	i = 0;
-	if (!env && !env_c)
+	if (!env || !*env)
 		return (NULL);
-	elem = env[0];
+	i = 0;
+	elem = *env;
+	env_c = malloc(sizeof(char *) * (lstsize(*env) + 1));
+	if (!env_c)
+		return (NULL);
 	while (i < lstsize(*env))
 	{
 		buf = ft_strjoin(elem->content->key, "=");
@@ -149,6 +149,6 @@ char	**env_list_to_char_arr(t_dlist **env)
 		i++;
 		elem = elem->next;
 	}
-	*(env_c + i) = NULL;//
+	*(env_c + i) = NULL;
 	return (env_c);
 }

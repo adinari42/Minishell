@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/09 13:18:47 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 18:20:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 // 		printf("%s\n", parse.split_envp[i++]);
 // }
 
-void	init_path(t_token *list, char *cmdline, t_parse *parse)
+void	init_path(t_token *list, char *cmdline, t_parse *parse, t_dlist **env)
 {
 	t_token	*tklist;
 	char	*var_path;
@@ -32,18 +32,17 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse)
 
 	tklist = list;
 	parse->cmd = ft_split(cmdline, ' ');
-	free(cmdline);
-	var_path = get_value_from_key(*g_env, "PATH");
+	var_path = get_value_from_key(*env, "PATH");
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
 	free_split(split_path);
 }
 
-void	exec_cmd(t_pipe *pipe)
+void	exec_cmd(t_pipe *pipe, t_dlist **env)
 {
 	char	**envp;
 
-	envp = env_list_to_char_arr(g_env);
+	envp = env_list_to_char_arr(env);
 	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
 		ms_fd_err(3);
 }
@@ -95,16 +94,15 @@ void	init_outfile(t_pipe *pipe)
 
 void	child(t_pipe *pipe, int i)
 {
-	if (i != pipe->cmd_pos)
+	close (pipe->fd[0]);
+	if (i != pipe->cmd_pos)			// cmd_pos marks the last pipe(?)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
 			ms_fd_err(2);
 	}
 	if (pipe->out_fd != NULL)
-	{
 		init_outfile(pipe);
-	}
-	// close (pipe->fd[0]);
+	close(pipe->fd[1]);
 }
 
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
@@ -191,7 +189,7 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-int	handle_input(t_token **pipes, t_pipe *data)
+int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 {
 	// (void) pipes;
 	// (void) data;
@@ -207,18 +205,15 @@ int	handle_input(t_token **pipes, t_pipe *data)
 	while (inpt_split[i])
 	{
 		pipe(data->fd);
-		pipes[i] = merge_quoted_strings(pipes[i], data);
-		if (pipes[i] == NULL)
-			return (1);
-		check_value(pipes[i]);
+		check_value(pipes[i], *env);
 		cmd_line = get_cmd(pipes[i], data);
 		builtin_list = read_tokens(cmd_line);
 		builtin_list = merge_quoted_strings(builtin_list, data);
 		builtin_list = remove_empty(builtin_list);
 		if (is_builtin(cmd_line))
-			handle_builtinstr(builtin_list, data, i);
+			handle_builtinstr(builtin_list, data, i, env);
 		else if (cmd_line && cmd_line[0])
-			handle_command(pipes[i], data, cmd_line, i);
+			handle_command(pipes[i], data, cmd_line, i, env);
 		free(cmd_line);
 		//free_token_list(list);		// this was freeing part of "**pipes" and led to double free later
 		free_token_list(builtin_list);
@@ -228,36 +223,47 @@ int	handle_input(t_token **pipes, t_pipe *data)
 	return (err);
 }
 
-int	main(int argc, char **argv, char **envp)
+int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
-	int		stdin_restore;
-	int		stdout_restore;
 	int		err;
 	t_pipe	data;
 	char	*inpt;
 	t_token	**pipes;
-	t_token *list;
+	t_token	*list;
+
+	err = 1;
+	dup2(stdin_restore, 0);
+	dup2(stdout_restore, 1);
+
+	inpt = readline("Minishell$ ");
+	if (!inpt)
+		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
+	add_history(inpt);
+	list = read_tokens(inpt);
+	list = merge_quoted_strings(list, &data);
+	pipes = list_to_pipes(list);
+	if (pipes && inpt && inpt[0])
+		err = handle_input(pipes, &data, env);
+	if (inpt)
+		free(inpt);
+	free_pipes(pipes);
+	return (err);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_dlist	**l_envp;
+	int		stdin_restore;
+	int		stdout_restore;
 
 	if (argc != 1)
 		return (1);
-	err = 0;
-	init_minishell(envp);
+	//init_minishell(envp);
+	l_envp = init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
 	while (1)
-	{
-		dup2(stdin_restore, 0);
-		inpt = readline("Minishell$ ");
-		add_history(inpt);
-		list = read_tokens(inpt);
-		list = merge_quoted_strings(list, &data);
-		pipes = list_to_pipes(list);
-		if (pipes && inpt && inpt[0])
-			err = handle_input(pipes, &data);
-		if (inpt)
-			free(inpt);
-		free_pipes(pipes);
-	}
+		main_loop(l_envp, stdin_restore, stdout_restore);
 	return (argc);
 }
