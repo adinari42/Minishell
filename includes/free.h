@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:35:05 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 19:03:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 19:03:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,5 @@ void	free_char_arr(char **to_free);
 void	free_kval(t_kval *kval);
 void	free_parse(t_parse *parse);
 void	free_pipes(t_token **pipes);
+void	free_split_null(char **splitret);
 #endif

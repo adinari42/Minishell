@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/11 18:20:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/11 19:25:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,6 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	err = 1;
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
-
 	inpt = readline("Minishell$ ");
 	if (!inpt)
 		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
@@ -264,7 +263,6 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc != 1)
 		return (1);
-	//init_minishell(envp);
 	l_envp = init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
 	stdin_restore = dup(0);		// save original stdin/stdout
