@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/07 21:39:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/12 23:30:06 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,3 +56,48 @@ void	ms_fd_err(int i)
 		perror("Error\n");
 	exit(i);
 }
+
+void	ms_fd_error(int i, t_pipe *data)
+{
+	data->pid = fork();
+  
+  if (data->pid < 0) {
+    // Error occurred while creating child process
+    dprintf(2,  "Failed to create child process\n");
+    exit(EXIT_FAILURE);
+  } else if (data->pid == 0) {
+    // Inside the child process
+	if (i == 1)
+		write(2, ": Could not open file or directory\n", 35);
+	else if (i == 2)
+		dprintf(2, "Dup2 error\n");
+	else if (i == 3)
+		dprintf(2, "Command error\n");
+	else if (i == 4)
+		dprintf(2, "Fork error\n");
+	else if (i == 5)
+		dprintf(2, ": parse error\n");
+	else if (i == 127)
+		write(2, " : Command not found\n", 21);
+	else if (i == 258)	
+		dprintf(2, "systax error: unclosed quotes\n");
+	else
+		dprintf(2, "Error\n");
+	data->error_code = i;
+	// if (i == 127 || i == 3)
+	// 	exit(i);
+	exit(i);
+  } //else {
+    // Inside the parent process
+    // Child process was created successfully
+//   }
+}
+/*
+    if (errno == ENOENT) {
+      // File doesn't exist
+      fprintf(stderr, "Error: File %s doesn't exist\n", argv[1]);
+      return 2;
+    } else if (errno == EACCES) {
+      // File doesn't have the necessary permissions for reading and writing
+      fprintf(stderr, "Error: No permission to read/write file %s\n", argv[1]);
+*/

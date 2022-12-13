@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/03 14:24:17 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 19:25:09 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,23 +50,6 @@ int	token_type(char *c)
 		return (WORD);
 }
 
-// void	set_cmd_path(t_token *tklist, t_parse parse)
-// {
-// 	if (!tklist)
-// 		return ;
-// 	printf("***set path cmd***\n");
-// 	while (tklist)
-// 	{
-// 		if (tklist->type == WORD )
-// 		{	
-// 			tklist->path = get_path(parse.split_envp, tklist->str);
-// 			printf("[Debug] path after set is %s\n", tklist->path);
-// 		}
-// 		tklist = tklist->next;
-// 	}
-// 	return ;
-// }
-
 void	print_list(t_token *list)
 {
 	t_token	*tklist;
@@ -92,16 +75,16 @@ void	print_list(t_token *list)
 	return ;
 }
 
-t_token	**read_tokens(char *bashcmd)
+t_token	*read_tokens(char *bashcmd)
 {
 	const char	spec_c[] = "\"'<>| =";
-	t_token		**tk_list;
+	t_token		*tk_list;
 	size_t		word_s;
 	size_t		i;
 	char		*tokenstr;
 
-	tk_list = malloc(sizeof(t_list *));
-	*tk_list = NULL;
+	//tk_list = malloc(sizeof(t_list));
+	tk_list = NULL;
 	word_s = 0;
 	i = 0;
 	while (i < ft_strlen(bashcmd))
@@ -111,7 +94,7 @@ t_token	**read_tokens(char *bashcmd)
 			if (i - word_s > 0) // we need to save the previous word
 			{
 				tokenstr = ft_substr(bashcmd, word_s, i - word_s);
-				tappend(tk_list, token_new(tokenstr));
+				tappend(&tk_list, token_new(tokenstr));
 				free(tokenstr);
 			}
 			//now save the char that we just found
@@ -124,7 +107,7 @@ t_token	**read_tokens(char *bashcmd)
 			else
 				tokenstr = ft_substr(bashcmd, i, 1);
 			word_s = i + 1;
-			tappend(tk_list, token_new(tokenstr));
+			tappend(&tk_list, token_new(tokenstr));
 			free(tokenstr);
 		}
 		i++;
@@ -132,7 +115,7 @@ t_token	**read_tokens(char *bashcmd)
 	if (word_s < i)
 	{
 		tokenstr = ft_substr(bashcmd, word_s, i - word_s);
-		tappend(tk_list, token_new(tokenstr));
+		tappend(&tk_list, token_new(tokenstr));
 		free(tokenstr);
 	}
 	return (tk_list);

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:33:27 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/30 21:22:20 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 18:27:37 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 
 t_token	*token_new(char *str);
 void	delete(t_token *del_elem);
-void	tappend(t_token **token, t_token *new_elem);
-t_token	*tlist_start(t_token **token);
-t_token	*tlist_end(t_token **token);
+void	tappend(t_token **list, t_token *new_elem);
+t_token	*tlist_start(t_token *token);
+t_token	*tlist_end(t_token *token);
 void	print_list(t_token *tklist);
 
 int		lstsize(t_dlist *lst);
