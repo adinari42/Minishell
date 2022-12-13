@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   pipes.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/24 18:17:16 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/19 01:01:21 by adinari          ###   ########.fr       */
+/*   Created: 2022/12/05 20:49:58 by slakner           #+#    #+#             */
+/*   Updated: 2022/12/08 16:46:33 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef PIPES_H
+# include "minishell.h"
 
-int	ft_isalnum(int c)
-{
-	return (ft_isalpha(c) || ft_isdigit(c));
-}
+t_token	**list_to_pipes(t_token *list);
+t_token	*cut_at_pipe(t_token *list, t_token **pipes, int i);
+int		count_pipes(t_token **pipes);
+
+#endif

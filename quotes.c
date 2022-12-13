@@ -6,13 +6,13 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/07 21:47:37 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/11 16:07:02 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
+t_token	*merge_quoted_strings(t_token *list, t_pipe *data)
 {
 	t_token	*token;
 	t_token	*open_quote;
@@ -34,16 +34,8 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 					// open_quote->type = WORD;
 					// ms_fd_err(258);
 					free_token_list(list);
-					// list = NULL;
-					data->pid = fork();
-					if (data->pid == 0)
-						ms_fd_err(258);
-					else
-					{
-						wait(&status);
-						return (NULL);
-					}
-					// break ;
+					ms_fd_error(258, data);
+					return (NULL);
 				}
 				token = token->next;
 			}
