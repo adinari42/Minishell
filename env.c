@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/09 21:02:33 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 20:11:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,12 @@ char	*extract_value(char *tokenstr)
 	return (varname);
 }
 
-int	num_vars_env(t_dlist *env)
+int	num_vars_env()
 {
 	return (lstsize(env));
 }
 
-int	var_in_env(char *varname, t_dlist *env)
+int	var_in_env(char *varname)
 {
 	t_dlist	*elem;
 
@@ -102,7 +102,7 @@ int	var_in_env(char *varname, t_dlist *env)
 	return (0);
 }
 
-int	display_env(t_dlist *env)
+int	display_env(void)
 {
 	t_dlist	*var;
 
@@ -148,6 +148,6 @@ char	**env_list_to_char_arr(t_dlist **env)
 		i++;
 		elem = elem->next;
 	}
-	*(env_c + i) = NULL;
+	*(env_c + i) = NULL;//
 	return (env_c);
 }
