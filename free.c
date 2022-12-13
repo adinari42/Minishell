@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/11 21:06:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/09 14:23:50 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,21 @@ void	free_split(char **splitret)
 	return ;
 }
 
+void	free_split_count(char **split, int count)
+{
+	int	i;
+
+	if (!split)
+		return ;
+	i = 0;
+	while (split[i] && i < count)
+	{
+		free(split[i]);
+		i++;
+	}
+	return ;
+}
+
 void	free_token_list(t_token *list)
 {
 	t_token	*elem;
@@ -37,13 +52,15 @@ void	free_token_list(t_token *list)
 	if (!list)
 		return ;
 	elem = list;
-	while (elem && elem->str)
+	while (elem && elem->str && (elem->str)[0]
+		&& ft_strncmp(elem->str, "", 1))
 	{
 		next = elem->next;
 		free_token(elem);
 		elem = next;
 	}
 	free_token(elem);
+	//free(list);
 }
 
 void	free_token(t_token *token)
@@ -58,7 +75,8 @@ void	free_token(t_token *token)
 
 void	free_parse(t_parse *parse)
 {
-	free(parse->path);
+	if (parse->path)
+		free(parse->path);
 	free_char_arr(parse->cmd);
 }
 

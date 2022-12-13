@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/09 20:32:30 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/08 18:32:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	is_builtin(char *str)
 	return (0);
 }
 
-int	exec_echo(t_token *list, t_dlist *env)
+int	exec_echo(t_token *list)
 {
 	t_token	*tkn;
 	int		newline;
@@ -85,7 +85,7 @@ int	update_var(char *varname, char *value, t_dlist *env)
 
 // if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
-int	exec_cd(t_token *list, t_dlist *env)
+int	exec_cd(t_token *list)
 {
 	int		ret;
 	t_token	*tkn;
@@ -106,7 +106,7 @@ int	exec_cd(t_token *list, t_dlist *env)
 	return (ret);
 }
 
-int	exec_export(t_token *list, t_dlist *env)
+int	exec_export(t_token *list)
 {
 	t_token	*tkn;
 	t_kval	*cntnt;
@@ -163,7 +163,7 @@ int	exec_export(t_token *list, t_dlist *env)
 }
 
 // unset without an argument returns 0
-int	exec_unset(t_token *list, t_dlist *env)
+int	exec_unset(t_token *list)
 {
 	t_token	*tkn;
 	t_dlist	*var;
@@ -188,7 +188,7 @@ int	exec_unset(t_token *list, t_dlist *env)
 	return (1);
 }
 
-int	exec_env(t_token *list, t_dlist *env)
+int	exec_env(t_token *list)
 {
 	t_token	*tkn;
 
@@ -205,7 +205,7 @@ int	exec_env(t_token *list, t_dlist *env)
 	return (0);
 }
 
-int	exec_exit(t_token *list, t_dlist **env)
+int	exec_exit(t_token *list)
 {
 	t_token	*tkn;
 	char	*tokenstr;
@@ -240,7 +240,7 @@ int	exec_exit(t_token *list, t_dlist **env)
 	return (0);
 }
 
-int	exec_pwd(t_token *list, t_dlist *env)
+int	exec_pwd(t_token *list)
 {
 	t_token	*tkn;
 	char	pwd[1024];
