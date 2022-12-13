@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/13 08:13:02 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/13 23:20:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ void	init_path(t_token *list, char *cmdline, t_parse *parse, t_dlist **env)
 	free_split(split_path);
 }
 
-void	exec_cmd(t_pipe *data)
+void	exec_cmd(t_pipe *data, t_dlist **env)
 {
 	char	**envp;
 
-	envp = env_list_to_char_arr(g_env);
+	envp = env_list_to_char_arr(env);
 	if (!data->parse.path)
 	{
 		write(2, data->parse.cmd[0], ft_strlen(data->parse.cmd[0]));
@@ -53,6 +53,7 @@ void	exec_cmd(t_pipe *data)
 		execve(data->parse.path, data->parse.cmd, envp);
 	// if (execve(data->parse.path, data->parse.cmd, envp) == -1)
 	// 	ms_fd_error(3, data);
+	free_char_arr(envp);
 	exit(0);
 }
 
@@ -120,7 +121,7 @@ int	init_outfile(t_pipe *pipe)
 
 void	child(t_pipe *pipe, int i)
 {
-	// printf("child\n");
+	//close (pipe->fd[0]);
 	if (i != pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
@@ -133,6 +134,7 @@ void	child(t_pipe *pipe, int i)
 			ms_fd_error(1, pipe);
 	}
 	close (pipe->fd[0]);
+	//close(pipe->fd[1]);
 }
 
 void	parent(t_pipe *pipe)
@@ -148,7 +150,8 @@ int	init_infile(t_token *list, t_pipe *data, int redir_type)
 			free(data->out_fd);
 		data->out_fd = NULL;
 		if (redir_type == APPEND_IN)
-		{	if(init_here_doc(list, data))
+		{	
+			if(init_here_doc(list, data))
 				return(1);
 		}
 		else if (redir_type == REDIR_IN)
