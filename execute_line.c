@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_line.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/12 23:30:06 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/13 22:28:04 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ char	*get_path(char **string, char *cmd)
 		free(path_temp);
 		if (access(path, F_OK | X_OK) == 0)
 			return (path);
-		free(path);
+		if (path)
+			free(path);
 		i++;
 	}
 	if (access(cmd, F_OK | X_OK) == 0)

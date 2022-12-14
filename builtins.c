@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 18:32:01 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/13 21:35:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,16 @@ int	is_builtin(char *str)
 	return (0);
 }
 
-int	exec_echo(t_token *list)
+int	exec_echo(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
 	int		newline;
 
+	(void) env;
 	tkn = tlist_start(list);
 	newline = 1;
 	if (!builtin_plausible(tkn, "echo"))
-		// return (1);
+		return (1);
 	tkn = skip_spaces(tkn);
 	if (tkn && !ft_strncmp(tkn->str, "-n", 3))
 	{
@@ -60,11 +61,11 @@ int	exec_echo(t_token *list)
 	return (0);
 }
 
-int	update_var(char *varname, char *value)
+int	update_var(char *varname, char *value, t_dlist *env)
 {
 	t_dlist	*var;
 
-	var = *g_env;
+	var = env;
 	while (var)
 	{
 		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
@@ -82,7 +83,7 @@ int	update_var(char *varname, char *value)
 
 // if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
-int	exec_cd(t_token *list)
+int	exec_cd(t_token *list, t_dlist *env)
 {
 	int		ret;
 	t_token	*tkn;
@@ -99,11 +100,11 @@ int	exec_cd(t_token *list)
 	if (ret == -1)
 		ret = print_builtin_error("cd", tkn->str);
 	getcwd(pwd, 1024);
-	update_var("PWD", pwd);
+	update_var("PWD", pwd, env);
 	return (ret);
 }
 
-int	exec_export(t_token *list)
+int	exec_export(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
 	t_kval	*cntnt;
@@ -114,7 +115,7 @@ int	exec_export(t_token *list)
 		return (1);
 	tkn = skip_spaces(tkn);
 	if (!tkn)
-		return (display_env());
+		return (display_env(env));
 	if (!valid_identifier(tkn->str))
 	{
 		free(cntnt);
@@ -146,27 +147,27 @@ int	exec_export(t_token *list)
 	else
 	{
 		free(cntnt); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
-		display_env();
+		display_env(env);
 		return (0);
 	}
-	if (!var_in_env(cntnt->key))
-		lstadd_back(g_env, lstnew(cntnt));
+	if (!var_in_env(cntnt->key, env))
+		lstadd_back(&env, lstnew(cntnt));
 	else
 	{
-		update_var(cntnt->key, cntnt->val);
+		update_var(cntnt->key, cntnt->val, env);
 		free_kval(cntnt);
 	}
 	return (0);
 }
 
 // unset without an argument returns 0
-int	exec_unset(t_token *list)
+int	exec_unset(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
 	t_dlist	*var;
 
 	tkn = tlist_start(list);
-	var = *g_env;
+	var = env;
 	if (!builtin_plausible(tkn, "unset"))
 		return (1);
 	tkn = skip_spaces(tkn);
@@ -176,7 +177,7 @@ int	exec_unset(t_token *list)
 		{
 			if (!tkn->next || tkn->next->type == SPACE_TKN)
 			{
-				lstdel_elem(g_env, var);
+				lstdel_elem(&env, var);
 				return (0);
 			}
 		}
@@ -185,7 +186,7 @@ int	exec_unset(t_token *list)
 	return (1);
 }
 
-int	exec_env(t_token *list)
+int	exec_env(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
 
@@ -198,11 +199,11 @@ int	exec_env(t_token *list)
 		printf("env: %s: No such file or directory\n", tkn->next->str);
 		return (1);
 	}
-	display_env();
+	display_env(env);
 	return (0);
 }
 
-int	exec_exit(t_token *list)
+int	exec_exit(t_token *list, t_dlist **env)
 {
 	t_token	*tkn;
 	char	*tokenstr;
@@ -233,15 +234,16 @@ int	exec_exit(t_token *list)
 		}
 		ret = ft_atoi(tkn->str);
 	}
-	exit_with_value(ret);
+	exit_with_value(ret, env);
 	return (0);
 }
 
-int	exec_pwd(t_token *list)
+int	exec_pwd(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
 	char	pwd[1024];
 
+	(void) env;
 	tkn = tlist_start(list);
 	if (!builtin_plausible(tkn, "pwd"))
 		return (1);

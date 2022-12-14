@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 18:15:44 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/30 21:27:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/09 19:24:28 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	lstadd_back(t_dlist **lst, t_dlist *new)
 {
 	t_dlist	*last;
 
-	if (!lst || !new)
+	if (!new && !lst)
 		return ;
 	if (!*lst)
 	{
@@ -78,6 +78,14 @@ void	lstdel_elem(t_dlist **lst, t_dlist *elem)
 	t_dlist	*cur;
 
 	cur = *lst;
+	if (cur == elem)
+	{
+		*lst = cur->next;
+		if (cur->content)
+			free_kval(cur->content);
+		free(cur);
+		return ;
+	}
 	while (cur)
 	{
 		if (cur->next && cur->next == elem)
@@ -86,7 +94,7 @@ void	lstdel_elem(t_dlist **lst, t_dlist *elem)
 			if (elem->content)
 				free_kval(elem->content);
 			free(elem);
-			break;
+			break ;
 		}
 		cur = cur->next;
 	}
