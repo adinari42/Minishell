@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/09 14:25:16 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/13 22:24:10 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,10 @@ char	*expand_value(char *str, t_dlist *env)
 	char		*res;
 	char		*tmp;
 	char		*val;
-	int			split_range;
 
 	counter.i = 0;
 	counter.k = 0;
 	split1 = ft_split(str, ' ');
-	split_range = count_split_elems(split1);
 	tmp = str;
 	res = ft_strdup("");
 	while (split1[counter.i])
@@ -141,7 +139,7 @@ char	*expand_value(char *str, t_dlist *env)
 	// 	// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 			{
-				val = get_value_from_key(*g_env, split2[counter.j]);
+				val = get_value_from_key(env, split2[counter.j]);
 				if (split2[counter.j])
 					free(split2[counter.j]);
 				split2[counter.j] = ft_strdup(val);
@@ -160,8 +158,7 @@ char	*expand_value(char *str, t_dlist *env)
 		counter.i++;
 	}
 	// free_strings(str, split1);
-	// free_split(split1);
-	free_split_count(split1, split_range);
+	free_split(split1);
 	free(str);
 	return (res);
 }
@@ -170,7 +167,7 @@ void	check_value(t_token *list, t_dlist *env)
 {
 	while (list)
 	{
-		list->str = expand_value(list->str);
+		list->str = expand_value(list->str, env);
 		list = list->next;
 	}
 }

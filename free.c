@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:32:45 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/09 14:23:50 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/13 21:41:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,6 @@ void	free_split(char **splitret)
 	return ;
 }
 
-void	free_split_count(char **split, int count)
-{
-	int	i;
-
-	if (!split)
-		return ;
-	i = 0;
-	while (split[i] && i < count)
-	{
-		free(split[i]);
-		i++;
-	}
-	return ;
-}
-
 void	free_token_list(t_token *list)
 {
 	t_token	*elem;
@@ -52,15 +37,13 @@ void	free_token_list(t_token *list)
 	if (!list)
 		return ;
 	elem = list;
-	while (elem && elem->str && (elem->str)[0]
-		&& ft_strncmp(elem->str, "", 1))
+	while (elem && elem->str)
 	{
 		next = elem->next;
 		free_token(elem);
 		elem = next;
 	}
 	free_token(elem);
-	//free(list);
 }
 
 void	free_token(t_token *token)
