@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 18:24:57 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/14 22:09:21 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,63 +31,35 @@
 // 	return (1);
 // }
 
-int	handle_builtinstr(t_token *list, t_pipe *pipe, int i, t_dlist **env) //int stdout_restore, int i)
+int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int stdout_restore, int i)
 {
-	
-	/*version 1*/
-	// (void) i;
-	// if (data->out_fd != NULL)
-	// 	init_outfile(data);
-	// handle_builtin(list, env);
-	// parent(data);
-	// return (0);
-
-	/*version 2*/
-	pipe->pid = fork();
-	if (pipe->pid == -1)
-		ms_fd_error(4, pipe);
-	if (pipe->pid == 0)
+	(void) i;
+	data->pid = fork();
+	if (data->pid == -1)
+		ms_fd_error(4, data);
+	if (data->pid == 0)
 	{
-		child(pipe, i + 1);
+
+		child(data, i + 1);
 		handle_builtin(list, env);
 		exit(0);
 	}
 	else
-		parent(pipe);
-
-	/*another_version*/
-	// child(data, i + 1);
-	// handle_builtin(list, env);
-	// parent(data);
-
-	/*yet again*/
-	// (void) env;
-	// if (i != pipe->cmd_pos - 1)
-	// {	
-	// 	if (dup2(pipe->fd[1], 1) == -1)
-	// 		ms_fd_err(2);
-	// }
-	// if (pipe->out_fd != NULL)
-	// {
-	// 	if (init_outfile(pipe))
-	// 		ms_fd_error(1, pipe);
-	// }
-	// handle_builtin(list, env);
-	// parent(pipe);
+		parent(data);
 	return (0);
 }
 
-int	handle_builtin(t_token *list)
+int	handle_builtin(t_token *list, t_dlist **env)
 {
 	char	*str;
 	int		ret;
 
 	str = (tlist_start(list))->str;
 	ret = 0;
-	// if (!ft_strncmp(str, g_builtins[ECHO42], 5))
-	// 	ret = exec_echo(list);
-	if (!ft_strncmp(str, g_builtins[CD], 3))
-		ret = exec_cd(list);
+	if (!ft_strncmp(str, g_builtins[ECHO42], 5))
+		ret = exec_echo(list, *env);
+	else if (!ft_strncmp(str, g_builtins[CD], 3))
+		ret = exec_cd(list, *env);
 	else if (!ft_strncmp(str, g_builtins[PWD], 4))
 		ret = exec_pwd(list, *env);
 	else if (!ft_strncmp(str, g_builtins[EXPORT], 7))
@@ -101,26 +73,22 @@ int	handle_builtin(t_token *list)
 	return (ret);
 }
 
-int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i) //int stdout_restore
+int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i, t_dlist **env) //int stdout_restore
 {
 	int		err;
 
 	err = 0;
 	data->pid = fork();
-	init_path(list, cmd_line, &(data->parse));
+	init_path(list, cmd_line, &(data->parse), env);
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		exec_cmd(data);
+		exec_cmd(data, env);
 	}
 	else
-	{
 		parent(data);
-		// waitpid(data->pid, &err, 0);
-		// write(1, "here\n", 5);
-	}
 	free_parse(&(data->parse));
 	return (err);
 }

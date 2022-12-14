@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 19:15:36 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/14 21:43:46 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,12 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 
 int	init_outfile(t_pipe *pipe)
 {
-	// printf("init outfile\n");
 	if (pipe->append == 0)
 		pipe->file.outfile = open(pipe->out_fd,
 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else
 		pipe->file.outfile = open(pipe->out_fd,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
-	free(pipe->out_fd);
 	pipe->append = 0;
 	if (pipe->file.outfile == -1)
 	{
@@ -121,13 +119,11 @@ int	init_outfile(t_pipe *pipe)
 
 void	child(t_pipe *pipe, int i)
 {
-	//close (pipe->fd[0]);
 	if (i != pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
 			ms_fd_err(2);
 	}
-	// printf("out_fd = %s\n", pipe->out_fd);
 	if (pipe->out_fd != NULL)
 	{
 		if (init_outfile(pipe))
@@ -146,8 +142,6 @@ void	parent(t_pipe *pipe)
 
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
-		if (data->out_fd)
-			free(data->out_fd);
 		data->out_fd = NULL;
 		if (redir_type == APPEND_IN)
 		{	
@@ -174,10 +168,8 @@ int	init_infile(t_token *list, t_pipe *data, int redir_type)
 		}
 		else if (redir_type == REDIR_OUT)
 		{
-			// printf("redirout:\n");
 			data->append = 0;
 			data->out_fd = list->str;
-			// printf("data->out_fd = %s\n", data->out_fd);
 		}
 	return (0);
 }
@@ -186,14 +178,10 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
 	while (tmp)
 	{
-		// printf("skip_redir : while tmp, tmp->str = %s\n", tmp->str);
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
 		{
-			// printf("inside if\n");
 			if (init_infile(tmp, data, redir_type) == 1)
 				return (NULL);
-			// printf("still inside if,\n");
-			// tmp = tmp->next;
 			return (tmp);
 		}
 		else if (tmp->type == SPACE_TKN)
@@ -204,7 +192,6 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 			break ;
 		}
 	}
-	// ms_fd_error(5, data);
 	return (NULL);
 }
 
@@ -219,17 +206,13 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	data->out_fd = NULL;
 	while (tmp)
 	{
-		// printf("get_cmd : while tmp, tmp->str = %s\n", tmp->str);
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
 		{
 			redir_type = tmp->type;
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
-			{
-				free(cmd_line);
 				return (NULL);
-			}
 			tmp = tmp->next;
 		}
 		else	
@@ -251,11 +234,8 @@ void	free_and_close(t_pipe *pipe)
 	unlink("tmp");
 }
 
-int	handle_input(t_token **pipes, t_pipe *data)
+int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 {
-	// (void) pipes;
-	// (void) data;
-
 	int		i;
 	int		status;
 	char	*cmd_line;
@@ -270,7 +250,7 @@ int	handle_input(t_token **pipes, t_pipe *data)
 		pipes[i] = merge_quoted_strings(pipes[i], data);
 		if (pipes[i] == NULL)
 			return (1);
-		check_value(pipes[i]);
+		check_value(pipes[i], *env);
 		cmd_line = get_cmd(pipes[i], data);
 		if (cmd_line)
 		{
@@ -278,15 +258,17 @@ int	handle_input(t_token **pipes, t_pipe *data)
 			builtin_list = merge_quoted_strings(builtin_list, data);
 			builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line))
-				handle_builtinstr(*builtin_list, data, i, env);
+				handle_builtinstr(builtin_list, data, i, env);
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
+			free_token_list(builtin_list);
 			free(cmd_line);
 			free_token_list(*builtin_list);
 			free(builtin_list);
 		}
 		else
 			parent(data);
+		printf("i = %d\n", i + 1);
 		i++;
 	}
 	while (i--) 
@@ -299,7 +281,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
 	int		err;
 	char	*inpt;
-	t_token	**list;
+	t_token	*list;
 	t_pipe	data;
 	char	*inpt;
 	t_token	**pipes;
@@ -328,34 +310,14 @@ int	main(int argc, char **argv, char **envp)
 	t_dlist	**l_envp;
 	int		stdin_restore;
 	int		stdout_restore;
-	int		err;
-	t_pipe	data;
-	char	*inpt;
-	t_token	**pipes;
-	t_token *list;
 
 	if (argc != 1)
 		return (1);
-	init_minishell(envp);
+	l_envp = init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
 	while (1)
-	{
-		dup2(stdin_restore, 0);
-		dup2(stdout_restore, 1);
-		inpt = readline("Minishell$ ");
-		if (!inpt)
-			free_and_exit(SIGINT);		// this does the exit on Ctrl-D
-		add_history(inpt);
-		list = read_tokens(inpt);
-		list = merge_quoted_strings(list, &data);
-		pipes = list_to_pipes(list);
-		if (pipes && inpt && inpt[0])
-			err = handle_input(pipes, &data);
-		if (inpt)
-			free(inpt);
-		free_pipes(pipes);
-	}
+		main_loop(l_envp, stdin_restore, stdout_restore);
 	return (argc);
 }
