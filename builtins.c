@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/13 21:35:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 20:28:44 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	is_builtin(char *str)
 		if (!ft_strncmp(split[0], g_builtins[i], ft_strlen(g_builtins[i]) + 1))
 		{
 			free_split(split);
-			return (1);
+			return (i + 1);
+			// return (1);
 		}
 		i++;
 	}
@@ -52,12 +53,11 @@ int	exec_echo(t_token *list, t_dlist *env)
 	}
 	while (tkn)
 	{
-		//write(1, tkn->str, ft_strlen(tkn->str));
-		printf("%s", tkn->str);
+		write(1, tkn->str, ft_strlen(tkn->str));
 		tkn = tkn->next;
 	}
 	if (newline)
-		printf("\n");
+		write(1, "\n", 1);
 	return (0);
 }
 
