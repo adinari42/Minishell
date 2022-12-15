@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:38:34 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 18:05:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 15:25:09 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_token	*cut_at_pipe(t_token *list, t_token **pipes, int i)
 	}
 	if (end->prev)
 		end->prev->next = NULL;
-	free(end);
+	free_token(end);
 	return (next);
 }
 
