@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 17:48:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 19:15:36 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@ int	handle_input(t_token **pipes, t_pipe *data)
 	int		i;
 	int		status;
 	char	*cmd_line;
-	t_token	*builtin_list;
+	t_token	**builtin_list;
 
 	data->cmd_pos = count_pipes(pipes);
 	i = 0;
@@ -271,20 +271,21 @@ int	handle_input(t_token **pipes, t_pipe *data)
 			return (1);
 		check_value(pipes[i]);
 		cmd_line = get_cmd(pipes[i], data);
-		// if (cmd_line)
-		// {
+		if (cmd_line)
+		{
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list, data);
 			builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line))
-				handle_builtinstr(builtin_list, data, i, env);
+				handle_builtinstr(*builtin_list, data, i, env);
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
 			free(cmd_line);
-			free_token_list(builtin_list);
-		// }
-		// else
-		// 	parent(data);
+			free_token_list(*builtin_list);
+			free(builtin_list);
+		}
+		else
+			parent(data);
 		i++;
 	}
 	while (i--) 
@@ -297,7 +298,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
 	int		err;
 	char	*inpt;
-	t_token	*list;
+	t_token	**list;
 	t_pipe	data;
 	t_token	**pipes;	
 
