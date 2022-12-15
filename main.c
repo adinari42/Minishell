@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/13 23:20:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 17:48:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
 			{
-				// printf("tmp = null\n");
+				free(cmd_line);
 				return (NULL);
 			}
 			tmp = tmp->next;
@@ -271,25 +271,20 @@ int	handle_input(t_token **pipes, t_pipe *data)
 			return (1);
 		check_value(pipes[i]);
 		cmd_line = get_cmd(pipes[i], data);
-		// printf("cmd_line = %s\n", cmd_line);
-		if (cmd_line)
-		{	//printf("inside if\n");
+		// if (cmd_line)
+		// {
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list, data);
 			builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line))
-				handle_builtinstr(builtin_list, data, i);
+				handle_builtinstr(builtin_list, data, i, env);
 			else if (cmd_line && cmd_line[0])
-				handle_command(pipes[i], data, cmd_line, i);
-			//free_token_list(list);		// this was freeing part of "**pipes" and led to double free later
-			free_token_list(builtin_list);
+				handle_command(pipes[i], data, cmd_line, i, env);
 			free(cmd_line);
-		}
-		else
-		{	
-			// printf("parent:\n");
-			parent(data);
-		}
+			free_token_list(builtin_list);
+		// }
+		// else
+		// 	parent(data);
 		i++;
 	}
 	while (i--) 
