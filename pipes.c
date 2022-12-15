@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:38:34 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 15:25:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 19:14:27 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,22 +64,25 @@ t_token	**list_to_pipes(t_token **list)
 	int		numpipes;
 	t_token	*elem;
 
-	numpipes = count_tokens(list, PIPE);
+	numpipes = count_tokens(*list, PIPE);
 	pipes = malloc(sizeof(t_token *) * (numpipes + 1));
 	i = 0;
-	if (!list)
+	elem = *list;
+	if (!list || !elem)
 		return (NULL);
-	if (list->type == PIPE)
+	if (elem->type == PIPE)
 		prnt_err("", "", "syntax error near unexpected token `|'");
-	pipes[0] = list;
-	while (list->next)
+	pipes[0] = elem;
+	while (elem->next)
 	{
 		if (elem->type == PIPE)
-			elem = cut_at_pipe(elem, pipes, i++);
+		{
+			elem = cut_at_pipe(elem, pipes, i);
+			i++;
+		}
 		else
 			elem = elem->next;
 	}
-	free(list);
 	pipes[numpipes - 1] = tlist_start(elem);
 	pipes[numpipes] = NULL;
 	return (pipes);
