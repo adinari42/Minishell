@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 20:28:25 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/15 21:54:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
-			free_token_list(builtin_list);
 			free(cmd_line);
 			free_token_list(*builtin_list);
 			free(builtin_list);
