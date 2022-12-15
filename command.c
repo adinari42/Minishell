@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 18:03:17 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 18:06:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,25 +33,25 @@
 
 int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int stdout_restore, int i)
 {
-	(void) i;
-	if (data->out_fd != NULL)
-		init_outfile(data);
-	handle_builtin(list, env);
-	parent(data);
-	return (0);
 	// (void) i;
-	// data->pid = fork();
-	// if (data->pid == -1)
-	// 	ms_fd_error(4, data);
-	// if (data->pid == 0)
-	// {
-	// 	child(data, i + 1);
-	// 	handle_builtin(list, env);
-	// 	exit(0);
-	// }
-	// else
-	// 	parent(data);
+	// if (data->out_fd != NULL)
+	// 	init_outfile(data);
+	// handle_builtin(list, env);
+	// parent(data);
 	// return (0);
+	// (void) i;
+	data->pid = fork();
+	if (data->pid == -1)
+		ms_fd_error(4, data);
+	if (data->pid == 0)
+	{
+		child(data, i + 1);
+		handle_builtin(list, env);
+		exit(0);
+	}
+	else
+		parent(data);
+	return (0);
 }
 
 int	handle_builtin(t_token *list, t_dlist **env)
