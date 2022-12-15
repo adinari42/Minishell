@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/13 22:04:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 15:18:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ t_token	*merge_quoted_strings(t_token *list, t_pipe *data)
 				if (!token->next)
 				{
 					// open_quote->type = WORD;
-					// ms_fd_err(258);
-					free_token_list(list);
+					// ms_fd_err(258);					free_token_list(list);
 					ms_fd_error(258, data);
 					return (NULL);
 				}
