@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/14 21:43:46 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/15 17:48:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,8 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
+			{
+				free(cmd_line);
 				return (NULL);
 			tmp = tmp->next;
 		}
@@ -253,8 +255,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			return (1);
 		check_value(pipes[i], *env);
 		cmd_line = get_cmd(pipes[i], data);
-		if (cmd_line)
-		{
+		// if (cmd_line)
+		// {
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list, data);
 			builtin_list = remove_empty(builtin_list);
@@ -262,12 +264,11 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 				handle_builtinstr(builtin_list, data, i, env);
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
-			free_token_list(builtin_list);
 			free(cmd_line);
-		}
-		else
-			parent(data);
-		printf("i = %d\n", i + 1);
+			free_token_list(builtin_list);
+		// }
+		// else
+		// 	parent(data);
 		i++;
 	}
 	while (i--) 

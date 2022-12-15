@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/14 20:06:24 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/15 17:51:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@
 # include <termios.h>
 # include "../gnl/get_next_line.h"
 # include "pipes.h"
-#include <fcntl.h>
-
-
+# include <fcntl.h>
 
 # define TOKENS " $'<>\""
 
