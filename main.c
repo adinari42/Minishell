@@ -276,7 +276,8 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
 	int		err;
 	char	*inpt;
-	t_token	*list;
+	t_token	**list;
+
 	t_pipe	data;
 	char	*inpt;
 	t_token	**pipes;
