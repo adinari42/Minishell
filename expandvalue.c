@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/09 14:25:16 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/13 22:24:10 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,42 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 	return (res);
 }
 
+
+// {
+// 	char		*ptr1;
+// 	char		*ptr2;
+// 	char		*tmp1;
+// 	char		*tmp2;
+// 	char		*newstr;
+
+// 	ptr1 = str;
+// 	newstr = str;
+// 	while (*ptr1)
+// 	{
+// 		if (*ptr1 == '$')
+// 		{
+// 			newstr = ft_substr(newstr, 0, ptr1 - newstr);
+// 			ptr2 = ptr1 + 1;
+// 			while (*ptr2 && *ptr2 != ' ')
+// 				ptr2 ++;
+// 			tmp1 = ft_substr(ptr1, 1, ptr2 - ptr1);
+// 			tmp2 = get_value_from_key(*g_env, tmp1);
+// 			if (tmp1)
+// 				free(tmp1);
+// 			newstr = ft_strjoin_free_str1(newstr, tmp2);
+// 			free(tmp2);
+// 			ptr1 = ptr2;
+// 		}
+// 		ptr1++;
+// 	}
+// 	if (str != newstr)
+// 	{
+// 		free(str);
+// 		return (newstr);
+// 	}
+// 	return (str);	
+// }
+
 /*
 -split the token twice, once using spaces to seperate words,
 -then split the words using $ to seperate variables from non variables,
@@ -74,7 +110,7 @@ or after every word depending on the original format(tmp works as a reference)
 -then check if the word starts with $ and expand it then join to to result
 -skip the letters of the word in tmp and repeat
 */
-char	*expand_value(char *str)
+char	*expand_value(char *str, t_dlist *env)
 {
 	char		**split1;
 	char		**split2;
@@ -82,12 +118,10 @@ char	*expand_value(char *str)
 	char		*res;
 	char		*tmp;
 	char		*val;
-	int			split_range;
 
 	counter.i = 0;
 	counter.k = 0;
 	split1 = ft_split(str, ' ');
-	split_range = count_split_elems(split1);
 	tmp = str;
 	res = ft_strdup("");
 	while (split1[counter.i])
@@ -105,7 +139,7 @@ char	*expand_value(char *str)
 	// 	// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 			{
-				val = get_value_from_key(*g_env, split2[counter.j]);
+				val = get_value_from_key(env, split2[counter.j]);
 				if (split2[counter.j])
 					free(split2[counter.j]);
 				split2[counter.j] = ft_strdup(val);
@@ -124,17 +158,16 @@ char	*expand_value(char *str)
 		counter.i++;
 	}
 	// free_strings(str, split1);
-	// free_split(split1);
-	free_split_count(split1, split_range);
+	free_split(split1);
 	free(str);
 	return (res);
 }
 
-void	check_value(t_token *list)
+void	check_value(t_token *list, t_dlist *env)
 {
 	while (list)
 	{
-		list->str = expand_value(list->str);
+		list->str = expand_value(list->str, env);
 		list = list->next;
 	}
 }
