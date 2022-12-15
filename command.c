@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 18:24:57 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 20:29:28 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ int	handle_builtinstr(t_token *list, t_pipe *pipe, int i, t_dlist **env) //int s
 		ms_fd_error(4, pipe);
 	if (pipe->pid == 0)
 	{
-		child(pipe, i + 1);
+		child(data, i + 1);
 		handle_builtin(list, env);
-		exit(0);
+		exit (0);
 	}
 	else
 		parent(pipe);

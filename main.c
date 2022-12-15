@@ -6,23 +6,11 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 19:15:36 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 20:28:25 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// commented because I don't think this is used anywhere anymore
-// for debugging?
-// void	display_splitenvp(t_parse parse, char **argv)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	printf("%s envp parse: ", argv[0]);
-// 	while (parse.split_envp[i])
-// 		printf("%s\n", parse.split_envp[i++]);
-// }
 
 void	init_path(t_token *list, char *cmdline, t_parse *parse, t_dlist **env)
 {
@@ -260,8 +248,17 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list, data);
 			builtin_list = remove_empty(builtin_list);
-			if (is_builtin(cmd_line))
-				handle_builtinstr(*builtin_list, data, i, env);
+			if (is_builtin(cmd_line) == 1)
+				handle_builtinstr(builtin_list, data, i, env);
+			else if (is_builtin(cmd_line))
+			{
+				if (data->out_fd != NULL)
+				{
+					if (init_outfile(data))
+						ms_fd_error(1, data);
+				}
+				handle_builtin(builtin_list, env);
+			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
 			free(cmd_line);
