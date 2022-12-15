@@ -32,3 +32,13 @@ void	free_and_exit(int signum, t_dlist **env)
 	}
 	return ;
 }
+
+// /* free all the allocated memory that needs to be freed before ending the program */
+// void	free_globals(void)
+// {
+// 	if (g_env)
+// 	{
+// 		free_dlist(*g_env);
+// 		free(g_env);
+// 	}
+// }
