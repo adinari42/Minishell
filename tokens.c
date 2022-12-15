@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 19:25:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 19:26:32 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,48 +75,51 @@ void	print_list(t_token *list)
 	return ;
 }
 
-t_token	*read_tokens(char *bashcmd)
+void append_from_str(t_token **list, char *str)
+{
+	tappend(list, token_new(str));
+	free(str);
+}
+
+
+char	*non_word_tknstr(char *bashcmd, size_t i)
+{
+	char	*tokenstr;
+
+	if (i < ft_strlen(bashcmd) - 1
+		&& bashcmd[i] == '<' && bashcmd[i + 1] == '<' && ++i)
+		tokenstr = ft_strdup("<<");
+	else if (i < ft_strlen(bashcmd) - 1
+		&& bashcmd[i] == '>' && bashcmd[i + 1] == '>' && ++i)
+		tokenstr = ft_strdup(">>");
+	else
+		tokenstr = ft_substr(bashcmd, i, 1);
+	return (tokenstr);
+}
+
+t_token	**read_tokens(char *bashcmd)
 {
 	const char	spec_c[] = "\"'<>| =";
-	t_token		*tk_list;
+	t_token		**tk_list;
 	size_t		word_s;
 	size_t		i;
-	char		*tokenstr;
 
-	//tk_list = malloc(sizeof(t_list));
-	tk_list = NULL;
+	tk_list = malloc(sizeof(t_token *));
+	*tk_list = NULL;
 	word_s = 0;
 	i = 0;
 	while (i < ft_strlen(bashcmd))
 	{
-		if (char_in_charset(bashcmd[i], spec_c) || bashcmd[i] == ' ')
+		if (char_in_charset(bashcmd[i], spec_c))
 		{
-			if (i - word_s > 0) // we need to save the previous word
-			{
-				tokenstr = ft_substr(bashcmd, word_s, i - word_s);
-				tappend(&tk_list, token_new(tokenstr));
-				free(tokenstr);
-			}
-			//now save the char that we just found
-			if (i < ft_strlen(bashcmd) - 1
-				&& bashcmd[i] == '<' && bashcmd[i + 1] == '<' && ++i)
-				tokenstr = ft_strdup("<<");
-			else if (i < ft_strlen(bashcmd) - 1
-				&& bashcmd[i] == '>' && bashcmd[i + 1] == '>' && ++i)
-				tokenstr = ft_strdup(">>");
-			else
-				tokenstr = ft_substr(bashcmd, i, 1);
+			if (i - word_s > 0)
+				append_from_str(tk_list, ft_substr(bashcmd, word_s, i - word_s));
 			word_s = i + 1;
-			tappend(&tk_list, token_new(tokenstr));
-			free(tokenstr);
+			append_from_str(tk_list, non_word_tknstr(bashcmd, i));
 		}
 		i++;
 	}
 	if (word_s < i)
-	{
-		tokenstr = ft_substr(bashcmd, word_s, i - word_s);
-		tappend(&tk_list, token_new(tokenstr));
-		free(tokenstr);
-	}
+		append_from_str(tk_list, ft_substr(bashcmd, word_s, i - word_s));
 	return (tk_list);
 }

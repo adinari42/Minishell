@@ -6,19 +6,19 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 15:18:34 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 19:06:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*merge_quoted_strings(t_token *list, t_pipe *data)
+t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 {
 	t_token	*token;
 	t_token	*open_quote;
 	int		status;
 
-	token = tlist_start(list);
+	token = tlist_start(*list);
 	status = 0;
 	open_quote = NULL;
 	while (token)
