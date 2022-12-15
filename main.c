@@ -257,10 +257,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
-<<<<<<< Updated upstream
-=======
-			free_token_list(builtin_list);
->>>>>>> Stashed changes
 			free(cmd_line);
 			free_token_list(*builtin_list);
 			free(builtin_list);
@@ -279,7 +275,8 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
 	int		err;
 	char	*inpt;
-	t_token	*list;
+	t_token	**list;
+
 	t_pipe	data;
 	t_token	**pipes;	
 
