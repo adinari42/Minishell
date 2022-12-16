@@ -243,7 +243,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		{
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list, data);
-			//builtin_list = remove_empty(builtin_list);
+			builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line) == 1)
 			{
 				free(cmd_line);
