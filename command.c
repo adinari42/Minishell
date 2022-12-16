@@ -82,7 +82,9 @@ int	handle_builtin(t_token *list, t_dlist **env)
 	char	*str;
 	int		ret;
 
-	str = (tlist_start(list))->str;
+	while (list->type == SPACE_TKN)
+		list = list->next;
+	str = list->str;
 	ret = 0;
 	if (!ft_strncmp(str, g_builtins[ECHO42], 5))
 		ret = exec_echo(list, *env);
@@ -108,6 +110,7 @@ int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i, t_dlist *
 	err = 0;
 	data->pid = fork();
 	init_path(list, cmd_line, &(data->parse), env);
+	free(cmd_line);
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
