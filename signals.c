@@ -25,7 +25,12 @@ void	minishell_new_prompt(int signum)
 
 void	nul(int signum)
 {
-	(void) signum;
+	//char *pos;
+
+	if (signum == SIGQUIT)
+	{
+		rl_redisplay();
+	}
 }
 
 // Ctrl-C: SIGINT
