@@ -130,12 +130,12 @@ char	*expand_value(char *str, t_dlist *env)
 		split2 = ft_split(split1[counter.i], '$'); //split using $
 		while (split2[counter.j])
 		{
-	// 		/********add necessary spaces*******/
-			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
-			{
-				res = ft_strjoin_free_str1(res, " ");
-				counter.k++;
-			}
+	// // 		/********add necessary spaces*******/
+	// 		while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
+	// 		{
+	// 			res = ft_strjoin_free_str1(res, " ");
+	// 			counter.k++;
+	// 		}
 	// 	// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 			{
