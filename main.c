@@ -203,8 +203,11 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			{
 				free(cmd_line);
 				return (NULL);
-			tmp = tmp->next;
 		}
+		// else if (tmp->type == STR_DQUOTES)
+		// 	cmd_line = ft_strjoin_free_str1(cmd_line, "\"");
+		// else if (tmp->type == STR_SQUOTES)
+		// 	cmd_line = ft_strjoin_free_str1(cmd_line, "'");
 		else
 		{
 			if (tmp->str) // we only need this if tmp->str can be empty
@@ -212,8 +215,8 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
 			if (tmp->type != ASSIGN && tmp->next && tmp->next->type != ASSIGN)
 				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
-			tmp = tmp->next;
 		}
+		tmp = tmp->next;
 	}
 	return (cmd_line);
 }
@@ -244,7 +247,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		{
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list, data);
-			builtin_list = remove_empty(builtin_list);
+			//builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line) == 1)
 			{
 				free(cmd_line);
