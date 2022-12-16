@@ -234,9 +234,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	{
 		data->error_code = 0;
 		pipe(data->fd);
-		pipes[i] = merge_quoted_strings(pipes[i], data);
-		if (pipes[i] == NULL)
-			return (1);
 		check_value(pipes[i], *env);
 		cmd_line = get_cmd(pipes[i], data);
 		if (cmd_line)
@@ -245,20 +242,22 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			builtin_list = merge_quoted_strings(builtin_list, data);
 			builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line) == 1)
-				handle_builtinstr(builtin_list, data, i, env);
+			{
+				free(cmd_line);
+				handle_builtinstr(*builtin_list, data, i, env);
+			}
 			else if (is_builtin(cmd_line))
 			{
+				free(cmd_line);
 				if (data->out_fd != NULL)
 				{
 					if (init_outfile(data))
 						ms_fd_error(1, data);
 				}
-				handle_builtin(builtin_list, env);
+				handle_builtin(*builtin_list, env);
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(pipes[i], data, cmd_line, i, env);
-			free_token_list(builtin_list);
-			free(cmd_line);
 			free_token_list(*builtin_list);
 			free(builtin_list);
 		}
@@ -276,7 +275,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
 	int		err;
 	char	*inpt;
-	t_token	*list;
+	t_token	**list;
 	t_pipe	data;
 	t_token	**pipes;	
 
@@ -291,8 +290,12 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	list = merge_quoted_strings(list, &data);
 	pipes = list_to_pipes(list);
 	if (pipes && inpt && inpt[0])
+	{
+		free(inpt);
 		err = handle_input(pipes, &data, env);
-	free(inpt);
+	}
+	else
+		free(inpt);
 	free_pipes(pipes);
 	return (err);
 }

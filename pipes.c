@@ -64,6 +64,8 @@ t_token	**list_to_pipes(t_token **list)
 	int		numpipes;
 	t_token	*elem;
 
+	if (!list || !*list)
+		return (NULL);
 	numpipes = count_tokens(*list, PIPE);
 	pipes = malloc(sizeof(t_token *) * (numpipes + 1));
 	i = 0;

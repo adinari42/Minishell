@@ -41,7 +41,7 @@ int	exec_echo(t_token *list, t_dlist *env)
 	int		newline;
 
 	(void) env;
-	tkn = tlist_start(list);
+	tkn = list;
 	newline = 1;
 	if (!builtin_plausible(tkn, "echo"))
 		return (1);
@@ -95,7 +95,7 @@ int	exec_cd(t_token *list, t_dlist *env)
 		return (1);
 	tkn = skip_spaces(tkn);
 	if (tkn && (tkn->type == WORD 
-		|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
+			|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
 		ret = chdir(tkn->str);
 	if (ret == -1)
 		ret = print_builtin_error("cd", tkn->str);

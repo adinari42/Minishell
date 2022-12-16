@@ -79,22 +79,6 @@ void	free_char_arr(char **to_free)
 	free(to_free);
 }
 
-// void	free_2d(char ***to_free)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	if (!to_free || !(*to_free))
-// 		return ;
-// 	while (*(to_free)[i] && ft_strncmp(*(to_free)[i], "", 1))
-// 	{
-// 		free(*(to_free)[i]);
-// 		++i;
-// 	}
-// 	free(*to_free);
-// 	*to_free = NULL;
-// }
-
 void	free_strings(char *str, char **split1)
 {
 	free(str);
@@ -133,12 +117,15 @@ void	free_pipes(t_token **pipes)
 {
 	int	i;
 
+	if (!pipes)
+		return ;
 	i = 0;
 	while (pipes && pipes[i])
 	{
 		free_token_list(pipes[i]);
 		i ++;
 	}
+	free(pipes[i]);
 	if (pipes)
 		free(pipes);
 }
