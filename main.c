@@ -295,7 +295,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		err = handle_input(pipes, &data, env);
 	}
 	else
-		free(inpt);
+		free(inpt);	
 	free_pipes(pipes);
 	return (err);
 }
