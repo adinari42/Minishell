@@ -24,6 +24,6 @@ int		num_vars_env(t_dlist *env);
 char	**env_list_to_char_arr(t_dlist **env);
 int		prnt_err(char *cmd, char *arg, char *errstr);
 int		valid_identifier(char *varname);
-char	*get_value_from_key(t_dlist *var, char *varname);
+char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data);
 
 #endif

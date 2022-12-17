@@ -33,20 +33,11 @@
 
 int	handle_builtinstr(t_token *list, t_pipe *pipe, int i, t_dlist **env) //int stdout_restore, int i)
 {
-	
-	/*version 1*/
 	// (void) i;
-	// if (data->out_fd != NULL)
-	// 	init_outfile(data);
-	// handle_builtin(list, env);
-	// parent(data);
-	// return (0);
-
-	/*version 2*/
-	pipe->pid = fork();
-	if (pipe->pid == -1)
-		ms_fd_error(4, pipe);
-	if (pipe->pid == 0)
+	data->pid = fork();
+	if (data->pid == -1)
+		ms_fd_error(4, data);
+	if (data->pid == 0)
 	{
 		child(data, i + 1);
 		handle_builtin(list, env);
@@ -83,7 +74,7 @@ int	handle_builtin(t_token *list, t_dlist **env)
 	int		ret;
 
 	while (list->type == SPACE_TKN)
-		list = list->next;
+		list = list-> next;
 	str = list->str;
 	ret = 0;
 	if (!ft_strncmp(str, g_builtins[ECHO42], 5))
@@ -103,14 +94,13 @@ int	handle_builtin(t_token *list, t_dlist **env)
 	return (ret);
 }
 
-int	handle_command(t_token *list, t_pipe *data, char *cmd_line, int i, t_dlist **env) //int stdout_restore
+int	handle_command(t_pipe *data, char *cmd_line, int i, t_dlist **env) //int stdout_restore
 {
 	int		err;
 
 	err = 0;
 	data->pid = fork();
-	init_path(list, cmd_line, &(data->parse), env);
-	free(cmd_line);
+	init_path(cmd_line, &(data->parse), env, data);
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)

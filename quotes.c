@@ -16,10 +16,8 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 {
 	t_token	*token;
 	t_token	*open_quote;
-	int		status;
 
-	token = tlist_start(*list);
-	status = 0;
+	token = tlist_start(list);
 	open_quote = NULL;
 	while (token)
 	{
