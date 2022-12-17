@@ -16,4 +16,5 @@
 t_dlist	**init_env_llist(char **envp);
 void	init_term();
 t_dlist	**init_minishell(char **envp);
+void	reset_term_signals(void);
 #endif

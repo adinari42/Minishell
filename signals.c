@@ -23,6 +23,40 @@ void	minishell_new_prompt(int signum)
 	}
 }
 
+void	minishell_new_prompt_blocking(int signum)
+{
+	if (signum == SIGINT)
+	{
+		write (1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		// rl_redisplay();
+	}
+}
+
+void	sigquit_blocking(int signum)
+{
+	if (signum == SIGQUIT)
+	{
+		printf("Quit: 3\n");
+		rl_redisplay();
+	}
+}
+
+void	signals_blocking_command(void)
+{
+	struct termios	t_settings;
+
+	signal(SIGINT, minishell_new_prompt_blocking);
+	signal(SIGQUIT, sigquit_blocking);
+	tcgetattr(1, &t_settings);
+	// printf("ECHOCTL: %d %x \n", ECHOCTL, ECHOCTL);
+	// printf("tcgetattr.c_lflag: %lu\n", t_settings.c_lflag);
+	t_settings.c_lflag |=ECHOCTL;
+	// printf("tcgetattr.c_lflag: %lu\n", t_settings.c_lflag);
+	tcsetattr(1, 0, &t_settings);
+}
+
 void	nul(int signum)
 {
 	//char *pos;
