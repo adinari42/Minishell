@@ -82,18 +82,18 @@ void append_from_str(t_token **list, char *str)
 }
 
 
-char	*non_word_tknstr(char *bashcmd, size_t i)
+char	*non_word_tknstr(char *bashcmd, size_t *i)
 {
 	char	*tokenstr;
 
-	if (i < ft_strlen(bashcmd) - 1
-		&& bashcmd[i] == '<' && bashcmd[i + 1] == '<' && ++i)
+	if (*i < ft_strlen(bashcmd) - 1
+		&& bashcmd[*i] == '<' && bashcmd[(*i) + 1] == '<' && ++(*i))
 		tokenstr = ft_strdup("<<");
-	else if (i < ft_strlen(bashcmd) - 1
-		&& bashcmd[i] == '>' && bashcmd[i + 1] == '>' && ++i)
+	else if (*i < ft_strlen(bashcmd) - 1
+		&& bashcmd[*i] == '>' && bashcmd[(*i) + 1] == '>' && ++(*i))
 		tokenstr = ft_strdup(">>");
 	else
-		tokenstr = ft_substr(bashcmd, i, 1);
+		tokenstr = ft_substr(bashcmd, *i, 1);
 	return (tokenstr);
 }
 
@@ -114,8 +114,8 @@ t_token	**read_tokens(char *bashcmd)
 		{
 			if (i - word_s > 0)
 				append_from_str(tk_list, ft_substr(bashcmd, word_s, i - word_s));
+			append_from_str(tk_list, non_word_tknstr(bashcmd, &i));
 			word_s = i + 1;
-			append_from_str(tk_list, non_word_tknstr(bashcmd, i));
 		}
 		i++;
 	}
