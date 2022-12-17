@@ -295,6 +295,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	if (pipes && inpt && inpt[0])
 	{
 		free(inpt);
+		signals_blocking_command();
 		err = handle_input(pipes, &data, env);
 	}
 	else
@@ -316,6 +317,9 @@ int	main(int argc, char **argv, char **envp)
 	stdin_restore = dup(0);		// save original stdin/stdout
 	stdout_restore = dup(1);
 	while (1)
+	{
 		main_loop(l_envp, stdin_restore, stdout_restore);
+		reset_term_signals();
+	}
 	return (argc);
 }

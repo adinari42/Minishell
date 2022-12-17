@@ -46,9 +46,13 @@ LFLAGS	= -L$(LIBFTDIR) -lft -L${HOME}/.brew/opt/readline/lib -lreadline
 LEAKFLAGS = -LLeakSanitizer -llsan -lc++
 
 all: $(NAME)
-			
-$(NAME): ${HOME}/.brew ${HOME}/.brew/opt/readline $(OBJS) $(LIBFTDIR)/$(LIBFT)
+
+# $(NAME): ${HOME}/.brew ${HOME}/.brew/opt/readline $(OBJS) $(LIBFTDIR)/$(LIBFT)
+# 	$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) $(LFLAGS) -o $(NAME)
+
+$(NAME): $(OBJS) $(LIBFTDIR)/$(LIBFT)
 	$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) $(LFLAGS) -o $(NAME)
+
 
 debug: ${HOME}/.brew ${HOME}/.brew/opt/readline $(OBJS) $(LIBFTDIR)/$(LIBFT)
 	$(CC) $(CFLAGS) -g3 -O0 -fsanitize=address $(LEAKFLAGS) $(IFLAGS) $(OBJS) $(LFLAGS) -o $(NAME)

@@ -140,4 +140,7 @@ void	parent(t_pipe *pipe);
 void	free_and_close(t_pipe *pipe);
 int		init_outfile(t_pipe *pipe);
 
+/*signals.c*/
+void	signals_blocking_command(void);
+
 #endif

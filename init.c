@@ -22,6 +22,12 @@ t_dlist	**init_minishell(char **envp)
 	return (l_envp);
 }
 
+void	reset_term_signals(void)
+{
+	init_term();
+	init_signals();
+}
+
 void	init_term(void)
 {
 	struct termios	t_settings;
