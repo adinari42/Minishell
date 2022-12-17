@@ -60,8 +60,9 @@ void	ms_fd_err(int i)
 
 void	ms_fd_error(int i, t_pipe *data)
 {
-	data->pid = fork();
-  
+	// int	status;
+
+	data->pid = fork();  
   if (data->pid < 0) {
     // Error occurred while creating child process
     dprintf(2,  "Failed to create child process\n");
@@ -88,7 +89,10 @@ void	ms_fd_error(int i, t_pipe *data)
 	// if (i == 127 || i == 3)
 	// 	exit(i);
 	exit(i);
-  } //else {
+  } 
+//   else {
+// 	waitpid(data->pid, &status, 0);
+// 	data->error_code = WEXITSTATUS(status);
     // Inside the parent process
     // Child process was created successfully
 //   }

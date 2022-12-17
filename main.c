@@ -12,15 +12,13 @@
 
 #include "minishell.h"
 
-void	init_path(t_token *list, char *cmdline, t_parse *parse, t_dlist **env)
+void	init_path(char *cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
-	t_token	*tklist;
 	char	*var_path;
 	char	**split_path;
 
-	tklist = list;
 	parse->cmd = ft_split(cmdline, ' ');
-	var_path = get_value_from_key(*env, "PATH");
+	var_path = get_value_from_key(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
 	free_split(split_path);
@@ -231,12 +229,12 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	i = 0;
 	while (pipes[i])
 	{
-		data->error_code = 0;
+		// data->error_code = 0;
 		pipe(data->fd);
 		pipes[i] = merge_quoted_strings(pipes[i], data);
 		if (pipes[i] == NULL)
 			return (1);
-		check_value(pipes[i], *env);
+		check_value(pipes[i], *env, data);
 		cmd_line = get_cmd(pipes[i], data);
 		if (cmd_line)
 		{
@@ -255,7 +253,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 				handle_builtin(builtin_list, env);
 			}
 			else if (cmd_line && cmd_line[0])
-				handle_command(pipes[i], data, cmd_line, i, env);
+				handle_command(data, cmd_line, i, env);
 			free_token_list(builtin_list);
 			free(cmd_line);
 		}
@@ -263,8 +261,12 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			parent(data);
 		i++;
 	}
-	while (i--) 
-      waitpid(-1, &status, 0);
+	status = 0;
+	// while (i--) 
+	// {
+		waitpid(-1, &status, 0);
+		data->error_code = WEXITSTATUS(status);
+	// }
 	// printf("Child process exited with code: %d\n", WEXITSTATUS(status));
 	return (status);
 }
