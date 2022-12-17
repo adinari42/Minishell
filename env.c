@@ -28,8 +28,10 @@ char	**envp_parse(char **envp)
 	return (envp_parse);
 }
 
-char	*get_value_from_key(t_dlist *var, char *varname)
+char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 {
+	if (!ft_strncmp("?", varname, ft_strlen(varname)))
+		return (ft_itoa(data->error_code));
 	while (var)
 	{
 		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))

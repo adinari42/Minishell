@@ -17,10 +17,8 @@ char	*value_expand(char **envp, char *var)
 	int		j;
 	char	*value;
 	size_t	len;
-	char	*tmp;
 
 	len = 0;
-	tmp = var;
 	j = 0;
 	while (envp[j] && envp[j][0])// && ft_strncmp(envp[j], "", 1))
 	{
@@ -129,7 +127,7 @@ or after every word depending on the original format(tmp works as a reference)
 -then check if the word starts with $ and expand it then join to to result
 -skip the letters of the word in tmp and repeat
 */
-char	*expand_value(char *str, t_dlist *env)
+char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 {
 	char		**split1;
 	char		**split2;
@@ -158,7 +156,7 @@ char	*expand_value(char *str, t_dlist *env)
 	// 	// 	/*******expand values*******/
 			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 			{
-				val = get_value_from_key(env, split2[counter.j]);
+				val = get_value_from_key(env, split2[counter.j], data);
 				if (split2[counter.j])
 					free(split2[counter.j]);
 				split2[counter.j] = ft_strdup(val);
@@ -182,11 +180,11 @@ char	*expand_value(char *str, t_dlist *env)
 	return (res);
 }
 
-void	check_value(t_token *list, t_dlist *env)
+void	check_value(t_token *list, t_dlist *env, t_pipe *data)
 {
 	while (list)
 	{
-		list->str = expand_value(list->str, env);
+		list->str = expand_value(list->str, env, data);
 		list = list->next;
 	}
 }
