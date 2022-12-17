@@ -13,6 +13,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#include <sys/types.h>
+#include <sys/wait.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
@@ -67,7 +69,7 @@ enum e_builtins
 	EXIT	
 };
 
-const static char *const	g_builtins[] = {
+static const char *const	g_builtins[] = {
 	"echo",
 	"cd",
 	"pwd",
@@ -93,7 +95,7 @@ int		exec(char *program, char **args, char *const *envp);
 //int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token *list, t_dlist **env);
 int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env);
-int		handle_command(t_token *list, t_pipe *data, char *cmd_line, int i, t_dlist **env);
+int		handle_command(t_pipe *data, char *cmd_line, int i, t_dlist **env);
 
 
 /*builtin.c*/
@@ -119,7 +121,7 @@ void	exit_with_value(int retval, t_dlist **env);
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);
-void	init_path(t_token *tklist, char *cmdline, t_parse *parse, t_dlist **env);
+void	init_path(char *cmdline, t_parse *parse, t_dlist **env, t_pipe *data);
 char	*get_path(char **string, char *cmd);
 void	ms_fd_err(int i);
 void	ms_fd_error(int i, t_pipe *data);
