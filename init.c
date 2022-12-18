@@ -16,19 +16,25 @@ t_dlist	**init_minishell(char **envp)
 {
 	t_dlist	**l_envp;
 
-	init_term();
+	init_term(STDOUT_FILENO);
 	l_envp = init_env_llist(envp);
 	init_signals();
 	return (l_envp);
 }
 
-void	init_term(void)
+void	reset_term_signals(void)
+{
+	init_term(STDOUT_FILENO);
+	init_signals();
+}
+
+void	init_term(int fd)
 {
 	struct termios	t_settings;
 
-	tcgetattr(1, &t_settings);
+	tcgetattr(fd, &t_settings);
 	t_settings.c_lflag &= ~(ECHOCTL);
-	tcsetattr(1, 0, &t_settings);
+	tcsetattr(fd, 0, &t_settings);
 }
 
 t_dlist	**init_env_llist(char **envp)

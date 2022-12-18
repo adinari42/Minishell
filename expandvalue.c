@@ -184,7 +184,8 @@ void	check_value(t_token *list, t_dlist *env, t_pipe *data)
 {
 	while (list)
 	{
-		list->str = expand_value(list->str, env, data);
+		if (list->type != STR_SQUOTES)
+			list->str = expand_value(list->str, env, data);
 		list = list->next;
 	}
 }
