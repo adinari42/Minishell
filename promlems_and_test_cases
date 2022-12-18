@@ -1,0 +1,24 @@
+/***************
+not working:
+****************/
+|||							(segfaults)
+export a=1 | cat 			(does not behave like bash, bash does not export the variable and does not block/'hang')
+grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
+echo "'$USER'"				(throws an error about unclosed quotes, should output 'adinari' or 'slakner' instead)
+
+minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
+
+echo "'"					(error about unclosed quotes)
+echo "'$USER'"				(doesn't segfault, but also throws the unclosed quotes error)
+/***************
+working atm:
+****************/
+
+export foo=3
+echo "foo" > bar
+< infile cat
+cat main.c
+< infile | cat
+[input of spaces only]
+echo foo$USER
+echo "foo" | echo "bar"
