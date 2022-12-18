@@ -12,17 +12,6 @@
 
 #include "minishell.h"
 
-void	init_path(char *cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
-{
-	char	*var_path;
-	char	**split_path;
-
-	parse->cmd = ft_split(cmdline, ' ');
-	var_path = get_value_from_key(*env, "PATH", data);
-	split_path = ft_split(var_path, ':');
-	parse->path = get_path(split_path, parse->cmd[0]);
-	free_split(split_path);
-}
 
 void	exec_cmd(t_pipe *data, t_dlist **env)
 {
@@ -43,6 +32,43 @@ void	exec_cmd(t_pipe *data, t_dlist **env)
 	exit(0);
 }
 
+// int	init_here_doc(t_token *list, t_pipe *pipe)
+// {
+// 	char	*str;
+
+// 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (pipe->file.infile == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
+// 	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	str = get_next_line(0);
+// 	while (1)
+// 	{
+// 		if (str && ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
+// 			break ;
+// 		ft_putstr_fd(str, pipe->file.infile);
+// 		free(str);
+// 		str = get_next_line(0);
+// 	}
+// 	free(str);
+// 	pipe->append = 1;
+// 	if (dup2(pipe->file.tmp, 0) == -1)
+// 	{
+// 		ms_fd_error(2, pipe);
+// 		return (1);
+// 	}
+// 	close(pipe->file.infile);
+// 	close(pipe->file.tmp);
+// 	return (0);
+// }
+
 int	init_here_doc(t_token *list, t_pipe *pipe)
 {
 	char	*str;
@@ -59,16 +85,25 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 		ms_fd_error(1, pipe);
 		return (1);
 	}
-	str = get_next_line(0);
-	while (1)
+	//str = get_next_line(0);
+	init_term(pipe->file.tmp);
+	g_stop = 0;
+	heredoc_signals(pipe->file.infile);
+	//str = readline("> ");
+	str = ft_strdup("");
+	while (!g_stop && str)
 	{
-		if (str && ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
+		str = readline("> ");
+		if (str && !ft_strncmp(list->str, str, ft_strlen(str) - 1))
 			break ;
 		ft_putstr_fd(str, pipe->file.infile);
-		free(str);
-		str = get_next_line(0);
+		if (str)
+			free(str);
+		//str = get_next_line(0);
 	}
-	free(str);
+	signals_blocking_command();
+	if (str)
+		free(str);
 	pipe->append = 1;
 	if (dup2(pipe->file.tmp, 0) == -1)
 	{
@@ -239,9 +274,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	{
 		// data->error_code = 0;
 		pipe(data->fd);
-		pipes[i] = merge_quoted_strings(pipes[i], data);
-		if (pipes[i] == NULL)
-			return (1);
 		check_value(pipes[i], *env, data);
 		cmd_line = get_cmd(pipes[i], data);
 		if (cmd_line)
@@ -266,8 +298,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(data, cmd_line, i, env);
-			free_token_list(builtin_list);
-			free(cmd_line);
+			free_token_list(*builtin_list);
+			free(builtin_list);
 		}
 		else
 			parent(data);

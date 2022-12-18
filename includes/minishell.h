@@ -38,8 +38,7 @@
 
 # define TOKENS " $'<>\""
 
-//char	**g_envp;
-//t_dlist	*g_env;
+int	g_stop;
 
 enum e_tokentype
 {
@@ -143,5 +142,6 @@ int		init_outfile(t_pipe *pipe);
 
 /*signals.c*/
 void	signals_blocking_command(void);
+void	heredoc_signals(int fd);
 
 #endif
