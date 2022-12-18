@@ -41,16 +41,17 @@ void heredoc_sigquit_handler(int signum)
 void	heredoc_signals(int fd)
 {
 	struct termios	t_settings;
+	(void) fd;
 
 	signal(SIGINT, heredoc_sigint_handler);
 	signal(SIGQUIT, nul);
-	tcgetattr(fd, &t_settings);
+	tcgetattr(0, &t_settings);
     t_settings.c_lflag &= ~ICANON;
 	t_settings.c_lflag |=~ECHOCTL;
 	t_settings.c_oflag &= ~OCRNL;
     t_settings.c_cc[VMIN] = 1;
     t_settings.c_cc[VTIME] = 0;
-    tcsetattr(fd, TCSANOW, &t_settings);
+    tcsetattr(0, TCSANOW, &t_settings);
 }
 
 void	minishell_new_prompt(int signum)

@@ -73,6 +73,7 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 {
 	char	*str;
 
+	(void) list;
 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (pipe->file.infile == -1)
 	{
@@ -85,26 +86,23 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 		ms_fd_error(1, pipe);
 		return (1);
 	}
-	//str = get_next_line(0);
 	init_term(pipe->file.tmp);
 	g_stop = 0;
 	heredoc_signals(pipe->file.infile);
-	//str = readline("> ");
-	str = ft_strdup("");
 	while (!g_stop && str)
 	{
 		str = readline("> ");
 		if (str && !ft_strncmp(list->str, str, ft_strlen(str) - 1))
+		{
+			free(str);
 			break ;
+		}
 		ft_putstr_fd(str, pipe->file.infile);
 		ft_putstr_fd("\n", pipe->file.infile);
 		if (str)
 			free(str);
-		//str = get_next_line(0);
 	}
 	signals_blocking_command();
-	if (str)
-		free(str);
 	pipe->append = 1;
 	if (dup2(pipe->file.tmp, 0) == -1)
 	{
@@ -299,6 +297,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(data, cmd_line, i, env);
+			else if (cmd_line)
+				free(cmd_line);
 			free_token_list(*builtin_list);
 			free(builtin_list);
 		}
