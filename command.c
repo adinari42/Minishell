@@ -31,6 +31,19 @@
 // 	return (1);
 // }
 
+void	init_path(char *cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
+{
+	char	*var_path;
+	char	**split_path;
+
+	parse->cmd = ft_split(cmdline, ' ');
+	var_path = get_value_from_key(*env, "PATH", data);
+	split_path = ft_split(var_path, ':');
+	parse->path = get_path(split_path, parse->cmd[0]);
+	free_split(split_path);
+}
+
+
 int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int stdout_restore, int i)
 {
 	// (void) i;
@@ -81,6 +94,7 @@ int	handle_command(t_pipe *data, char *cmd_line, int i, t_dlist **env) //int std
 	err = 0;
 	data->pid = fork();
 	init_path(cmd_line, &(data->parse), env, data);
+	free(cmd_line);
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
