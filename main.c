@@ -217,6 +217,15 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	return (NULL);
 }
 
+char	*add_quote_char(char *cmd, t_token *tkn)
+{
+	if (tkn->type == STR_DQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "\"");
+	else if (tkn->type == STR_SQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "'");
+	return (cmd);
+}
+
 char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token	*tmp;
@@ -238,17 +247,13 @@ char	*get_cmd(t_token *list, t_pipe *data)
 				free(cmd_line);
 				return (NULL);
 		}
-		// else if (tmp->type == STR_DQUOTES)
-		// 	cmd_line = ft_strjoin_free_str1(cmd_line, "\"");
-		// else if (tmp->type == STR_SQUOTES)
-		// 	cmd_line = ft_strjoin_free_str1(cmd_line, "'");
 		else
 		{
-			if (tmp->str) // we only need this if tmp->str can be empty
-				cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
-			// printf("str : %s , type = %d\n", tmp->str, tmp->type);
-			if (tmp->type != ASSIGN && tmp->next && tmp->next->type != ASSIGN)
+			cmd_line = add_quote_char(cmd_line, tmp);
+			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+			if (tmp->type != ASSIGN && (!tmp->next || tmp->next->type != ASSIGN))
 				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
+			cmd_line = add_quote_char(cmd_line, tmp);
 		}
 		tmp = tmp->next;
 	}
