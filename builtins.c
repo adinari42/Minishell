@@ -54,7 +54,10 @@ int	exec_echo(t_token *list, t_dlist *env)
 	while (tkn)
 	{
 		write(1, tkn->str, ft_strlen(tkn->str));
-		tkn = tkn->next;
+		if (tkn->type == SPACE_TKN)
+			tkn = skip_spaces(tkn);
+		else
+			tkn = tkn->next;
 	}
 	if (newline)
 		write(1, "\n", 1);
