@@ -22,15 +22,32 @@ void	nul(int signum)
 	}
 }
 
-void heredoc_sigint_handler(int signum)
+void	minishell_new_prompt(int signum)
 {
 	if (signum == SIGINT)
 	{
-		g_stop = 1;
+		write (1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
 	}
 }
 
-void heredoc_sigquit_handler(int signum)
+void	heredoc_sigint_handler(int signum)
+{
+	// printf("%d\n", signum);
+	if (signum == SIGINT)
+	{
+		// printf("%d\n", signum);
+		g_stop = 1;
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_redisplay();
+		write (0, "\n", 1);
+	}
+}	
+
+void	heredoc_sigquit_handler(int signum)
 {
 	if (signum == SIGQUIT)
 	{
@@ -41,28 +58,17 @@ void heredoc_sigquit_handler(int signum)
 void	heredoc_signals(int fd)
 {
 	struct termios	t_settings;
-	(void) fd;
-
 	signal(SIGINT, heredoc_sigint_handler);
 	signal(SIGQUIT, nul);
-	tcgetattr(0, &t_settings);
-    t_settings.c_lflag &= ~ICANON;
-	t_settings.c_lflag |=~ECHOCTL;
-	t_settings.c_oflag &= ~OCRNL;
-    t_settings.c_cc[VMIN] = 1;
-    t_settings.c_cc[VTIME] = 0;
-    tcsetattr(0, TCSANOW, &t_settings);
-}
-
-void	minishell_new_prompt(int signum)
-{
-	if (signum == SIGINT)
-	{
-		write (1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
+	tcgetattr(fd, &t_settings);
+	//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);
+	//t_settings.c_lflag |= ICANON;
+	t_settings.c_lflag &=~ECHOCTL;
+	//t_settings.c_oflag |=OCRNL;
+	//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);
+	// t_settings.c_cc[VMIN] = 1;
+	// t_settings.c_cc[VTIME] = 0;
+	tcsetattr(fd, 0, &t_settings);
 }
 
 void	minishell_new_prompt_blocking(int signum)

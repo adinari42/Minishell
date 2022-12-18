@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+extern volatile int	g_stop;
 
 void	exec_cmd(t_pipe *data, t_dlist **env)
 {
@@ -86,13 +87,14 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 		ms_fd_error(1, pipe);
 		return (1);
 	}
-	init_term(pipe->file.tmp);
+	str = ft_strdup("");
+	reset_term_signals();
+	heredoc_signals(STDIN_FILENO);
 	g_stop = 0;
-	heredoc_signals(pipe->file.infile);
 	while (!g_stop && str)
 	{
 		str = readline("> ");
-		if (str && !ft_strncmp(list->str, str, ft_strlen(str) - 1))
+		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
 		{
 			free(str);
 			break ;
@@ -323,6 +325,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	err = 1;
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
+	reset_term_signals();
 	inpt = readline("Minishell$ ");
 	if (!inpt)
 		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D

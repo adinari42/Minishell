@@ -38,7 +38,7 @@
 
 # define TOKENS " $'<>\""
 
-int	g_stop;
+volatile int	g_stop;
 
 enum e_tokentype
 {
