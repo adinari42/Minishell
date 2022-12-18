@@ -41,7 +41,7 @@ int	exec_echo(t_token *list, t_dlist *env)
 	int		newline;
 
 	(void) env;
-	tkn = tlist_start(list);
+	tkn = list;
 	newline = 1;
 	if (!builtin_plausible(tkn, "echo"))
 		return (1);
