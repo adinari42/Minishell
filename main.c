@@ -97,6 +97,7 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 		if (str && !ft_strncmp(list->str, str, ft_strlen(str) - 1))
 			break ;
 		ft_putstr_fd(str, pipe->file.infile);
+		ft_putstr_fd("\n", pipe->file.infile);
 		if (str)
 			free(str);
 		//str = get_next_line(0);
@@ -208,7 +209,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
-		{	
+		{
 			ms_fd_error(5, data);
 			break ;
 		}
