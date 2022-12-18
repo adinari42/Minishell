@@ -40,10 +40,10 @@ void	heredoc_sigint_handler(int signum)
 	{
 		// printf("%d\n", signum);
 		g_stop = 1;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_redisplay();
-		write (0, "\n", 1);
+		//write(1, "\n", 1);
+		// rl_replace_line("", 0);
+		// rl_redisplay();
+		write (2, "\n", 1);
 	}
 }	
 
@@ -58,7 +58,8 @@ void	heredoc_sigquit_handler(int signum)
 void	heredoc_signals(int fd)
 {
 	struct termios	t_settings;
-	signal(SIGINT, heredoc_sigint_handler);
+	signal(SIGINT, heredoc_sigint_handler);;
+	//signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, nul);
 	tcgetattr(fd, &t_settings);
 	//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);

@@ -10,6 +10,7 @@ minishell sometimes 'hangs' and does not display the next prompt after input. Se
 
 echo "'"					(error about unclosed quotes)
 echo "'$USER'"				(doesn't segfault, but also throws the unclosed quotes error)
+echo "foo"   "foo"			(too many spaces in the output)
 /***************
 working atm:
 ****************/
