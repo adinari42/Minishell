@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/07 19:29:16 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/19 20:26:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@
 # include "exec.h"
 # include "string_utils.h"
 # include "../gnl/get_next_line.h"
-
+# include "pipes.h"
+# include <fcntl.h>
+# include "parse.h"
 
 # define TOKENS " $'<>\""
 
@@ -79,9 +81,6 @@ t_token	**read_tokens(char *bashcmd);
 int		token_type(char *c);
 
 void	init_signals(void);
-
-t_token	**remove_spaces(t_token **list);
-t_token	**remove_empty(t_token **list);
 
 int		exec(char *program, char **args, char *const *envp);
 

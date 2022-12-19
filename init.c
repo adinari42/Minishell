@@ -6,27 +6,42 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/21 23:33:25 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:18:58 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// int	init_env(char **envp)
-// {
-// 	int	i;
+#include "minishell.h"
 
-// 	i = 0;
-// 	while (envp[i])
-// 		i++;
-// 	g_envp = calloc(i * sizeof(char *));
-// 	i = 0;
-// 	while (envp[i])
-// 		g_envp[i] = ft_strdup(envp[i]);
-// }
-
-int	init_env_llist(char **envp)
+t_dlist	**init_minishell(char **envp)
 {
+	t_dlist	**l_envp;
+
+	init_term();
+	l_envp = init_env_llist(envp);
+	init_signals();
+	return (l_envp);
+}
+
+void	reset_term_signals(void)
+{
+	init_term();
+	init_signals();
+}
+
+void	init_term(void)
+{
+	struct termios	t_settings;
+
+	tcgetattr(1, &t_settings);
+	t_settings.c_lflag &= ~(ECHOCTL);
+	tcsetattr(1, 0, &t_settings);
+}
+
+t_dlist	**init_env_llist(char **envp)
+{
+	t_dlist	**l_envp;
 	int		i;
 	t_kval	*var;
 	char	**tmp;

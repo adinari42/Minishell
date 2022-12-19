@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/08 18:14:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:50:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,8 +194,57 @@ void	free_and_close(t_pipe *pipe)
 }
 void	parent(t_pipe *pipe)
 {
-	dup2(pipe->fd[0], 0);
-	close (pipe->fd[1]);
+	int		i;
+	int		status;
+	char	*cmd_line;
+	t_token	**builtin_list;
+
+	data->cmd_pos = count_pipes(pipes);
+	i = 0;
+	while (pipes[i])
+	{
+		pipe(data->fd);
+		check_value(pipes[i], *env, data);
+		cmd_line = get_cmd(pipes[i], data);
+		if (cmd_line)
+		{
+			builtin_list = read_tokens(cmd_line);
+			builtin_list = merge_quoted_strings(builtin_list, data);
+			builtin_list = remove_empty(builtin_list);
+			if (is_builtin(cmd_line) == 1)
+			{
+				free(cmd_line);
+				handle_builtinstr(*builtin_list, data, i, env);
+			}
+			else if (is_builtin(cmd_line))
+			{
+				free(cmd_line);
+				if (data->out_fd != NULL)
+				{
+					if (init_outfile(data))
+						ms_fd_error(1, data);
+				}
+				handle_builtin(*builtin_list, env);
+			}
+			else if (cmd_line && cmd_line[0])
+				handle_command(data, cmd_line, i, env);
+			else if (cmd_line)
+				free(cmd_line);
+			free_token_list(*builtin_list);
+			free(builtin_list);
+		}
+		else
+			parent(data);
+		i++;
+	}
+	status = 0;
+	while (i--) 
+	{
+		waitpid(-1, &status, 0);
+		data->error_code = WEXITSTATUS(status);
+	}
+	// printf("Child process exited with code: %d\n", WEXITSTATUS(status));
+	return (status);
 }
 
 int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
@@ -208,35 +257,37 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	(void) envp;
 	(void) stdout_restore;
 
-	data->cmd_pos = count_split_elems(inpt_split);
-	i = 0;
 	err = 0;
-	while (inpt_split[i])
+	dup2(stdin_restore, 0);
+	dup2(stdout_restore, 1);
+	reset_term_signals();
+	inpt = readline("Minishell$ ");
+	if (!inpt)
+		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
+	add_history(inpt);
+	if (is_empty_inpt(inpt))
+		return (0);
+	list = read_tokens(inpt);
+	list = merge_quoted_strings(list, &data);
+	data.error_code = 0;
+	if (!parse(*list, &data))
 	{
-		pipe(data->fd);
-		list = read_tokens(inpt_split[i]);
-		list = merge_quoted_strings(list, data);
-		if (list == NULL)
+		pipes = list_to_pipes(list);
+		if (pipes && inpt && inpt[0] && !err)
 		{
-			// printf("Minishell$ ");
-			return (1);
+			free(inpt);
+			signals_blocking_command();
+			err = handle_input(pipes, &data, env);
 		}
-        // else
-		// {
-			check_value(*list);
-		cmd_line = get_cmd(*list, data);
-		builtin_list = read_tokens(cmd_line);
-		builtin_list = merge_quoted_strings(builtin_list, data);
-		builtin_list = remove_empty(builtin_list);
-		if (is_builtin(cmd_line))
-			handle_builtinstr(builtin_list, data, i);
-		else if (cmd_line && cmd_line[0])
-			handle_command(list, data, cmd_line, i);
-		free(cmd_line);
-		free_token_list(list);
-		free_token_list(builtin_list);
-		// }
-		i++;
+		else
+			free(inpt);
+		free_pipes(pipes);
+	}
+	else
+	{
+		free(inpt);
+		free_token_list(*list);
+		free(list);
 	}
 	return (err);
 }
