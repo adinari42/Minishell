@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 20:28:25 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:41:27 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,11 +315,11 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		i++;
 	}
 	status = 0;
-	// while (i--) 
-	// {
+	while (i--) 
+	{
 		waitpid(-1, &status, 0);
 		data->error_code = WEXITSTATUS(status);
-	// }
+	}
 	// printf("Child process exited with code: %d\n", WEXITSTATUS(status));
 	return (status);
 }
