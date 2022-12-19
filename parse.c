@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 21:03:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 23:07:42 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,27 @@ int	check_pipes(t_token *tkn)
 	return (expect_cmd);
 }
 
+// int	check_quotes(t_token *tkn)
+// {
+// 	int	ret;
+
+// 	ret = 0;
+
+// }
+
 int	parse(t_token *list, t_pipe *data)
 {
 	int	ret;
 
 	ret = 0;
-	while (list->type == SPACE_TKN)
-		list = list->next;
-	if (!list)
-		return (ret);
-	data->error_code += check_pipes(list);
+	// while (list->type == SPACE_TKN)
+	// 	list = list->next;
+	// if (!list)
+	// 	return (ret);
+	data->error_code = check_pipes(list);
+	if (data->error_code)
+		return (data->error_code);
+	// data->error_code = check_quotes(list);
 	return (data->error_code);
 }
 
