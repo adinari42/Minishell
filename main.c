@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/19 22:39:15 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 23:09:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,11 +341,10 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	if (is_empty_inpt(inpt))
 		return (0);
 	list = read_tokens(inpt);
+	free(inpt);
 	list = merge_quoted_strings(list, &data);
-	if (data.error_code || parse(*list, &data) || !inpt || !inpt[0])
+	if (data.error_code || parse(*list, &data))
 	{
-		if (inpt)
-			free(inpt);
 		if (list)
 			free_token_list(*list);
 		free(list);
