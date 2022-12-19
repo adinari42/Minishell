@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/04 20:10:05 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:14:55 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ void	minishell_new_prompt_blocking(int signum)
 		write (1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
-		// rl_redisplay();
 	}
 }
 

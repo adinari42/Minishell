@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/19 21:41:27 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:50:14 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,7 +277,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	i = 0;
 	while (pipes[i])
 	{
-		// data->error_code = 0;
 		pipe(data->fd);
 		check_value(pipes[i], *env, data);
 		cmd_line = get_cmd(pipes[i], data);
@@ -330,7 +329,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	t_pipe	data;
 	t_token	**pipes;	
 
-	err = 1;
+	err = 0;
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
 	reset_term_signals();
@@ -338,18 +337,30 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	if (!inpt)
 		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
 	add_history(inpt);
+	if (is_empty_inpt(inpt))
+		return (0);
 	list = read_tokens(inpt);
 	list = merge_quoted_strings(list, &data);
-	pipes = list_to_pipes(list);
-	if (pipes && inpt && inpt[0])
+	data.error_code = 0;
+	if (!parse(*list, &data))
 	{
-		free(inpt);
-		signals_blocking_command();
-		err = handle_input(pipes, &data, env);
+		pipes = list_to_pipes(list);
+		if (pipes && inpt && inpt[0] && !err)
+		{
+			free(inpt);
+			signals_blocking_command();
+			err = handle_input(pipes, &data, env);
+		}
+		else
+			free(inpt);
+		free_pipes(pipes);
 	}
 	else
-		free(inpt);	
-	free_pipes(pipes);
+	{
+		free(inpt);
+		free_token_list(*list);
+		free(list);
+	}
 	return (err);
 }
 

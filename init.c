@@ -6,9 +6,11 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/20 16:14:00 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/11 19:20:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:18:58 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "minishell.h"
 
 #include "minishell.h"
 
@@ -16,7 +18,7 @@ t_dlist	**init_minishell(char **envp)
 {
 	t_dlist	**l_envp;
 
-	init_term(STDOUT_FILENO);
+	init_term();
 	l_envp = init_env_llist(envp);
 	init_signals();
 	return (l_envp);
@@ -24,17 +26,17 @@ t_dlist	**init_minishell(char **envp)
 
 void	reset_term_signals(void)
 {
-	init_term(STDOUT_FILENO);
+	init_term();
 	init_signals();
 }
 
-void	init_term(int fd)
+void	init_term(void)
 {
 	struct termios	t_settings;
 
-	tcgetattr(fd, &t_settings);
+	tcgetattr(1, &t_settings);
 	t_settings.c_lflag &= ~(ECHOCTL);
-	tcsetattr(fd, 0, &t_settings);
+	tcsetattr(1, 0, &t_settings);
 }
 
 t_dlist	**init_env_llist(char **envp)
