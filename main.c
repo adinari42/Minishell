@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/19 21:50:14 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 22:39:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,6 +332,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	t_token	**pipes;	
 
 	err = 0;
+	data.error_code = 0;
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
 	reset_term_signals();
@@ -343,25 +344,24 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		return (0);
 	list = read_tokens(inpt);
 	list = merge_quoted_strings(list, &data);
-	data.error_code = 0;
-	if (!parse(*list, &data))
+	if (data.error_code || parse(*list, &data) || !inpt || !inpt[0])
 	{
-		pipes = list_to_pipes(list);
-		if (pipes && inpt && inpt[0] && !err)
-		{
+		if (inpt)
 			free(inpt);
-			signals_blocking_command();
-			err = handle_input(pipes, &data, env);
-		}
-		else
-			free(inpt);
-		free_pipes(pipes);
+		if (list)
+			free_token_list(*list);
+		free(list);
 	}
 	else
 	{
-		free(inpt);
-		free_token_list(*list);
-		free(list);
+		pipes = list_to_pipes(list);
+		//if (pipes && inpt && inpt[0] && !err)
+		if (pipes && !err)
+		{
+			signals_blocking_command();
+			err = handle_input(pipes, &data, env);
+		}
+		free_pipes(pipes);
 	}
 	return (err);
 }
