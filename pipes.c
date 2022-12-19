@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:38:34 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/13 22:01:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 21:07:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,6 @@ t_token	**list_to_pipes(t_token **list)
 	elem = *list;
 	if (!list || !elem)
 		return (NULL);
-	if (elem->type == PIPE)
-		prnt_err("", "", "syntax error near unexpected token `|'");
 	pipes[0] = elem;
 	while (elem->next)
 	{
