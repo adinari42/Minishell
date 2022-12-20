@@ -6,13 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 23:07:24 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 23:52:42 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
+t_token	**merge_quoted_strings(t_token **list)
 {
 	t_token	*token;
 	t_token	*open_quote;
@@ -28,13 +28,7 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 					|| open_quote->type != token->type))
 			{
 				if (!token->next)
-				{
-					ms_fd_error(258, data);
-					data->error_code = 258;			// child process can't pass data back to the parent process without a pipe()
-					free_token_list(*list);
-					free(list);
-					return (NULL);
-				}
+					break ;
 				token = token->next;
 			}
 			token = merge_tokens(open_quote, token);
@@ -71,11 +65,10 @@ t_token	*merge_two_tokens(t_token *token1, t_token *token2)
 		return (token1);
 	newstr = ft_strjoin(token1->str, token2->str);
 	free(token1->str);
-	free(token2->str);
 	token1->str = newstr;
 	token1->next = token2->next;
 	if (token1->next)
 		token1->next->prev = token1;
-	free(token2);
+	delete(token2);
 	return (token1);
 }

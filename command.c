@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 20:29:28 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/20 22:05:19 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int s
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		handle_builtin(list, env);
+		handle_builtin(list, env, data);
 		exit (0);
 	}
 	else
@@ -61,7 +61,7 @@ int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int s
 	return (0);
 }
 
-int	handle_builtin(t_token *list, t_dlist **env)
+int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 {
 	char	*str;
 	int		ret;
@@ -83,7 +83,7 @@ int	handle_builtin(t_token *list, t_dlist **env)
 	else if (!ft_strncmp(str, g_builtins[ENV], 4))
 		ret = exec_env(list, *env);
 	else if (!ft_strncmp(str, g_builtins[EXIT], 5))
-		ret = exec_exit(list, env);
+		exec_exit(list, env, data);
 	return (ret);
 }
 
