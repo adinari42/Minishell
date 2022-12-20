@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 20:28:44 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/20 22:01:40 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,39 +206,37 @@ int	exec_env(t_token *list, t_dlist *env)
 	return (0);
 }
 
-int	exec_exit(t_token *list, t_dlist **env)
+void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 {
 	t_token	*tkn;
 	char	*tokenstr;
-	int		ret;
 
-	tkn = tlist_start(list);
-	ret = 0;
+	tkn = list;
 	if (!builtin_plausible(tkn, "exit"))
-		return (1);
+		return ;
 	tkn = skip_spaces(tkn);
 	if (tkn && tkn->next)
 	{
-		tkn = skip_spaces(tkn);
-		if (tkn)
-		{
-			printf("minishell: exit: too many arguments\n");
-			return (1);
-		}
-	}
-	else if (tkn)
-	{
 		tokenstr = tkn->str;
-		while (*tokenstr)
+		while (*(tokenstr))
 		{
 			if (!ft_isdigit(*tokenstr))
+			{
 				printf("minishell: exit: %s: numeric argument required\n", tkn->str);
+				exit_with_value(255, env);
+			}
 			tokenstr ++;
 		}
-		ret = ft_atoi(tkn->str);
+		data->error_code = ft_atoi(tkn->str);
+		tkn = skip_spaces(tkn);
+		if (tkn && tkn->type != SPACE_TKN)
+		{
+			printf("minishell: exit: too many arguments\n");
+			data->error_code = 1;
+			return ;
+		}
 	}
-	exit_with_value(ret, env);
-	return (0);
+	exit_with_value(data->error_code, env);
 }
 
 int	exec_pwd(t_token *list, t_dlist *env)

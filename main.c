@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/19 23:09:15 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/20 22:04:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,38 +161,37 @@ void	parent(t_pipe *pipe)
 	close (pipe->fd[1]);
 }
 
-
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
-		data->out_fd = NULL;
-		if (redir_type == APPEND_IN)
-		{	
-			if(init_here_doc(list, data))
-				return(1);
-		}
-		else if (redir_type == REDIR_IN)
+	data->out_fd = NULL;
+	if (redir_type == APPEND_IN)
+	{	
+		if (init_here_doc(list, data))
+			return (1);
+	}
+	else if (redir_type == REDIR_IN)
+	{
+		data->file.infile = open(list->str, O_RDONLY);
+		if (data->file.infile == -1)
 		{
-			data->file.infile = open(list->str, O_RDONLY);
-			if (data->file.infile == -1)
-			{
-				write(2, list->str, ft_strlen(list->str));
-				close(data->file.infile);
-				ms_fd_error(1, data);
-				return (1);
-			}
-			dup2(data->file.infile, 0);
+			write(2, list->str, ft_strlen(list->str));
 			close(data->file.infile);
+			ms_fd_error(1, data);
+			return (1);
 		}
-		else if (redir_type == APPEND_OUT)
-		{
-			data->append = 1;
-			data->out_fd = list->str;
-		}
-		else if (redir_type == REDIR_OUT)
-		{
-			data->append = 0;
-			data->out_fd = list->str;
-		}
+		dup2(data->file.infile, 0);
+		close(data->file.infile);
+	}
+	else if (redir_type == APPEND_OUT)
+	{
+		data->append = 1;
+		data->out_fd = list->str;
+	}
+	else if (redir_type == REDIR_OUT)
+	{
+		data->append = 0;
+		data->out_fd = list->str;
+	}
 	return (0);
 }
 
@@ -285,8 +284,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		if (cmd_line)
 		{
 			builtin_list = read_tokens(cmd_line);
-			builtin_list = merge_quoted_strings(builtin_list, data);
-			builtin_list = remove_empty(builtin_list);
+			builtin_list = merge_quoted_strings(builtin_list);
+			//builtin_list = remove_empty(builtin_list);
 			if (is_builtin(cmd_line) == 1)
 			{
 				free(cmd_line);
@@ -300,7 +299,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 					if (init_outfile(data))
 						ms_fd_error(1, data);
 				}
-				handle_builtin(*builtin_list, env);
+				handle_builtin(*builtin_list, env, data);
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(data, cmd_line, i, env);
@@ -344,17 +343,14 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		return (0);
 	list = read_tokens(inpt);
 	free(inpt);
-	list = merge_quoted_strings(list, &data);
-	if (data.error_code || parse(*list, &data))
+	if (data.error_code || parse(list, &data))
 	{
-		if (list)
-			free_token_list(*list);
+		free_token_list(*list);
 		free(list);
 	}
 	else
 	{
 		pipes = list_to_pipes(list);
-		//if (pipes && inpt && inpt[0] && !err)
 		if (pipes && !err)
 		{
 			signals_blocking_command();
