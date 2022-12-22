@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/20 22:05:19 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/21 15:52:19 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 		ret = exec_env(list, *env);
 	else if (!ft_strncmp(str, g_builtins[EXIT], 5))
 		exec_exit(list, env, data);
+	data->error_code = ret;
 	return (ret);
 }
 

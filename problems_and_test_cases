@@ -2,63 +2,47 @@
 not working:
 ****************/
 
-echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
-many many leaks
-any command with a pipe also seems to loak
-dprintf is a forbidden function
-perror is a forbidden function
-""							(should output "command not found")
-"" | "" | "" ""				(doesn't crash, but bash outputs "command not found", minishell doesn't output anything)
-Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. : looks good, but exit code is not 130
-exit code of 'Ctrl-\' after running a blocking command like cat should be 131
-none of the builtins properly handle exit codes, they need to go into $?
+export a=1 | cat 			(does not behave like bash, bash does not export the variable and does not block/'hang')
+grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
+echo "'$USER'"				(should output adinari or slakner, but it just outputs a single ' (single quote))
 
+minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
+"" | "" | ""
+
+dprintf is a forbidden function
+
+exit 7 :    exit does not exit with the exit code given as argument, using echo $? after exiting must show 7
+exit aaasdasdasdas : must exit with 255 failure code , and print “minishell: exit: asdasdasdas: numeric argument required”
+
+exit code of 'Ctrl-\' after running a blocking command like cat should be 131
+Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. :  “Minishell$ Minishell$” appears in prompt, could be that pressing ctrl-c triggers 2 signals rapidly, also exit code of that must be 130.
+occasional segfault on starting - something in pipes.c when elements get deleted?
+
+none of the builtins properly handle exit codes, they need to go into $?
 
 /***************
 to check:
 ****************/
-minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
-occasional segfault on starting - something in pipes.c when elements get deleted?
-check if heredoc is still working
-clean up the Makefile, make sure everything compiles when brew is not installed
-go through the evaluation sheet again
+do all the builtins work when the input starts with spaces?
+maybe put skip_spaces at the start of tokenizing function
 
 /***************
 working atm:
 ****************/
-cat main.c					
-echo foo$USER				
-export foo=3			- still ok
+
+export foo=3
 echo "foo" > bar
 < infile cat
-grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
+cat main.c
 < infile | cat
-cat infile | cat			(requires me to hit enter to get the prompt back. same for every command with a pipe, I think?)
+[input of spaces only]
+echo foo$USER
 echo "foo" | echo "bar"
-echo "'$USER'"				(should output adinari or slakner, but it just outputs a single ' (single quote))
-echo '"$USER"'				(should output "$USER")
-echo "foo"   "foo"
-echo lllllll          kkkkkkkk
+echo "foo"   "foo"			
+echo "foo" |||
+|||							
+echo "'$USER'"
+echo lllllll          kkkkkkkk 
+echo "foo ||||
 echo "'"
 ctrl-\ in a prompt after you wrote some stuff (should not do anything : pressing should not make cursor jump to beginning of prompt line)
-echo $foo					(segfaults)
-[input of spaces only]
-echo $L						(outputs the value of $LaunchInstanceID, the first variable starting with 'L')
-exit 7 :    exit does not exit with the exit code given as argument, using echo $? after exiting must show 7
-exit aaasdasdasdas : must exit with 255 failure code , and print “minishell: exit: asdasdasdas: numeric argument required”
-echo "foo" |||				(segfaults)
-|||							(segfaults)
-|							(does not throw an error)
-| cat						(segfaults)
-cat infile | cat			(requires me to hit enter to get the prompt back. Stays this way until minishell is closed. same for every command with a pipe, I think?)
-empty input
-spaces only as input
-quitting minishell with no input at all
-export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell behave oddly after execution until you hit Ctrl-C, I think some process is not terminating)
-env | grep USER
-echo "foo" | grep foo
-echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
-echo $?						(leaks)
-
-'Minishell$ env | grep HOME=/
-grep: /: Is a directory '
