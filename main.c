@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/22 22:08:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/22 23:04:47 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,56 @@ void	exec_cmd(t_pipe *data, t_dlist **env)
 // 	return (0);
 // }
 
+// int	init_here_doc(t_token *list, t_pipe *pipe)
+// {
+// 	char	*str;
+
+// 	(void) list;
+// 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (pipe->file.infile == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
+// 	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	str = ft_strdup("");
+// 	reset_term_signals();
+// 	heredoc_signals(STDIN_FILENO);
+// 	g_stop = 0;
+// 	while (!g_stop && str)
+// 	{
+// 		str = readline("> ");
+// 		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
+// 		{
+// 			free(str);
+// 			break ;
+// 		}
+// 		ft_putstr_fd(str, pipe->file.infile);
+// 		ft_putstr_fd("\n", pipe->file.infile);
+// 		if (str)
+// 			free(str);
+// 	}
+// 	signals_blocking_command();
+// 	pipe->append = 1;
+// 	if (dup2(pipe->file.tmp, 0) == -1)
+// 	{
+// 		ms_fd_error(2, pipe);
+// 		return (1);
+// 	}
+// 	close(pipe->file.infile);
+// 	close(pipe->file.tmp);
+// 	return (0);
+// }
+
 int	init_here_doc(t_token *list, t_pipe *pipe)
 {
 	char	*str;
 
-	(void) list;
 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (pipe->file.infile == -1)
 	{
@@ -87,24 +132,16 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 		ms_fd_error(1, pipe);
 		return (1);
 	}
-	str = ft_strdup("");
-	reset_term_signals();
-	heredoc_signals(STDIN_FILENO);
-	g_stop = 0;
-	while (!g_stop && str)
+	str = get_next_line(0);
+	while (1)
 	{
-		str = readline("> ");
-		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
-		{
-			free(str);
+		if (str && ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
 			break ;
-		}
 		ft_putstr_fd(str, pipe->file.infile);
-		ft_putstr_fd("\n", pipe->file.infile);
-		if (str)
-			free(str);
+		free(str);
+		str = get_next_line(0);
 	}
-	signals_blocking_command();
+	free(str);
 	pipe->append = 1;
 	if (dup2(pipe->file.tmp, 0) == -1)
 	{
@@ -115,6 +152,7 @@ int	init_here_doc(t_token *list, t_pipe *pipe)
 	close(pipe->file.tmp);
 	return (0);
 }
+
 
 int	init_outfile(t_pipe *pipe)
 {

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/22 22:34:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/22 23:11:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	check_pipes(t_token *tkn)
 	{
 		while (tkn && tkn->type == SPACE_TKN)
 			tkn = tkn->next;
-		if (!tkn || !tkn->next)
+		if (!tkn)
 			break ;
 		if (tkn->type == WORD || tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 			expect_cmd = 0;
