@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/13 22:24:10 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/22 21:07:00 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,12 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 				counter.k++;
 				if (tmp[counter.k + 1] == '$')
 					break ;
+	// 		/********add necessary spaces*******/
+			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
+			{
+				res = ft_strjoin_free_str1(res, " ");
+				counter.k++;
+			}
 			}
 			counter.j++;
 		}

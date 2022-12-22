@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 20:29:28 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/22 21:57:10 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,24 @@ int	handle_builtin(t_token *list, t_dlist **env)
 	return (ret);
 }
 
-int	handle_command(t_pipe *data, char *cmd_line, int i, t_dlist **env) //int stdout_restore
+int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env) //int stdout_restore
 {
 	int		err;
 
 	err = 0;
 	data->pid = fork();
-	init_path(cmd_line, &(data->parse), env, data);
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
 	{
+		init_path(cmd_line, &(data->parse), env, data);
 		child(data, i + 1);
 		exec_cmd(data, env);
+		free_parse(&(data->parse));
 	}
 	else
+	{
 		parent(data);
-	free_parse(&(data->parse));
+	}
 	return (err);
 }

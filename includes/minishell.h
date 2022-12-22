@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 20:14:08 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/22 21:51:10 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int		exec(char *program, char **args, char *const *envp);
 //int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token *list, t_dlist **env);
 int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env);
-int		handle_command(t_pipe *data, char *cmd_line, int i, t_dlist **env);
+int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
 
 
 /*builtin.c*/
@@ -122,7 +122,7 @@ void	exit_with_value(int retval, t_dlist **env);
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);
-void	init_path(char *cmdline, t_parse *parse, t_dlist **env, t_pipe *data);
+void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data);
 char	*get_path(char **string, char *cmd);
 void	ms_fd_err(int i);
 void	ms_fd_error(int i, t_pipe *data);
@@ -142,5 +142,6 @@ void	exec_cmd(t_pipe *pipe, t_dlist **env);
 void	parent(t_pipe *pipe);
 void	free_and_close(t_pipe *pipe);
 int		init_outfile(t_pipe *pipe);
+char** set_parse_cmd(t_token *head);
 
 #endif
