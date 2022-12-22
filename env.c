@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/25 13:38:15 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/22 22:08:32 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*extract_varname_quoted(char *tokenstr)
 		printf("export: not valid in this context: %s\n", varname);
 		free(varname);
 	}
-	printf("varname from extract_varname_quoted: %s\n", varname);
+	//printf("varname from extract_varname_quoted: %s\n", varname);
 	return (varname);
 }
 
@@ -139,9 +139,10 @@ int	var_in_env(char *varname)
 int	display_env(void)
 {
 	t_dlist	*var;
-	
-	var = *g_env;
-	while (var)
+
+	var = env;
+	while (var && var->content
+		&& ft_strncmp(var->content->key, "?", 2))
 	{
 		printf("%s=%s\n", var->content->key, var->content->val);
 		var = var->next;
@@ -177,3 +178,8 @@ char	**env_list_to_char_arr(t_dlist **env)
 	env_c[i] = ft_strdup("");
 	return (env_c);
 }
+
+// void	write_exit_to_env(int err)
+// {
+	
+// }

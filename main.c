@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/19 21:50:14 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/22 22:08:45 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,7 @@ void	parent(t_pipe *pipe)
 		waitpid(-1, &status, 0);
 		data->error_code = WEXITSTATUS(status);
 	}
+	// write_exit_to_env(data->error_code);
 	// printf("Child process exited with code: %d\n", WEXITSTATUS(status));
 	return (status);
 }
