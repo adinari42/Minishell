@@ -34,6 +34,7 @@ export foo=3
 echo "foo" > bar
 < infile cat
 cat main.c
+cat infile | cat
 < infile | cat
 [input of spaces only]
 echo foo$USER
