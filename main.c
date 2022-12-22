@@ -6,11 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/22 22:27:40 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 00:27:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+extern volatile int	g_stop;
 
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
@@ -20,13 +22,6 @@ void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 
 	i = 0;
 	parse->cmd = set_parse_cmd(*cmdline);
-	// while(parse->cmd[i])
-	// {
-	// 	printf("cmd[%d] = %s.\n", i, parse->cmd[i]);
-	// 	i++;
-	// }
-	// parse->cmd = ft_split(cmdline, ' ');
-
 	var_path = get_value_from_key(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
@@ -358,8 +353,10 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(data, &pipes[i], i, env);
-			free_token_list(builtin_list);
-			free(cmd_line);
+			else if (cmd_line)
+				free(cmd_line);
+			free_token_list(*builtin_list);
+			free(builtin_list);
 		}
 		else
 			parent(data);

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:38:34 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 21:07:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 00:51:07 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,7 @@ t_token	**list_to_pipes(t_token **list)
 	while (elem->next)
 	{
 		if (elem->type == PIPE)
-		{
-			elem = cut_at_pipe(elem, pipes, i);
-			i++;
-		}
+			elem = cut_at_pipe(elem, pipes, i++);
 		else
 			elem = elem->next;
 	}
