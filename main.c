@@ -6,12 +6,32 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/15 21:56:39 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/22 22:27:40 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
+{
+	char	*var_path;
+	char	**split_path;
+	int		i;
+
+	i = 0;
+	parse->cmd = set_parse_cmd(*cmdline);
+	// while(parse->cmd[i])
+	// {
+	// 	printf("cmd[%d] = %s.\n", i, parse->cmd[i]);
+	// 	i++;
+	// }
+	// parse->cmd = ft_split(cmdline, ' ');
+
+	var_path = get_value_from_key(*env, "PATH", data);
+	split_path = ft_split(var_path, ':');
+	parse->path = get_path(split_path, parse->cmd[0]);
+	free_split(split_path);
+}
 
 void	exec_cmd(t_pipe *data, t_dlist **env)
 {
@@ -215,7 +235,14 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	}
 	return (NULL);
 }
-
+char	*add_quote_char(char *cmd, t_token *tkn)
+{
+	if (tkn->type == STR_DQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "\"");
+	else if (tkn->type == STR_SQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "'");
+	return (cmd);
+}
 char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token *tmp;
@@ -246,6 +273,37 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	}
 	return (cmd_line);
 }
+char** set_parse_cmd(t_token *head)
+{
+ 	int		count;
+    t_token	*curr;
+    char	**cmd;
+	
+	count = 0;
+    curr = head;
+    while (curr != NULL)
+    {
+		if (curr->type == WORD || curr->type == STR_DQUOTES || curr->type == STR_SQUOTES)
+			count++;
+        curr = curr->next;
+    }
+    cmd = (char**)malloc((count + 1) * sizeof(char*));
+    if (cmd == NULL)
+    {
+        perror("malloc");
+        exit(1);
+    }
+    count = 0;
+    curr = head;
+    while (curr != NULL)
+    {
+		if (curr->type == WORD || curr->type == STR_DQUOTES || curr->type == STR_SQUOTES)
+			cmd[count++] = curr->str;
+		curr = curr->next;
+    }
+	cmd[count] = NULL;
+    return cmd;
+}
 
 void	free_and_close(t_pipe *pipe)
 {
@@ -268,8 +326,17 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	{
 		// data->error_code = 0;
 		pipe(data->fd);
+		// pipes[i] = merge_quoted_strings(pipes[i], data);
+		// printf("pipes[i] merge: \n");
+		// print_list(pipes[i]);
+		if (pipes[i] == NULL)
+			return (1);
 		check_value(pipes[i], *env, data);
+		// printf("checkvalue: \n");
+		// print_list(pipes[i]);	
 		cmd_line = get_cmd(pipes[i], data);
+		// printf("cmd_line = %s.\n", cmd_line);
+		data->parse.cmd = set_parse_cmd(pipes[i]);
 		if (cmd_line)
 		{
 			builtin_list = read_tokens(cmd_line);
@@ -287,21 +354,17 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 				handle_builtin(builtin_list, env);
 			}
 			else if (cmd_line && cmd_line[0])
-				handle_command(data, cmd_line, i, env);
-			free_token_list(*builtin_list);
-			free(builtin_list);
+				handle_command(data, &pipes[i], i, env);
+			free_token_list(builtin_list);
+			free(cmd_line);
 		}
 		else
 			parent(data);
 		i++;
 	}
 	status = 0;
-	// while (i--) 
-	// {
-		waitpid(-1, &status, 0);
-		data->error_code = WEXITSTATUS(status);
-	// }
-	// printf("Child process exited with code: %d\n", WEXITSTATUS(status));
+	waitpid(-1, &status, 0);
+	data->error_code = WEXITSTATUS(status);
 	return (status);
 }
 
