@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/22 23:11:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 15:40:52 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,14 @@ int	parse(t_token **list, t_pipe *data)
 	int	ret;
 
 	ret = 0;
-	data->error_code = check_quotes(*list);
+	//data->error_code = check_quotes(*list);
 	if (data->error_code)
-		return (data->error_code);
+		return(ret);
+		//return (data->error_code);
 	merge_quoted_strings(list);
-	data->error_code = check_pipes(*list);
-	return (data->error_code);
+	//data->error_code = check_pipes(*list);
+	//return (data->error_code);
+	return (ret);
 }
 
 t_token	*remove_spaces(t_token *list)

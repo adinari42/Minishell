@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/19 23:22:18 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 15:41:25 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	ms_fd_error(int i, t_pipe *data)
 		dprintf(2, "systax error: unclosed quotes\n");
 	else
 		dprintf(2, "Error\n");
-	data->error_code = i;
+	//data->error_code = i;
 	// if (i == 127 || i == 3)
 	// 	exit(i);
 	exit(i);
