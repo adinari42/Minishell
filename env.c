@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 04:24:57 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 19:30:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	//extract that first string*****/
 	str = ft_substr(varname, 0, count);
 	//check and replace with env value***/
-	value = NULL;
+	value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
 	if (!ft_strncmp("?", str, ft_strlen(str)))
 		value = ft_itoa(data->error_code);
 	else
