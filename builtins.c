@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 20:28:44 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 21:57:16 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ int	exec_echo(t_token *list, t_dlist *env)
 	while (tkn)
 	{
 		write(1, tkn->str, ft_strlen(tkn->str));
-		tkn = tkn->next;
+		if (tkn->type == SPACE_TKN)
+			tkn = skip_spaces(tkn);
+		else
+			tkn = tkn->next;
 	}
 	if (newline)
 		write(1, "\n", 1);
