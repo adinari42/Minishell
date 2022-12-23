@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/22 22:27:40 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 03:13:28 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,6 +286,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		if (pipes[i] == NULL)
 			return (1);
 		check_value(pipes[i], *env, data);
+		// printf("pipes[i] checkvalue: \n");
+		// print_list(pipes[i]);
 		// printf("checkvalue: \n");
 		// print_list(pipes[i]);	
 		cmd_line = get_cmd(pipes[i], data);
