@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/22 22:27:40 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 16:02:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,12 +374,8 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	char	*inpt;
 	t_token	**list;
 
-	t_pipe	data;
-	char	*inpt;
-	t_token	**pipes;
-	t_token	*list;
-
-	err = 1;
+	err = 0;
+	//data.error_code = 0;
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
 	inpt = readline("Minishell$ ");
@@ -387,13 +383,23 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
 	add_history(inpt);
 	list = read_tokens(inpt);
-	list = merge_quoted_strings(list, &data);
-	pipes = list_to_pipes(list);
-	if (pipes && inpt && inpt[0])
-		err = handle_input(pipes, &data, env);
-	if (inpt)
-		free(inpt);
-	free_pipes(pipes);
+	free(inpt);
+	//if (data.error_code || parse(list, &data))
+	if (parse(list, &data))
+	{
+		free_token_list(*list);
+		free(list);
+	}
+	else
+	{
+		pipes = list_to_pipes(list);
+		if (pipes && !err)
+		{
+			signals_blocking_command();
+			err = handle_input(pipes, &data, env);
+		}
+		free_pipes(pipes);
+	}
 	return (err);
 }
 
