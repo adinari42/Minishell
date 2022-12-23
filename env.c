@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 19:30:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 19:33:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	{
 		while (var)
 		{
-			if (!ft_strncmp(var->content->key, str, ft_strlen(str)))
+			if (!ft_strncmp(var->content->key, str, ft_strlen(str) + 1))		// +1 so we also compare the terminating null byte
 			{
 				value = ft_strdup(var->content->val);
 				break ;
