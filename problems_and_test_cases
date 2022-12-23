@@ -5,6 +5,7 @@ not working:
 echo $foo					(segfaults)
 echo $?						(leaks)
 echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
+echo $L						(outputs the value of $LaunchInstanceID, the first variable starting with 'L')
 export a=1 | cat 			(does not behave like bash, bash does not export the variable and does not block/'hang')
 grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
 echo "'$USER'"				(should output adinari or slakner, but it just outputs a single ' (single quote))
