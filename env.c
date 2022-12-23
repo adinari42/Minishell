@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/22 22:08:32 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 04:24:57 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,39 @@ char	**envp_parse(char **envp)
 
 char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 {
-	if (!ft_strncmp("?", varname, ft_strlen(varname)))
-		return (ft_itoa(data->error_code));
-	while (var)
+	char	*value;
+	char	*str;
+	int	count;
+
+	//iterate through varname, count the length from beginning to first s_quote******
+	count = 0;
+	while (varname[count] && varname[count] != '\'')
+		count++;
+	//extract that first string*****/
+	str = ft_substr(varname, 0, count);
+	//check and replace with env value***/
+	value = NULL;
+	if (!ft_strncmp("?", str, ft_strlen(str)))
+		value = ft_itoa(data->error_code);
+	else
 	{
-		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
-			return (var->content->val);
-		var = var->next;
+		while (var)
+		{
+			if (!ft_strncmp(var->content->key, str, ft_strlen(str)))
+			{
+				value = ft_strdup(var->content->val);
+				break ;
+			}
+			var = var->next;
+		}
 	}
-	return ("");
+	free(str);
+	if (varname[count] == '\'')
+		value = ft_strjoin_free_str1(value, "'");
+	//join the rest of the string to the end of it***/
+	count++;
+	value = ft_strjoin_free_str1(value, varname + count);
+	return (value);
 }
 
 //assumption here: quotes have been stripped already
