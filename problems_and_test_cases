@@ -2,9 +2,16 @@
 not working:
 ****************/
 
-echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
-many many leaks
-any command with a pipe also seems to loak
+echo $foo					(segfaults)
+echo $?						(leaks)
+echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
+export a=1 | cat 			(does not behave like bash, bash does not export the variable and does not block/'hang')
+grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
+echo "'$USER'"				(should output adinari or slakner, but it just outputs a single ' (single quote))
+
+minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
+"" | "" | ""
+
 dprintf is a forbidden function
 perror is a forbidden function
 ""							(should output "command not found")

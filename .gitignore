@@ -3,5 +3,3 @@ minishell
 *.o
 libft/*.o
 obj/*.o
-minishell
-libft/libft.a
