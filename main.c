@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/23 03:13:28 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 16:02:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,7 +381,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 	t_token	**pipes;	
 
 	err = 0;
-	data.error_code = 0;
+	//data.error_code = 0;
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
 	reset_term_signals();
@@ -393,7 +393,8 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		return (0);
 	list = read_tokens(inpt);
 	free(inpt);
-	if (data.error_code || parse(list, &data))
+	//if (data.error_code || parse(list, &data))
+	if (parse(list, &data))
 	{
 		free_token_list(*list);
 		free(list);
