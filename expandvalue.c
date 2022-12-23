@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/23 19:22:04 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 04:22:43 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ or after every word depending on the original format(tmp works as a reference)
 */
 char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 {
-	char		**split1;
+	// char		**split1;
 	char		**split2;
 	t_expand	counter;
 	char		*res;
@@ -119,23 +119,23 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 
 	counter.i = 0;
 	counter.k = 0;
-	split1 = ft_split(str, ' ');
+	// split1 = ft_split(str, ' ');
 	tmp = str;
 	res = ft_strdup("");
-	while (split1[counter.i])
-	{
+	// while (split1[counter.i])
+	// {
 		counter.j = 0;
-		split2 = ft_split(split1[counter.i], '$'); //split using $
-		while (split2[counter.j])
+		split2 = ft_split(str, '$'); //split using $
+		while (split2[counter.j] && split2[counter.j][0])
 		{
 	// 		/********add necessary spaces*******/
-			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
-			{
-				res = ft_strjoin_free_str1(res, " ");
-				counter.k++;
-			}
-	// 	// 	/*******expand values*******/
-			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$' ))//|| tmp[counter.k] == '\'')
+			// while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
+			// {
+			// 	res = ft_strjoin_free_str1(res, " ");
+			// 	counter.k++;
+			// }
+		// 	/*******expand values*******/
+			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
 			{
 				val = get_value_from_key(env, split2[counter.j], data);
 				if (split2[counter.j])
@@ -160,10 +160,9 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 			counter.j++;
 		}
 		free_split(split2);
-		counter.i++;
-	}
+	// }
 	// free_strings(str, split1);
-	free_split(split1);
+	// free_split(split1);
 	free(str);
 	return (res);
 }
