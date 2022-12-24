@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/22 22:08:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/24 05:15:20 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,12 @@ char	**envp_parse(char **envp)
 	int		j;
 	char	**envp_parse;
 
-	j = -1;
-	while (envp[++j])
-	{
-		if (!ft_strncmp(envp[j], "PATH=", 5))
-			break ;
-	}
-	envp_parse = ft_split(*(envp + j) + 5, ':');
-	return (envp_parse);
+	i = 0;
+	parse->cmd = set_parse_cmd(*cmdline);
+	var_path = get_value_from_key(*env, "PATH", data);
+	split_path = ft_split(var_path, ':');
+	parse->path = get_path(split_path, parse->cmd[0]);
+	free_split(split_path);
 }
 
 void	display_splitenvp(t_parse parse, char **argv)
@@ -99,11 +97,10 @@ void	init_outfile(t_pipe *pipe)
 }
 void	child(t_pipe *pipe, int i)
 {
-	// printf("i = %d, cmd_pos = %d\n", i, pipe->cmd_pos);
-	if (i != pipe->cmd_pos)
+	if (i < pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
-			fd_err(2);
+			ms_fd_error(2, pipe);
 	}
 	if (pipe->out_fd != NULL)
 	{
@@ -113,11 +110,15 @@ void	child(t_pipe *pipe, int i)
 }
 void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 {
-		if (pipe->out_fd)
-			free(pipe->out_fd);
-		pipe->out_fd = NULL;
-		// printf("2  out_fd = %s\n", pipe->out_fd);
-		// printf("str = %s\n", list->str);
+	wait(&pipe->pid);
+	dup2(pipe->fd[0], 0);
+	close (pipe->fd[1]);
+}
+
+
+int	init_infile(t_token *list, t_pipe *data, int redir_type)
+{
+		data->out_fd = NULL;
 		if (redir_type == APPEND_IN)
 			init_here_doc(list, pipe);
 		else if (redir_type == REDIR_IN)
@@ -175,6 +176,10 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			redir_type = tmp->type;
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
+			if (tmp == NULL)
+			{
+				free(cmd_line);
+				return (NULL);
 		}
 		else	
 		{
@@ -204,6 +209,8 @@ void	parent(t_pipe *pipe)
 	while (pipes[i])
 	{
 		pipe(data->fd);
+		if (pipes[i] == NULL)
+			return (1);
 		check_value(pipes[i], *env, data);
 		cmd_line = get_cmd(pipes[i], data);
 		if (cmd_line)
