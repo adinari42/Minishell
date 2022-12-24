@@ -8,6 +8,7 @@ many many leaks
 echo $?						(leaks? Not sure)
 dprintf is a forbidden function
 perror is a forbidden function
+""							(should output "command not found")
 "" | "" | "" ""				(doesn't crash, but bash outputs "command not found", minishell doesn't output anything)
 Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. : looks good, but exit code is not 130
 exit code of 'Ctrl-\' after running a blocking command like cat should be 131
@@ -21,9 +22,7 @@ maybe put skip_spaces at the start of tokenizing function
 minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
 occasional segfault on starting - something in pipes.c when elements get deleted?
 check if heredoc is still working
-
-
-
+clean up the Makefile, make sure everything compiles when brew is not installed
 
 /***************
 working atm:
