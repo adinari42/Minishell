@@ -10,6 +10,7 @@ echo $?						(leaks? Not sure)
 echo "foo" |||				(both segfault)
 |||						
 dprintf is a forbidden function
+perror is a forbidden function
 "" | "" | "" ""				(doesn't crash, but bash outputs "command not found", minishell doesn't output anything)
 Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. : looks good, but exit code is not 130
 exit code of 'Ctrl-\' after running a blocking command like cat should be 131
