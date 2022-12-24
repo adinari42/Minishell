@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 18:35:43 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/24 19:26:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,10 +157,10 @@ int	init_outfile(t_pipe *pipe)
 
 void	child(t_pipe *pipe, int i)
 {
-	if (i != pipe->cmd_pos)
+	if (i < pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
-			ms_fd_err(2);
+			ms_fd_error(2, pipe);
 	}
 	if (pipe->out_fd != NULL)
 	{
