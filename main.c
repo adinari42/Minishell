@@ -6,13 +6,15 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 16:59:37 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/24 18:05:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 #include "minishell.h"
+
+extern volatile int	g_stop;
 
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
