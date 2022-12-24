@@ -6,9 +6,6 @@ export a=1 | cat 			(does not behave like bash. export variable is okay now, but
 
 many many leaks
 echo $?						(leaks? Not sure)
-
-echo "foo" |||				(both segfault)
-|||						
 dprintf is a forbidden function
 perror is a forbidden function
 "" | "" | "" ""				(doesn't crash, but bash outputs "command not found", minishell doesn't output anything)
@@ -23,6 +20,7 @@ do all the builtins work when the input starts with spaces?
 maybe put skip_spaces at the start of tokenizing function
 minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
 occasional segfault on starting - something in pipes.c when elements get deleted?
+check if heredoc is still working
 
 
 
@@ -51,3 +49,5 @@ echo $foo					(segfaults)
 echo $L						(outputs the value of $LaunchInstanceID, the first variable starting with 'L')
 exit 7 :    exit does not exit with the exit code given as argument, using echo $? after exiting must show 7
 exit aaasdasdasdas : must exit with 255 failure code , and print “minishell: exit: asdasdasdas: numeric argument required”
+echo "foo" |||				(both segfault)
+|||					

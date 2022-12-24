@@ -81,14 +81,16 @@ int	parse(t_token **list, t_pipe *data)
 {
 	int	ret;
 
-	ret = 0;
-	//data->error_code = check_quotes(*list);
-	if (data->error_code)
-		return(ret);
-		//return (data->error_code);
+	ret = check_quotes(*list);
+	if (ret)
+	{
+		data->error_code = ret;
+		return (ret);
+	}
 	merge_quoted_strings(list);
-	//data->error_code = check_pipes(*list);
-	//return (data->error_code);
+	ret = check_pipes(*list);
+	if (ret)
+		data->error_code = ret;
 	return (ret);
 }
 
