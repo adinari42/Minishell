@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/24 18:51:16 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/24 19:10:25 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	check_pipes(t_token *tkn)
 {
 	int	expect_cmd;
 
-	expect_cmd = 0;
+	expect_cmd = 1;
 	while (tkn)
 	{
 		while (tkn && tkn->type == SPACE_TKN)

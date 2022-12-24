@@ -49,5 +49,7 @@ echo $foo					(segfaults)
 echo $L						(outputs the value of $LaunchInstanceID, the first variable starting with 'L')
 exit 7 :    exit does not exit with the exit code given as argument, using echo $? after exiting must show 7
 exit aaasdasdasdas : must exit with 255 failure code , and print “minishell: exit: asdasdasdas: numeric argument required”
-echo "foo" |||				(both segfault)
-|||					
+echo "foo" |||				(segfaults)
+|||							(segfaults)
+|							(does not throw an error)
+| cat						(segfaults)
