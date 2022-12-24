@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/23 00:28:07 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/23 23:51:54 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ enum e_tokentype
 	WORD,
 	STR_DQUOTES,
 	STR_SQUOTES,
-	EQUAL
+	INFILE,
+	OUTFILE
 };
 
 enum e_builtins
@@ -143,5 +144,9 @@ char**	set_parse_cmd(t_token *head);
 /*signals.c*/
 void	signals_blocking_command(void);
 void	heredoc_signals(int fd);
+
+
+
+void	print_double_ptr(char **ptr);
 
 #endif

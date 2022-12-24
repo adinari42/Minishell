@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/23 03:13:28 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/24 02:53:49 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,35 +185,42 @@ void	parent(t_pipe *pipe)
 
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
-	data->out_fd = NULL;
-	if (redir_type == APPEND_IN)
-	{	
-		if (init_here_doc(list, data))
-			return (1);
-	}
-	else if (redir_type == REDIR_IN)
-	{
-		data->file.infile = open(list->str, O_RDONLY);
-		if (data->file.infile == -1)
+
+		data->out_fd = NULL;
+		if (redir_type == APPEND_IN)
+		{	
+			list->type = INFILE;
+			if(init_here_doc(list, data))
+				return(1);
+		}
+		else if (redir_type == REDIR_IN)
 		{
-			write(2, list->str, ft_strlen(list->str));
+			list->type = INFILE;
+			data->file.infile = open(list->str, O_RDONLY);
+			if (data->file.infile == -1)
+			{
+				write(2, list->str, ft_strlen(list->str));
+				close(data->file.infile);
+				ms_fd_error(1, data);
+				return (1);
+			}
+			dup2(data->file.infile, 0);
 			close(data->file.infile);
 			ms_fd_error(1, data);
 			return (1);
 		}
-		dup2(data->file.infile, 0);
-		close(data->file.infile);
-	}
-	else if (redir_type == APPEND_OUT)
-	{
-		data->append = 1;
-		data->out_fd = list->str;
-	}
-	else if (redir_type == REDIR_OUT)
-	{
-		data->append = 0;
-		data->out_fd = list->str;
-	}
+		else if (redir_type == APPEND_OUT)
+		{
+			list->type = OUTFILE;
+			data->append = 1;
+			data->out_fd = list->str;
+		}
+		else if (redir_type == REDIR_OUT)
+		{
+			list->type = OUTFILE;
+			data->append = 0;
+			data->out_fd = list->str;
+		}
 	return (0);
 }
 
@@ -223,7 +230,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	{
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
 		{
-			if (init_infile(tmp, data, redir_type) == 1)
+			if (init_infile(tmp, data, redir_type))
 				return (NULL);
 			return (tmp);
 		}
@@ -263,6 +270,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
 				return (NULL);
+			// tmp = tmp->next;
 		}
 		else
 		{
@@ -327,19 +335,11 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	i = 0;
 	while (pipes[i])
 	{
-		pipe(data->fd);
-		// pipes[i] = merge_quoted_strings(pipes[i], data);
-		// printf("pipes[i] merge: \n");
-		// print_list(pipes[i]);
+		pipe(data->fd);;
 		if (pipes[i] == NULL)
 			return (1);
 		check_value(pipes[i], *env, data);
-		// printf("pipes[i] checkvalue: \n");
-		// print_list(pipes[i]);
-		// printf("checkvalue: \n");
-		// print_list(pipes[i]);	
 		cmd_line = get_cmd(pipes[i], data);
-		// printf("cmd_line = %s.\n", cmd_line);
 		data->parse.cmd = set_parse_cmd(pipes[i]);
 		if (cmd_line)
 		{
@@ -370,6 +370,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		}
 		else
 			parent(data);
+		unlink("tmp");
 		i++;
 	}
 	status = 0;
