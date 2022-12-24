@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/22 21:51:10 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/23 23:51:54 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ enum e_tokentype
 	SPACE_TKN,
 	WORD,
 	STR_DQUOTES,
-	STR_SQUOTES
+	STR_SQUOTES,
+	INFILE,
+	OUTFILE
 };
 
 enum e_builtins
@@ -143,5 +145,9 @@ void	parent(t_pipe *pipe);
 void	free_and_close(t_pipe *pipe);
 int		init_outfile(t_pipe *pipe);
 char** set_parse_cmd(t_token *head);
+
+
+
+void	print_double_ptr(char **ptr);
 
 #endif
