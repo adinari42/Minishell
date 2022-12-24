@@ -6,21 +6,11 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 15:40:52 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/24 18:51:16 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// we actually need to process the information for some of the spaces
-// echo "foo"
-// is different from 
-// echo"foo"
-// and 
-// echo "foo" "bar"
-// is different from 
-// echo "foo""bar"
-
 
 int	is_empty_inpt(char *inpt)
 {
@@ -110,20 +100,6 @@ t_token	*remove_spaces(t_token *list)
 	while (token)
 	{
 		if (token->type == SPACE_TKN)
-			delete(token);
-		token = token->next;
-	}
-	return (list);
-}
-
-t_token	**remove_empty(t_token **list)
-{
-	t_token	*token;
-
-	token = tlist_start(*list);
-	while (token)
-	{
-		if (!ft_strlen(token->str))
 			delete(token);
 		token = token->next;
 	}
