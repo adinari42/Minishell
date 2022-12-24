@@ -283,36 +283,39 @@ char	*get_cmd(t_token *list, t_pipe *data)
 	}
 	return (cmd_line);
 }
-char** set_parse_cmd(t_token *head)
+
+char**	set_parse_cmd(t_token *head)
 {
- 	int		count;
-    t_token	*curr;
-    char	**cmd;
-	
+	int		count;
+	t_token	*curr;
+	char	**cmd;
+
 	count = 0;
-    curr = head;
-    while (curr != NULL)
-    {
-		if (curr->type == WORD || curr->type == STR_DQUOTES || curr->type == STR_SQUOTES)
+	curr = head;
+	while (curr != NULL)
+	{
+		if (curr->type == WORD || curr->type == STR_DQUOTES 
+			|| curr->type == STR_SQUOTES)
 			count++;
-        curr = curr->next;
-    }
-    cmd = (char**)malloc((count + 1) * sizeof(char*));
-    if (cmd == NULL)
-    {
-        perror("malloc");
-        exit(1);
-    }
-    count = 0;
-    curr = head;
-    while (curr != NULL)
-    {
-		if (curr->type == WORD || curr->type == STR_DQUOTES || curr->type == STR_SQUOTES)
+		curr = curr->next;
+	}
+	cmd = malloc((count + 1) * sizeof (char *));
+	if (cmd == NULL)
+	{
+		perror("malloc");
+		exit(1);
+	}
+	count = 0;
+	curr = head;
+	while (curr != NULL)
+	{
+		if (curr->type == WORD || curr->type == STR_DQUOTES
+			|| curr->type == STR_SQUOTES)
 			cmd[count++] = curr->str;
 		curr = curr->next;
-    }
+	}
 	cmd[count] = NULL;
-    return cmd;
+	return (cmd);
 }
 
 void	free_and_close(t_pipe *pipe)
