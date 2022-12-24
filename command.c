@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/22 21:57:10 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/24 18:32:53 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env) //int
 
 	err = 0;
 	data->pid = fork();
-	init_path(cmd_line, &(data->parse), env, data);
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
