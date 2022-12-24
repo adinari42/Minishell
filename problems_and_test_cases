@@ -3,7 +3,7 @@ not working:
 ****************/
 
 echo $?						(leaks)
-echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
+
 export a=1 | cat 			(does not behave like bash, bash does not export the variable and does not block/'hang')
 grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
 echo "'$USER'"				(should output adinari or slakner, but it just outputs a single ' (single quote))
@@ -28,12 +28,7 @@ to check:
 do all the builtins work when the input starts with spaces?
 maybe put skip_spaces at the start of tokenizing function
 
-/***************
-working atm:
-****************/
 
-export foo=3			- still ok
-echo "foo" > bar
 < infile cat
 cat main.c
 cat infile | cat
@@ -51,3 +46,13 @@ echo "'"
 ctrl-\ in a prompt after you wrote some stuff (should not do anything : pressing should not make cursor jump to beginning of prompt line)
 echo $foo					(segfaults)
 echo $L						(outputs the value of $LaunchInstanceID, the first variable starting with 'L')
+
+
+
+/***************
+working atm:
+****************/
+
+echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
+export foo=3			- still ok
+echo "foo" > bar

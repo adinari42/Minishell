@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 02:53:49 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/24 16:59:37 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,8 +206,6 @@ int	init_infile(t_token *list, t_pipe *data, int redir_type)
 			}
 			dup2(data->file.infile, 0);
 			close(data->file.infile);
-			ms_fd_error(1, data);
-			return (1);
 		}
 		else if (redir_type == APPEND_OUT)
 		{
