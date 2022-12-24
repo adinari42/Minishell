@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 02:53:49 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/24 05:15:20 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,6 @@ void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 
 	i = 0;
 	parse->cmd = set_parse_cmd(*cmdline);
-	// while(parse->cmd[i])
-	// {
-	// 	printf("cmd[%d] = %s.\n", i, parse->cmd[i]);
-	// 	i++;
-	// }
-	// parse->cmd = ft_split(cmdline, ' ');
-
 	var_path = get_value_from_key(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
@@ -162,10 +155,10 @@ int	init_outfile(t_pipe *pipe)
 
 void	child(t_pipe *pipe, int i)
 {
-	if (i != pipe->cmd_pos)
+	if (i < pipe->cmd_pos)
 	{	
 		if (dup2(pipe->fd[1], 1) == -1)
-			ms_fd_err(2);
+			ms_fd_error(2, pipe);
 	}
 	if (pipe->out_fd != NULL)
 	{
@@ -178,6 +171,7 @@ void	child(t_pipe *pipe, int i)
 
 void	parent(t_pipe *pipe)
 {
+	wait(&pipe->pid);
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
 }
@@ -185,7 +179,6 @@ void	parent(t_pipe *pipe)
 
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
-
 		data->out_fd = NULL;
 		if (redir_type == APPEND_IN)
 		{	
@@ -270,7 +263,6 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
 				return (NULL);
-			// tmp = tmp->next;
 		}
 		else	
 		{
@@ -333,7 +325,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	i = 0;
 	while (pipes[i])
 	{
-		pipe(data->fd);;
+		pipe(data->fd);
 		if (pipes[i] == NULL)
 			return (1);
 		check_value(pipes[i], *env, data);
