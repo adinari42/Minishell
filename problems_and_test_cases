@@ -32,7 +32,7 @@ maybe put skip_spaces at the start of tokenizing function
 working atm:
 ****************/
 
-export foo=3
+export foo=3			- still ok
 echo "foo" > bar
 < infile cat
 cat main.c
