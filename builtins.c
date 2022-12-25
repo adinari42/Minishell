@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/20 22:01:40 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/25 17:21:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	is_builtin(char *str)
 		{
 			free_split(split);
 			return (i + 1);
-			// return (1);
 		}
 		i++;
 	}
@@ -96,8 +95,8 @@ int	exec_cd(t_token *list, t_dlist *env)
 	if (!builtin_plausible(tkn, "cd"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn && (tkn->type == WORD 
-		|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
+	if (tkn && (tkn->type == WORD
+			|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
 		ret = chdir(tkn->str);
 	if (ret == -1)
 		ret = print_builtin_error("cd", tkn->str);
@@ -185,7 +184,7 @@ int	exec_unset(t_token *list, t_dlist *env)
 		}
 		var = var->next;
 	}
-	return (1);
+	return (0);
 }
 
 int	exec_env(t_token *list, t_dlist *env)

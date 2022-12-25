@@ -1,8 +1,7 @@
 /***************
 not working:
 ****************/
-
-echo $foo					(segfaults)
+many many leaks
 echo $?						(leaks)
 echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
 export a=1 | cat 			(does not behave like bash, bash does not export the variable and does not block/'hang')
@@ -64,8 +63,3 @@ quitting minishell with no input at all
 export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell behave oddly after execution until you hit Ctrl-C, I think some process is not terminating)
 env | grep USER
 echo "foo" | grep foo
-echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
-echo $?						(leaks)
-
-'Minishell$ env | grep HOME=/
-grep: /: Is a directory '
