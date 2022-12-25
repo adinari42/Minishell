@@ -4,7 +4,6 @@ not working:
 
 echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
 many many leaks
-echo $?						(leaks)
 any command with a pipe also seems to loak
 dprintf is a forbidden function
 perror is a forbidden function
@@ -58,3 +57,4 @@ export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell b
 env | grep USER
 echo "foo" | grep foo
 echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
+echo $?						(leaks)
