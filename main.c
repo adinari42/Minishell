@@ -340,8 +340,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		{
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list);
-			if (is_builtin(cmd_line) && is_builtin(cmd_line) != 7)// == 1 || is_builtin(cmd_line) == 3 
-				//|| is_builtin(cmd_line) == 6)
+			if (is_builtin(cmd_line) && is_builtin(cmd_line) != 7)
 			{
 				free(cmd_line);
 				handle_builtinstr(*builtin_list, data, i, env);
@@ -375,13 +374,12 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	return (data->status);
 }
 
-int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
+int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data)
 {
-	int		err;
-	char	*inpt;
-	t_token	**list;
-	t_pipe	data;
-	t_token	**pipes;	
+	int				err;
+	char			*inpt;
+	t_token			**list;
+	t_token			**pipes;	
 
 	err = 0;
 	dup2(stdin_restore, 0);
@@ -395,8 +393,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		return (0);
 	list = read_tokens(inpt);
 	free(inpt);
-	//if (data.error_code || parse(list, &data))
-	if (parse(list, &data))
+	if (parse(list, data))
 	{
 		free_token_list(*list);
 		free(list);
@@ -407,7 +404,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 		if (pipes && !err)
 		{
 			signals_blocking_command();
-			err = handle_input(pipes, &data, env);
+			err = handle_input(pipes, data, env);
 		}
 		free_pipes(pipes);
 	}
@@ -419,17 +416,16 @@ int	main(int argc, char **argv, char **envp)
 	t_dlist	**l_envp;
 	int		stdin_restore;
 	int		stdout_restore;
+	t_pipe	data;
 
 	if (argc != 1)
 		return (1);
 	l_envp = init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	stdin_restore = dup(0);		// save original stdin/stdout
+	stdin_restore = dup(0);
 	stdout_restore = dup(1);
+	data.error_code = 0;
 	while (1)
-	{
-		main_loop(l_envp, stdin_restore, stdout_restore);
-		//reset_term_signals();
-	}
+		main_loop(l_envp, stdin_restore, stdout_restore, &data);
 	return (argc);
 }
