@@ -1,11 +1,10 @@
 /***************
 not working:
 ****************/
-cat infile | cat			(requires me to hit enter to get the prompt back. Stays this way until minishell is closed. same for every command with a pipe, I think?)
-export a=1 | cat 			(does not behave like bash. export variable is okay now, but bash blocks/'hangs', minishell does not)
-
+export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell behave oddly after execution until you hit Ctrl-C, I think some process is not terminating)
 many many leaks
-echo $?						(leaks? Not sure)
+echo $?						(leaks)
+any command with a pipe also seems to loak
 dprintf is a forbidden function
 perror is a forbidden function
 ""							(should output "command not found")
@@ -23,6 +22,7 @@ minishell sometimes 'hangs' and does not display the next prompt after input. Se
 occasional segfault on starting - something in pipes.c when elements get deleted?
 check if heredoc is still working
 clean up the Makefile, make sure everything compiles when brew is not installed
+go through the evaluation sheet again
 
 /***************
 working atm:
@@ -52,3 +52,7 @@ echo "foo" |||				(segfaults)
 |||							(segfaults)
 |							(does not throw an error)
 | cat						(segfaults)
+cat infile | cat			(requires me to hit enter to get the prompt back. Stays this way until minishell is closed. same for every command with a pipe, I think?)
+empty input
+spaces only as input
+quitting minishell with no input at all
