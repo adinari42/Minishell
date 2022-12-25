@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/08 18:30:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/25 14:48:04 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct pipe
 	int		cmd_pos;
 	t_parse	parse;
 	int		error_code;
+	int		status;
 	int		append;
 }				t_pipe;
 

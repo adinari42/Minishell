@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/25 14:09:17 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/25 14:57:19 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ void	child(t_pipe *pipe, int i)
 
 void	parent(t_pipe *pipe)
 {
+	waitpid(pipe->pid, &pipe->status, 0);
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
 }
@@ -324,7 +325,6 @@ void	free_and_close(t_pipe *pipe)
 int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 {
 	int		i;
-	int		status;
 	char	*cmd_line;
 	t_token	**builtin_list;
 
@@ -372,10 +372,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		unlink("tmp");			// do we need this line?
 		i++;
 	}
-	status = 0;
-	waitpid(-1, &status, 0);
-	data->error_code = WEXITSTATUS(status);
-	return (status);
+	data->error_code = WEXITSTATUS(data->status);
+	return (data->status);
 }
 
 int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
