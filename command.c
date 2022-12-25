@@ -33,15 +33,17 @@
 
 int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int stdout_restore, int i)
 {
-	// (void) i;
+	int	ret;
+
+	ret = 0;
 	data->pid = fork();
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		handle_builtin(list, env, data);
-		exit (0);
+		ret = handle_builtin(list, env, data);
+		exit (ret);
 	}
 	else
 		parent(pipe);
