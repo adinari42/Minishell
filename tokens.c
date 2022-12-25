@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 23:30:55 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/25 14:13:03 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,10 @@ t_token	**read_tokens(char *bashcmd)
 
 	tk_list = malloc(sizeof(t_token *));
 	*tk_list = NULL;
-	word_s = 0;
 	i = 0;
+	while (i < ft_strlen(bashcmd) && bashcmd[i] == ' ')
+		i++;
+	word_s = i;
 	while (i < ft_strlen(bashcmd))
 	{
 		if (char_in_charset(bashcmd[i], spec_c))
