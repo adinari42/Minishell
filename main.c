@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 19:26:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/25 14:09:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,6 @@ void	parent(t_pipe *pipe)
 	close (pipe->fd[1]);
 }
 
-
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
 	data->out_fd = NULL;
@@ -264,7 +263,6 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
 				return (NULL);
-			// tmp = tmp->next;
 		}
 		else
 		{
@@ -290,7 +288,7 @@ char**	set_parse_cmd(t_token *head)
 	curr = head;
 	while (curr != NULL)
 	{
-		if (curr->type == WORD || curr->type == STR_DQUOTES 
+		if (curr->type == WORD || curr->type == STR_DQUOTES
 			|| curr->type == STR_SQUOTES)
 			count++;
 		curr = curr->next;
