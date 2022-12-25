@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/25 14:57:19 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/25 16:43:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,7 +340,8 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		{
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list);
-			if (is_builtin(cmd_line) == 1)
+			if (is_builtin(cmd_line) && is_builtin(cmd_line) != 7)// == 1 || is_builtin(cmd_line) == 3 
+				//|| is_builtin(cmd_line) == 6)
 			{
 				free(cmd_line);
 				handle_builtinstr(*builtin_list, data, i, env);
