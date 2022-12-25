@@ -1,6 +1,8 @@
 /***************
 not working:
 ****************/
+
+echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
 many many leaks
 echo $?						(leaks)
 any command with a pipe also seems to loak
@@ -15,8 +17,6 @@ none of the builtins properly handle exit codes, they need to go into $?
 /***************
 to check:
 ****************/
-do all the builtins work when the input starts with spaces?
-maybe put skip_spaces at the start of tokenizing function
 minishell sometimes 'hangs' and does not display the next prompt after input. Seems to happen after an unclose quotes error, but I'm not sure.
 occasional segfault on starting - something in pipes.c when elements get deleted?
 check if heredoc is still working
@@ -28,7 +28,6 @@ working atm:
 ****************/
 cat main.c					
 echo foo$USER				
-echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
 export foo=3			- still ok
 echo "foo" > bar
 < infile cat
@@ -58,3 +57,4 @@ quitting minishell with no input at all
 export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell behave oddly after execution until you hit Ctrl-C, I think some process is not terminating)
 env | grep USER
 echo "foo" | grep foo
+echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
