@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/23 04:22:43 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/25 20:08:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,59 +110,42 @@ or after every word depending on the original format(tmp works as a reference)
 */
 char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 {
-	// char		**split1;
 	char		**split2;
 	t_expand	counter;
 	char		*res;
 	char		*tmp;
 	char		*val;
 
-	counter.i = 0;
 	counter.k = 0;
-	// split1 = ft_split(str, ' ');
 	tmp = str;
 	res = ft_strdup("");
-	// while (split1[counter.i])
-	// {
-		counter.j = 0;
-		split2 = ft_split(str, '$'); //split using $
-		while (split2[counter.j] && split2[counter.j][0])
+	counter.j = 0;
+	split2 = ft_split(str, '$');
+	while (split2[counter.j] && split2[counter.j][0])
+	{
+		if (counter.j != 0 || (counter.j == 0 && tmp[counter.k] == '$'))
 		{
-	// 		/********add necessary spaces*******/
-			// while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
-			// {
-			// 	res = ft_strjoin_free_str1(res, " ");
-			// 	counter.k++;
-			// }
-		// 	/*******expand values*******/
-			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
-			{
-				val = get_value_from_key(env, split2[counter.j], data);
-				if (split2[counter.j])
-					free(split2[counter.j]);
-				split2[counter.j] = ft_strdup(val);
-				free(val);
-			}
-			res = ft_strjoin_free_str1(res, split2[counter.j]);
-	// 	// 	/*******reach end of word********/
-			while (tmp[counter.k] && tmp[counter.k] != ' ')
-			{
-				counter.k++;
-				if (tmp[counter.k + 1] == '$')
-					break ;
-			}
-	// 		/********add necessary spaces*******/
-			while (tmp[counter.k] && tmp[counter.k] == ' ')//add spaces
-			{
-				res = ft_strjoin_free_str1(res, " ");
-				counter.k++;
-			}
-			counter.j++;
+			val = get_value_from_key(env, split2[counter.j], data);
+			if (split2[counter.j])
+				free(split2[counter.j]);
+			split2[counter.j] = ft_strdup(val);
+			free(val);
 		}
-		free_split(split2);
-	// }
-	// free_strings(str, split1);
-	// free_split(split1);
+		res = ft_strjoin_free_str1(res, split2[counter.j]);
+		while (tmp[counter.k] && tmp[counter.k] != ' ')
+		{
+			counter.k++;
+			if (tmp[counter.k + 1] == '$')
+				break ;
+		}
+		while (tmp[counter.k] && tmp[counter.k] == ' ')
+		{
+			res = ft_strjoin_free_str1(res, " ");
+			counter.k++;
+		}
+		counter.j++;
+	}
+	free_split(split2);
 	free(str);
 	return (res);
 }
