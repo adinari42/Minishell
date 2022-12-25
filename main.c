@@ -361,7 +361,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 				handle_command(data, &pipes[i], i, env);
 			}
 			else if (cmd_line)
-				free(cmd_line);
+		 		free(cmd_line);
 			free_token_list(*builtin_list);
 			free(builtin_list);
 		}

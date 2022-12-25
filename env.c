@@ -32,7 +32,7 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 {
 	char	*value;
 	char	*str;
-	int	count;
+	int		count;
 
 	//iterate through varname, count the length from beginning to first s_quote******
 	count = 0;
@@ -41,11 +41,11 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	//extract that first string*****/
 	str = ft_substr(varname, 0, count);
 	//check and replace with env value***/
-	value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
 	if (!ft_strncmp("?", str, ft_strlen(str)))
 		value = ft_itoa(data->error_code);
 	else
 	{
+		value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
 		while (var)
 		{
 			if (!ft_strncmp(var->content->key, str, ft_strlen(str) + 1))		// +1 so we also compare the terminating null byte
