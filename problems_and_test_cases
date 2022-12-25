@@ -1,7 +1,6 @@
 /***************
 not working:
 ****************/
-export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell behave oddly after execution until you hit Ctrl-C, I think some process is not terminating)
 many many leaks
 echo $?						(leaks)
 any command with a pipe also seems to loak
@@ -56,3 +55,6 @@ cat infile | cat			(requires me to hit enter to get the prompt back. Stays this 
 empty input
 spaces only as input
 quitting minishell with no input at all
+export a=1 | cat 			(seems to behave exactly like bash,but makes the minishell behave oddly after execution until you hit Ctrl-C, I think some process is not terminating)
+env | grep USER
+echo "foo" | grep foo
