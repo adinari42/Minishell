@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/24 04:49:01 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/26 12:09:44 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,37 +31,26 @@
 // 	return (1);
 // }
 
-void	init_path(char *cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
+int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int builtin_id) //int stdout_restore, int i)
 {
-	char	*var_path;
-	char	**split_path;
-
-	parse->cmd = ft_split(cmdline, ' ');
-	var_path = get_value_from_key(*env, "PATH", data);
-	split_path = ft_split(var_path, ':');
-	parse->path = get_path(split_path, parse->cmd[0]);
-	free_split(split_path);
-}
-
-
-int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env) //int stdout_restore, int i)
-{
-	// (void) i;
+	if ((builtin_id != 1 && builtin_id != 3 && builtin_id != 6) && data->cmd_pos < 2)
+		handle_builtin(list, env, data);
 	data->pid = fork();
 	if (data->pid == -1)
 		ms_fd_error(4, data);
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		handle_builtin(list, env);
+		if (builtin_id == 1 || builtin_id == 3 || builtin_id == 6 || builtin_id == 7 ) 
+			handle_builtin(list, env, data);
 		exit (0);
 	}
 	else
 		parent(data);
 	return (0);
 }
-
-int	handle_builtin(t_token *list, t_dlist **env)
+//must not fork if they are commands after: cd, export, unset, exit
+int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 {
 	char	*str;
 	int		ret;

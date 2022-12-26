@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 05:15:20 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/26 11:46:00 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -320,11 +320,13 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	int		status;
 	char	*cmd_line;
 	t_token	**builtin_list;
+	int		builtin_id;
 
 	data->cmd_pos = count_pipes(pipes);
 	i = 0;
 	while (pipes[i])
 	{
+		builtin_id = 0;
 		pipe(data->fd);
 		if (pipes[i] == NULL)
 			return (1);
@@ -334,23 +336,20 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		if (cmd_line)
 		{
 			builtin_list = read_tokens(cmd_line);
-			builtin_list = merge_quoted_strings(builtin_list, data);
-			builtin_list = remove_empty(builtin_list);
-			if (is_builtin(cmd_line) == 1)
-				handle_builtinstr(builtin_list, data, i, env);
-			else if (is_builtin(cmd_line))
+			builtin_list = merge_quoted_strings(builtin_list);
+			builtin_id = is_builtin(cmd_line);
+			if (builtin_id)
 			{
-				if (data->out_fd != NULL)
-				{
-					if (init_outfile(data))
-						ms_fd_error(1, data);
-				}
-				handle_builtin(builtin_list, env);
+				free(cmd_line);
+				handle_builtinstr(*builtin_list, data, i, env, builtin_id);
 			}
 			else if (cmd_line && cmd_line[0])
 				handle_command(data, &pipes[i], i, env);
-			free_token_list(builtin_list);
-			free(cmd_line);
+			}
+			else if (cmd_line)
+				free(cmd_line);
+			free_token_list(*builtin_list);
+			free(builtin_list);
 		}
 		else
 			parent(data);
