@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/26 12:09:44 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/26 15:13:45 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int bui
 	if (data->pid == 0)
 	{
 		child(data, i + 1);
-		if (builtin_id == 1 || builtin_id == 3 || builtin_id == 6 || builtin_id == 7 ) 
+		if (builtin_id == 1 || builtin_id == 3 || builtin_id == 6 || builtin_id == 7 )
 			handle_builtin(list, env, data);
 		exit (0);
 	}
@@ -97,11 +97,32 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 	return (ret);
 }
 
+t_token	**merge_word_strings(t_token **cmd_line)
+{
+// 	t_token	*new_line;
+	t_token	*tkn;
+
+	tkn = *cmd_line;
+	while (tkn && tkn->next)
+	{
+		if ((tkn->type == WORD || tkn->type == ASSIGN) &&
+			(tkn->next->type == ASSIGN || tkn->next->type == WORD))
+			{
+				tkn->str = ft_strjoin_free_str1(tkn->str, tkn->next->str);
+				delete(tkn->next);
+			}
+		else
+			tkn = tkn->next;
+	}
+	return(cmd_line);
+}
+
 int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env) //int stdout_restore
 {
 	int		err;
 
 	err = 0;
+	cmd_line = merge_word_strings(cmd_line);
 	data->pid = fork();
 	if (data->pid == -1)
 		ms_fd_error(4, data);
