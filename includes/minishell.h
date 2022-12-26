@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/25 14:52:05 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/26 11:46:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int		exec(char *program, char **args, char *const *envp);
 /*command.c*/
 //int		handle_commandstr(t_token **list);
 int		handle_builtin(t_token *list, t_dlist **env, t_pipe *data);
-int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env);
+int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int builtin_id);
 int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
 
 

@@ -13,6 +13,10 @@ Try 'ctrl-C' after running a blocking command like cat without arguments or grep
 exit code of 'Ctrl-\' after running a blocking command like cat should be 131
 none of the builtins properly handle exit codes, they need to go into $?
 
+
+
+'Minishell$ env | grep HOME=/
+grep: /: Is a directory '
 /***************
 to check:
 ****************/
