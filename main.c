@@ -3,19 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 05:15:20 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 16:38:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**envp_parse(char **envp)
+#include "minishell.h"
+
+extern volatile int	g_stop;
+
+void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
-	int		j;
-	char	**envp_parse;
+	char	*var_path;
+	char	**split_path;
+	int		i;
 
 	i = 0;
 	parse->cmd = set_parse_cmd(*cmdline);
