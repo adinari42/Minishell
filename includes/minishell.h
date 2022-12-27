@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/24 04:42:38 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/26 11:46:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ enum e_builtins
 	EXPORT,
 	UNSET,
 	ENV,
-	EXIT
+	EXIT	
 };
 
 const static char *const	g_builtins[] = {
@@ -129,20 +129,24 @@ void	delete(t_token *del_elem);
 void	append(t_token **token, t_token *new_elem);
 t_token	*list_end(t_token **token);
 t_token	*list_start(t_token **token);
-/*expandvalue.c*/
-char	*value_expand(char **envp, char *var);
-char	*expand_value(char *str, char **envp);
-void	check_value(t_token *list, char **envp);
-void	free_2d(char ***to_free);
-void	free_strings(char *str, char **split1);
-char	*add_space(char *tmp, char *res);
-char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp);
-/*quotes.c*/
-// t_token	**merge_quoted_strings(t_token **list);
-// t_token	*merge_tokens(t_token *first, t_token *last);
-// t_token	*merge_two_tokens(t_token *token1, t_token *token2);
 
 /* spaces.c */
 t_token	*skip_spaces(t_token *token);
+
+/* current main.c */
+char	*get_cmd(t_token *list, t_pipe *data);
+void	exec_cmd(t_pipe *pipe, t_dlist **env);
+void	parent(t_pipe *pipe);
+void	free_and_close(t_pipe *pipe);
+int		init_outfile(t_pipe *pipe);
+char**	set_parse_cmd(t_token *head);
+
+/*signals.c*/
+void	signals_blocking_command(void);
+void	heredoc_signals(int fd);
+
+
+
+void	print_double_ptr(char **ptr);
 
 #endif

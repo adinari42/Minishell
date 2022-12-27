@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/03 15:35:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/27 16:02:51 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,70 @@ char	*value_expand(char **envp, char *var)
 
 
 
-char	*expand_value(char *str, char **envp)
+/********add necessary spaces*******/
+// char	*add_space(char *tmp, char *res)
+// {
+// 	while (*tmp && *tmp == ' ') //add spaces
+// 	{
+// 		res = ft_strjoin_free_str1(res, " ");
+// 		tmp++;
+// 	}
+// 	return (res);
+// }
+
+char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
+{
+	if (j != 0 || (j == 0 && *tmp == '$'))
+		split2[j] = value_expand(envp, split2[j]);
+	res = ft_strjoin_free_str1(res, split2[j]);
+	return (res);
+}
+
+
+// {
+// 	char		*ptr1;
+// 	char		*ptr2;
+// 	char		*tmp1;
+// 	char		*tmp2;
+// 	char		*newstr;
+
+// 	ptr1 = str;
+// 	newstr = str;
+// 	while (*ptr1)
+// 	{
+// 		if (*ptr1 == '$')
+// 		{
+// 			newstr = ft_substr(newstr, 0, ptr1 - newstr);
+// 			ptr2 = ptr1 + 1;
+// 			while (*ptr2 && *ptr2 != ' ')
+// 				ptr2 ++;
+// 			tmp1 = ft_substr(ptr1, 1, ptr2 - ptr1);
+// 			tmp2 = get_value_from_key(*g_env, tmp1);
+// 			if (tmp1)
+// 				free(tmp1);
+// 			newstr = ft_strjoin_free_str1(newstr, tmp2);
+// 			free(tmp2);
+// 			ptr1 = ptr2;
+// 		}
+// 		ptr1++;
+// 	}
+// 	if (str != newstr)
+// 	{
+// 		free(str);
+// 		return (newstr);
+// 	}
+// 	return (str);	
+// }
+
+/*
+-split the token twice, once using spaces to seperate words,
+-then split the words using $ to seperate variables from non variables,
+-add spaces in the result at the beginning 
+or after every word depending on the original format(tmp works as a reference)
+-then check if the word starts with $ and expand it then join to to result
+-skip the letters of the word in tmp and repeat
+*/
+char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 {
 	char		**split1;
 	char		**split2;
@@ -85,8 +148,19 @@ char	*expand_value(char *str, char **envp)
 			}
 			j++;
 		}
-		free_2d(&split2);
-		i++;
+		res = ft_strjoin_free_str1(res, split2[counter.j]);
+		while (tmp[counter.k] && tmp[counter.k] != ' ')
+		{
+			counter.k++;
+			if (tmp[counter.k + 1] == '$')
+				break ;
+		}
+		// while (tmp[counter.k] && tmp[counter.k] == ' ')
+		// {
+		// 	res = ft_strjoin_free_str1(res, " ");
+		// 	counter.k++;
+		// }
+		counter.j++;
 	}
 	free_strings(str, split1);
 	return (res);

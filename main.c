@@ -123,10 +123,18 @@ void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
 
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
-		data->out_fd = NULL;
-		if (redir_type == APPEND_IN)
-			init_here_doc(list, pipe);
-		else if (redir_type == REDIR_IN)
+	data->out_fd = NULL;
+	if (redir_type == APPEND_IN)
+	{	
+		list->type = INFILE;
+		if (init_here_doc(list, data))
+			return (1);
+	}
+	else if (redir_type == REDIR_IN)
+	{
+		list->type = INFILE;
+		data->file.infile = open(list->str, O_RDONLY);
+		if (data->file.infile == -1)
 		{
 			write (2, "qwer", 4);
 			pipe->file.infile = open(list->str, O_RDONLY);
@@ -160,7 +168,10 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 		else if (tmp->type == SPACE)
 			tmp = tmp->next;
 		else
-			fd_err(5);
+		{	
+			ms_fd_error(5, data);
+			break ;
+		}
 	}
 	fd_err(5);
 	return (tmp);
@@ -262,13 +273,10 @@ void	parent(t_pipe *pipe)
 
 int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
 {
-	int		i;
-	int		err;
-	t_token	**list;
-	// char	*cmd_line;
-	// t_token	**builtin_list;
-	(void) envp;
-	(void) stdout_restore;
+	int				err;
+	char			*inpt;
+	t_token			**list;
+	t_token			**pipes;	
 
 	err = 0;
 	dup2(stdin_restore, 0);
@@ -441,11 +449,9 @@ int main(int argc, char **argv, char **envp)
 	
 	if (argc != 1)
 		return (1);
-	err = 0;
-	init_minishell(envp);
+	l_envp = init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env 
-	data.parse.split_envp = envp_parse(envp);
-	stdin_restore = dup(0);		// save original stdin/stdout
+	stdin_restore = dup(0);
 	stdout_restore = dup(1);
 	//list = malloc(sizeof(t_token *));
 	while (1)

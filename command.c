@@ -35,7 +35,9 @@ int	handle_builtin(t_token **list)
 	char	*str;
 	int		ret;
 
-	str = (tlist_start(list))->str;
+	while (list->type == SPACE_TKN)
+		list = list->next;
+	str = list->str;
 	ret = 0;
 	if (!ft_strncmp(str, g_builtins[ECHO], 5))
 		ret = exec_echo(list);
