@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/27 13:27:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 16:01:13 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 
 	//iterate through varname, count the length from beginning to first s_quote******
 	count = 0;
-	while (varname[count] && varname[count] != '\'')
+	while (varname[count] && (ft_isalnum(varname[count]) || varname[count] == '_'))
 		count++;
+	//printf("varname %s, count %d\n", varname, count);
 	//extract that first string*****/
 	str = ft_substr(varname, 0, count);
 	//check and replace with env value***/
@@ -59,10 +60,6 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 			value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
 	}
 	free(str);
-	if (varname[count] == '\'')
-		value = ft_strjoin_free_str1(value, "'");
-	//join the rest of the string to the end of it***/
-	count++;
 	value = ft_strjoin_free_str1(value, varname + count);
 	return (value);
 }
