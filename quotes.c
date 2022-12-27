@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 23:52:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/27 21:02:49 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_token	**merge_quoted_strings(t_token **list)
 	t_token	*token;
 	t_token	*open_quote;
 
-	token = tlist_start(list);
+	token = tlist_start(*list);
 	open_quote = NULL;
 	while (token)
 	{

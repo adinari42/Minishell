@@ -6,15 +6,13 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 17:55:16 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 21:00:05 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-#include "minishell.h"
-
-volatile int g_stop = 0;
+volatile int	g_stop;
 
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
@@ -30,7 +28,7 @@ void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 
 void	exec_cmd(t_pipe *data, t_dlist **env)
 {
-	// char	**envp;
+	char	**envp;
 
 	envp = env_list_to_char_arr(env);
 	if (!data->parse.path)
@@ -166,7 +164,6 @@ void	child(t_pipe *pipe, int i)
 			ms_fd_error(1, pipe);
 	}
 	close (pipe->fd[0]);
-	//close(pipe->fd[1]);
 }
 
 void	parent(t_pipe *pipe)
@@ -243,7 +240,7 @@ char	*add_quote_char(char *cmd, t_token *tkn)
 		cmd = ft_strjoin_free_str1(cmd, "'");
 	return (cmd);
 }
-//tests needed
+
 char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token	*tmp;
@@ -261,8 +258,6 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
-			{
-				free(cmd_line);
 				return (NULL);
 		}
 		else
@@ -333,8 +328,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	{
 		builtin_id = 0;
 		pipe(data->fd);
-		if (pipes[i] == NULL)
-			return (1);
 		check_value(pipes[i], *env, data);
 		cmd_line = get_cmd(pipes[i], data);
 		data->parse.cmd = set_parse_cmd(pipes[i]);
