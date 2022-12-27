@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main2.c                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 23:09:46 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/27 23:42:52 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,62 +26,109 @@ void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 	free_split(split_path);
 }
 
-void	display_splitenvp(t_parse parse, char **argv)
+void	exec_cmd(t_pipe *data, t_dlist **env)
 {
-	int	i;
+	char	**envp;
 
-	i = 0;
-	printf("%s envp parse: ", argv[0]);
-	while (parse.split_envp[i])
-		printf("%s\n", parse.split_envp[i++]);
+	envp = env_list_to_char_arr(env);
+	if (!data->parse.path)
+	{
+		write(2, data->parse.cmd[0], ft_strlen(data->parse.cmd[0]));
+		ms_fd_error(127, data);
+		exit (127);
+	}
+	else
+		execve(data->parse.path, data->parse.cmd, envp);
+	// if (execve(data->parse.path, data->parse.cmd, envp) == -1)
+	// 	ms_fd_error(3, data);
+	free_char_arr(envp);
+	exit(0);
 }
 
-	tklist = list;
-	parse->cmd = ft_split(cmdline, ' ');
-	parse->path = get_path(parse->split_envp, parse->cmd[0]);
-}
-void	free_parse(t_parse *parse)
-{
-	// char	**envp;
+// int	init_here_doc(t_token *list, t_pipe *pipe)
+// {
+// 	char	*str;
 
-	envp = env_list_to_char_arr(g_env);
-	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
-		ms_fd_err(3);
-}
+// 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (pipe->file.infile == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
+// 	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	str = get_next_line(0);
+// 	while (1)
+// 	{
+// 		if (str && ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
+// 			break ;
+// 		ft_putstr_fd(str, pipe->file.infile);
+// 		free(str);
+// 		str = get_next_line(0);
+// 	}
+// 	free(str);
+// 	pipe->append = 1;
+// 	if (dup2(pipe->file.tmp, 0) == -1)
+// 	{
+// 		ms_fd_error(2, pipe);
+// 		return (1);
+// 	}
+// 	close(pipe->file.infile);
+// 	close(pipe->file.tmp);
+// 	return (0);
+// }
 
-void	exec_cmd(t_pipe *pipe, char *envp[])
-{
-	if (execve(pipe->parse.path, pipe->parse.cmd, envp) == -1)
-		fd_err(3);
-}
 int	init_here_doc(t_token *list, t_pipe *pipe)
 {
 	char	*str;
 
+	(void) list;
 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (pipe->file.infile == -1)
-		fd_err(1);
+	{
+		ms_fd_error(1, pipe);
+		return (1);
+	}
 	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
 	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
-		fd_err(2);
-	str = get_next_line(0);
-	while (1)
 	{
-		if (ft_strncmp(list->str, str, ft_strlen(str) - 1) == 0)
-			break ;
-		ft_putstr_fd(str, pipe->file.infile);
-		free(str);
-		str = get_next_line(0);
+		ms_fd_error(1, pipe);
+		return (1);
 	}
-	free(str);
+	str = ft_strdup("");
+	reset_term_signals();
+	heredoc_signals(STDIN_FILENO);
+	g_stop = 0;
+	while (!g_stop && str)
+	{
+		str = readline("> ");
+		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
+		{
+			free(str);
+			break ;
+		}
+		ft_putstr_fd(str, pipe->file.infile);
+		ft_putstr_fd("\n", pipe->file.infile);
+		if (str)
+			free(str);
+	}
+	signals_blocking_command();
 	pipe->append = 1;
 	if (dup2(pipe->file.tmp, 0) == -1)
-		fd_err(2);
+	{
+		ms_fd_error(2, pipe);
+		return (1);
+	}
 	close(pipe->file.infile);
 	close(pipe->file.tmp);
-	return (3);
+	return (0);
 }
-void	init_outfile(t_pipe *pipe)
+
+int	init_outfile(t_pipe *pipe)
 {
 	if (pipe->append == 0)
 		pipe->file.outfile = open(pipe->out_fd,
@@ -91,11 +138,19 @@ void	init_outfile(t_pipe *pipe)
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
 	pipe->append = 0;
 	if (pipe->file.outfile == -1)
-		fd_err(1);
+	{
+		ms_fd_error(1, pipe);
+		return (1);
+	}
 	if (dup2(pipe->file.outfile, 1) == -1)
-		fd_err(2);
+	{
+		ms_fd_error(2, pipe);
+		return (1);
+	}
 	close (pipe->file.outfile);
+	return (0);
 }
+
 void	child(t_pipe *pipe, int i)
 {
 	if (i < pipe->cmd_pos)
@@ -105,17 +160,18 @@ void	child(t_pipe *pipe, int i)
 	}
 	if (pipe->out_fd != NULL)
 	{
-		init_outfile(pipe);
+		if (init_outfile(pipe))
+			ms_fd_error(1, pipe);
 	}
 	close (pipe->fd[0]);
 }
-void	init_infile(t_token *list, t_pipe *pipe, int redir_type)
+
+void	parent(t_pipe *pipe)
 {
-	wait(&pipe->pid);
+	waitpid(pipe->pid, &pipe->status, 0);
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
 }
-
 
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
@@ -132,23 +188,27 @@ int	init_infile(t_token *list, t_pipe *data, int redir_type)
 		data->file.infile = open(list->str, O_RDONLY);
 		if (data->file.infile == -1)
 		{
-			write (2, "qwer", 4);
-			pipe->file.infile = open(list->str, O_RDONLY);
-			if (pipe->file.infile == -1)
-				fd_err(1);
-			dup2(pipe->file.infile, 0);
-			close(pipe->file.infile);
+			write(2, list->str, ft_strlen(list->str));
+			close(data->file.infile);
+			ms_fd_error(1, data);
+			return (1);
 		}
-		else if (redir_type == APPEND_OUT)
-		{
-			pipe->append = 1;
-			pipe->out_fd = list->str;
-		}
-		else if (redir_type == REDIR_OUT)
-		{
-			pipe->append = 0;
-			pipe->out_fd = list->str;
-		}
+		dup2(data->file.infile, 0);
+		close(data->file.infile);
+	}
+	else if (redir_type == APPEND_OUT)
+	{
+		list->type = OUTFILE;
+		data->append = 1;
+		data->out_fd = list->str;
+	}
+	else if (redir_type == REDIR_OUT)
+	{
+		list->type = OUTFILE;
+		data->append = 0;
+		data->out_fd = list->str;
+	}
+	return (0);
 }
 
 t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
@@ -157,11 +217,11 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	{
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
 		{
-			init_infile(tmp, data, redir_type);
-			tmp = tmp->next;
+			if (init_infile(tmp, data, redir_type))
+				return (NULL);
 			return (tmp);
 		}
-		else if (tmp->type == SPACE)
+		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
 		{
@@ -169,18 +229,27 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 			break ;
 		}
 	}
-	fd_err(5);
-	return (tmp);
+	return (NULL);
+}
+
+char	*add_quote_char(char *cmd, t_token *tkn)
+{
+	if (tkn->type == STR_DQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "\"");
+	else if (tkn->type == STR_SQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "'");
+	return (cmd);
 }
 
 char	*get_cmd(t_token *list, t_pipe *data)
 {
-	t_token *tmp;
+	t_token	*tmp;
 	char	*cmd_line;
 	int		redir_type;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
+	data->out_fd = NULL;
 	while (tmp)
 	{
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
@@ -189,18 +258,54 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);//break ;
 			if (tmp == NULL)
-			{
-				free(cmd_line);
 				return (NULL);
 		}
-		else	
+		else
 		{
-			cmd_line = ft_strjoin(cmd_line, tmp->str);
-			cmd_line = ft_strjoin(cmd_line, " ");
-			tmp = tmp->next;
+			cmd_line = add_quote_char(cmd_line, tmp);
+			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+			if (tmp->type != ASSIGN && tmp->type != STR_DQUOTES && tmp->type != STR_SQUOTES
+				&& tmp->type != WORD && (!tmp->next || tmp->next->type != ASSIGN ))
+				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
+			cmd_line = add_quote_char(cmd_line, tmp);
 		}
+		tmp = tmp->next;
 	}
 	return (cmd_line);
+}
+
+char**	set_parse_cmd(t_token *head)
+{
+	int		count;
+	t_token	*curr;
+	char	**cmd;
+
+	count = 0;
+	curr = head;
+	while (curr != NULL)
+	{
+		if (curr->type == WORD || curr->type == STR_DQUOTES
+			|| curr->type == STR_SQUOTES)
+			count++;
+		curr = curr->next;
+	}
+	cmd = malloc((count + 1) * sizeof (char *));
+	if (cmd == NULL)
+	{
+		perror("malloc");
+		exit(1);
+	}
+	count = 0;
+	curr = head;
+	while (curr != NULL)
+	{
+		if (curr->type == WORD || curr->type == STR_DQUOTES
+			|| curr->type == STR_SQUOTES)
+			cmd[count++] = curr->str;
+		curr = curr->next;
+	}
+	cmd[count] = NULL;
+	return (cmd);
 }
 
 void	free_and_close(t_pipe *pipe)
@@ -209,44 +314,38 @@ void	free_and_close(t_pipe *pipe)
 	close(pipe->fd[1]);
 	unlink("tmp");
 }
-void	parent(t_pipe *pipe)
+
+int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 {
 	int		i;
-	int		status;
 	char	*cmd_line;
 	t_token	**builtin_list;
+	int		builtin_id;
 
 	data->cmd_pos = count_pipes(pipes);
 	i = 0;
 	while (pipes[i])
 	{
+		builtin_id = 0;
 		pipe(data->fd);
-		if (pipes[i] == NULL)
-			return (1);
 		check_value(pipes[i], *env, data);
 		cmd_line = get_cmd(pipes[i], data);
+		data->parse.cmd = set_parse_cmd(pipes[i]);
 		if (cmd_line)
 		{
 			builtin_list = read_tokens(cmd_line);
-			builtin_list = merge_quoted_strings(builtin_list, data);
-			builtin_list = remove_empty(builtin_list);
-			if (is_builtin(cmd_line) == 1)
+			builtin_list = merge_quoted_strings(builtin_list);
+			builtin_id = is_builtin(cmd_line);
+			if (builtin_id)
 			{
 				free(cmd_line);
-				handle_builtinstr(*builtin_list, data, i, env);
-			}
-			else if (is_builtin(cmd_line))
-			{
-				free(cmd_line);
-				if (data->out_fd != NULL)
-				{
-					if (init_outfile(data))
-						ms_fd_error(1, data);
-				}
-				handle_builtin(*builtin_list, env);
+				handle_builtinstr(*builtin_list, data, i, env, builtin_id);
 			}
 			else if (cmd_line && cmd_line[0])
-				handle_command(data, cmd_line, i, env);
+			{
+				free(cmd_line);
+				handle_command(data, &pipes[i], i, env);
+			}
 			else if (cmd_line)
 				free(cmd_line);
 			free_token_list(*builtin_list);
@@ -254,20 +353,14 @@ void	parent(t_pipe *pipe)
 		}
 		else
 			parent(data);
+		unlink("tmp");			// do we need this line?
 		i++;
 	}
-	status = 0;
-	while (i--) 
-	{
-		waitpid(-1, &status, 0);
-		data->error_code = WEXITSTATUS(status);
-	}
-	// write_exit_to_env(data->error_code);
-	// printf("Child process exited with code: %d\n", WEXITSTATUS(status));
-	return (status);
+	data->error_code = WEXITSTATUS(data->status);
+	return (data->status);
 }
 
-int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restore)
+int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data)
 {
 	int				err;
 	char			*inpt;
@@ -285,195 +378,40 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	if (is_empty_inpt(inpt))
 		return (0);
 	list = read_tokens(inpt);
-	list = merge_quoted_strings(list, &data);
-	data.error_code = 0;
-	if (!parse(*list, &data))
+	free(inpt);
+	if (parse(list, data))
 	{
-		pipes = list_to_pipes(list);
-		if (pipes && inpt && inpt[0] && !err)
-		{
-			free(inpt);
-			signals_blocking_command();
-			err = handle_input(pipes, &data, env);
-		}
-		else
-			free(inpt);
-		free_pipes(pipes);
+		free_token_list(*list);
+		free(list);
 	}
 	else
 	{
-		free(inpt);
-		free_token_list(*list);
-		free(list);
+		pipes = list_to_pipes(list);
+		if (pipes && !err)
+		{
+			signals_blocking_command();
+			err = handle_input(pipes, data, env);
+		}
+		free_pipes(pipes);
 	}
 	return (err);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		stdin_restore;
-	//int		stdout_restore;
-	t_pipe	data;
-	char	*inpt;
-	char	**inpt_split;
-	t_parse	parse;
-	t_token	**list;
-	int		i;
-
-	tmp = tokens;
-	while(tmp)
-	{
-		printf(">%s\n", tmp->token);
-		tmp = tmp->next;
-	}
-}
-
-void	free_ll(t_tokens *stack)
-{
-	// t_parse	parse;
+	t_dlist	**l_envp;
 	int		stdin_restore;
 	int		stdout_restore;
-	int	err;
+	t_pipe	data;
 
-	tmp = stack;
-	tmp1 = NULL;
-	while (tmp)
-	{
-		tmp1 = tmp;
-		tmp = tmp->next;
-		free(tmp1);
-	}
-	stack = NULL;
-}
-
-void	free_2d(char ***to_free)
-{
-	size_t	i;
-
-	i = 0;
-	if (*to_free == NULL)
-		return ;
-	while ((*to_free)[i] != NULL)
-	{
-		free((*to_free)[i]);
-		++i;
-	}
-	free(*to_free);
-	*to_free = NULL;
-}
-int	push(t_tokens **thestack, char *thevalue)
-{
-	t_tokens	*newnode;
-	t_tokens	*temp;
-
-	temp = NULL;
-	newnode = malloc(sizeof(t_tokens));
-	if (newnode == NULL)
-	{
-		write(2, "Error\n", 6);
-		free(newnode);
-		return (0);
-	}
-	newnode->token = thevalue;
-	newnode->next = NULL;
-	if (*thestack == NULL)
-		*thestack = newnode;
-	else
-	{
-		temp = *thestack;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = newnode;
-	}
-	return (1);
-}
-
-void	quote_tokens(t_tokens *tokens, char* line) {
-
-    // const char *line = "'foobar'|cat'mousebar'sum";
-    char	delim[2] = "\'\"";
-    char	*p;
-	char 	*first;
-	char 	*second;
-	char	*str;
-	// char	c;
-	int	j = 0;
-	size_t len;
-	int i = 0;
-		p = line;
-	
-		first = NULL;
-		second = NULL;
-		len = -1;
-		while (p && *p) /* for each char in line */
-		{   i = 0;
-			while (delim[i] && !first)
-			{
-				if (*p == delim[i])
-					j = i;
-				i++;
-			}
-			if (!first && *p == delim[j])             /* find 1st delim */
-			{
-				first = p;
-				first++;                   /* set start ptr  */
-			}	
-			else if (!second && *p == delim[j])        /* find 2nd delim */
-			{
-				str = ft_substr(first, 0, len);   
-				len = -1;                    /* set end ptr    */
-				second = p;
-			}
-			if (first && second) {                     /* if both set    */
-				push(&tokens, str);
-				first = NULL;
-				second = NULL;
-			}
-			if (first)
-				len++;
-			p++;
-		}
-	}
-
-
-
-int main(int argc, char **argv, char **envp)
-{
-	char	*inpt;
-	t_parse	parse;
-
-	
 	if (argc != 1)
 		return (1);
 	l_envp = init_minishell(envp);
 	(void) argv; //to silence unused argv error and not use dislay env
 	stdin_restore = dup(0);
 	stdout_restore = dup(1);
-	//list = malloc(sizeof(t_token *));
+	data.error_code = 0;
 	while (1)
-	{
-		// if (err == 1)
-		// 	printf("Minishell$ ");
-		dup2(stdin_restore, 0);
-		dup2(stdout_restore, 1);
-		// write(2, "i get here", 10);
-		// close(stdin_restore);
-		// close(stdout_restore);
-		inpt = readline("Minishell$ ");
-		add_history(inpt);
-		inpt_split = ft_split(inpt, '|');
-		free(inpt);
-		if (inpt && inpt[0])
-			err = handle_input(inpt_split, &data);
-
-		dup2(stdin_restore, 0);
-		dup2(stdout_restore, 1);
-		if (inpt)
-			free(inpt);
-		free_char_arr(inpt_split);
-		// dprintf(2, "fuck\n");
-		// exit(1);
-	}
+		main_loop(l_envp, stdin_restore, stdout_restore, &data);
 	return (argc);
 }
-

@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/24 05:14:33 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/25 14:48:04 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,12 @@ typedef struct pipe
 	int		fd[2];
 	pid_t	pid;
 	t_file	file;
+	char	*out_fd;
+	int		cmd_pos;
 	t_parse	parse;
 	int		error_code;
-	int		tappend;
+	int		status;
+	int		append;
 }				t_pipe;
 
 typedef struct s_token
@@ -60,6 +63,7 @@ typedef struct s_token
 	char			*str;
 	int				type;
 	int				id;
+//	char			*path;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;

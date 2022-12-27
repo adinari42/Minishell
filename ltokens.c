@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/11/20 18:22:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/15 19:18:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	tappend(t_token **list, t_token *new_elem)
 		*list = new_elem;
 		return ;
 	}
-	last = tlist_end(list);
+	last = tlist_end(*list);
 	if (last)
 	{
 		last->next = new_elem;
@@ -60,28 +60,26 @@ void	tappend(t_token **list, t_token *new_elem)
 	}
 }
 
-t_token	*tlist_end(t_token **token)
+t_token	*tlist_end(t_token *token)
 {
 	t_token	*elemptr;
 
 	elemptr = NULL;
-	if (token && *token)
+	if (token)
 	{
-		elemptr = *token;
+		elemptr = token;
 		while (elemptr && elemptr->next)
-		{
 			elemptr = elemptr->next;
-		}
 		return (elemptr);
 	}
 	return (NULL);
 }
 
-t_token	*tlist_start(t_token **token)
+t_token	*tlist_start(t_token *token)
 {
-	if (token && *token)
-		return (*token);
-	return (NULL);
+	while (token && token->prev)
+		token = token->prev;
+	return (token);
 }
 
 // t_token	*pop(t_token **token)

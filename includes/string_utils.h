@@ -16,3 +16,5 @@
 int		is_whitespace(const char *c);
 char	*ft_strjoin_free_str1(char *str1, char *str2);
 int		count_split_elems(char **arr);
+
+#endif

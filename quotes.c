@@ -12,14 +12,12 @@
 
 #include "minishell.h"
 
-t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
+t_token	**merge_quoted_strings(t_token **list)
 {
 	t_token	*token;
 	t_token	*open_quote;
-	int		status;
 
-	token = tlist_start(list);
-	status = 0;
+	token = tlist_start(*list);
 	open_quote = NULL;
 	while (token)
 	{
@@ -30,21 +28,7 @@ t_token	**merge_quoted_strings(t_token **list, t_pipe *data)
 					|| open_quote->type != token->type))
 			{
 				if (!token->next)
-				{
-					// open_quote->type = WORD;
-					// ms_fd_err(258);
-					free_token_list(list);
-					// list = NULL;
-					data->pid = fork();
-					if (data->pid == 0)
-						ms_fd_err(258);
-					else
-					{
-						wait(&status);
-						return (NULL);
-					}
-					// break ;
-				}
+					break ;
 				token = token->next;
 			}
 			token = merge_tokens(open_quote, token);
@@ -81,11 +65,10 @@ t_token	*merge_two_tokens(t_token *token1, t_token *token2)
 		return (token1);
 	newstr = ft_strjoin(token1->str, token2->str);
 	free(token1->str);
-	free(token2->str);
 	token1->str = newstr;
 	token1->next = token2->next;
 	if (token1->next)
 		token1->next->prev = token1;
-	free(token2);
+	delete(token2);
 	return (token1);
 }

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 21:14:55 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/19 22:22:00 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,5 +109,6 @@ void	signals_blocking_command(void)
 // Ctrl-\: SIGQUIT
 void	init_signals(void)
 {
-	signal(SIGINT, free_and_exit);
+	signal(SIGINT, minishell_new_prompt);
+	signal(SIGQUIT, nul);
 }

@@ -16,20 +16,18 @@ char	*value_expand(char **envp, char *var)
 {
 	int		j;
 	char	*value;
-	int		len;
-	char	*tmp;
+	size_t	len;
 
 	len = 0;
-	tmp = var;
-	j = -1;
-	while (envp[++j])
+	j = 0;
+	while (envp[j] && envp[j][0])// && ft_strncmp(envp[j], "", 1))
 	{
-		//if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
-		if (envp[j] && *(envp[j]))
+		if (envp[j] && *(envp[j]) && !ft_strncmp(envp[j], var, ft_strlen(var)))
 		{
 			len += ft_strlen(var);
 			break ;
 		}
+		j++;
 	}
 	// printf("couldnt find env variable, j = %d, len = %d\n", j, len);
 	if (len == ft_strlen(var))
@@ -112,41 +110,31 @@ or after every word depending on the original format(tmp works as a reference)
 */
 char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 {
-	char		**split1;
 	char		**split2;
 	t_expand	counter;
 	char		*res;
 	char		*tmp;
+	char		*val;
 
-	i = 0;
-	k = 0;
-	split1 = ft_split(str, ' ');
+	counter.k = 0;
 	tmp = str;
 	res = ft_strdup("");
-	while (split1[i])
+	counter.j = 0;
+	split2 = ft_split(str, '$');
+	while (split2[counter.j] && split2[counter.j][0])
 	{
-		j = 0;
-		split2 = ft_split(split1[i], '$');//split using $
-		while (split2[j])
+		// while (tmp[counter.k] && tmp[counter.k] == ' ')
+		// {
+		// 	res = ft_strjoin_free_str1(res, " ");
+		// 	counter.k++;
+		// }
+		if (counter.j != 0 || (counter.j == 0 && tmp[counter.k] == '$'))
 		{
-			/********add necessary spaces*******/
-			while (tmp[k] && tmp[k] == ' ')//add spaces
-			{
-				res = ft_strjoin_free_str1(res, " ");
-				counter.k++;
-			}
-		// 	/*******expand values*******/
-			if (counter.j != 0  ||  (counter.j == 0 && tmp[counter.k] == '$'))
-				split2[counter.j] = value_expand(envp, split2[counter.j]);
-			res = ft_strjoin_free_str1(res, split2[counter.j]);
-		// 	/*******reach end of word********/
-			while (tmp[counter.k] && tmp[counter.k] != ' ')
-			{
-				k++;
-				if (tmp[k + 1] == '$')
-					break;
-			}
-			j++;
+			val = get_value_from_key(env, split2[counter.j], data);
+			if (split2[counter.j])
+				free(split2[counter.j]);
+			split2[counter.j] = ft_strdup(val);
+			free(val);
 		}
 		res = ft_strjoin_free_str1(res, split2[counter.j]);
 		while (tmp[counter.k] && tmp[counter.k] != ' ')
@@ -162,23 +150,17 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 		// }
 		counter.j++;
 	}
-	free_strings(str, split1);
+	free_split(split2);
+	free(str);
 	return (res);
 }
 
-void	check_value(t_token *list, char **envp)
+void	check_value(t_token *list, t_dlist *env, t_pipe *data)
 {
-	t_token	*tmp1;
-	char	*str_tmp;
-
-	// (void) envp;
-	// str_tmp = NULL;
-	tmp1 = list;
-	while (tmp1)
+	while (list)
 	{
-		str_tmp = expand_value(tmp1->str, envp);
-		// free(tmp1->str);
-		tmp1->str = str_tmp;
-		tmp1 = tmp1->next;
+		if (list->type != STR_SQUOTES)
+			list->str = expand_value(list->str, env, data);
+		list = list->next;
 	}
 }

@@ -28,6 +28,41 @@ char	**envp_parse(char **envp)
 	return (envp_parse);
 }
 
+char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
+{
+	char	*value;
+	char	*str;
+	int		count;
+
+	//iterate through varname, count the length from beginning to first s_quote******
+	count = 0;
+	while (varname[count] && (ft_isalnum(varname[count]) || varname[count] == '_'))
+		count++;
+	//printf("varname %s, count %d\n", varname, count);
+	//extract that first string*****/
+	str = ft_substr(varname, 0, count);
+	//check and replace with env value***/
+	value = NULL;
+	if (!ft_strncmp("?", str, ft_strlen(str)))
+		value = ft_itoa(data->error_code);
+	else
+	{
+		while (var)
+		{
+			if (!ft_strncmp(var->content->key, str, ft_strlen(str) + 1))		// +1 so we also compare the terminating null byte
+			{
+				value = ft_strdup(var->content->val);
+				break ;
+			}
+			var = var->next;
+		}
+		if (!value)
+			value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
+	}
+	free(str);
+	value = ft_strjoin_free_str1(value, varname + count);
+	return (value);
+}
 
 //assumption here: quotes have been stripped already
 char	*extract_varname_quoted(char *tokenstr)
@@ -73,47 +108,16 @@ char	*extract_value(char *tokenstr)
 	return (varname);
 }
 
-// int	num_vars_env()
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	//while (ft_strncmp(g_envp[i], "", 1))
-// 	while (g_envp[i])
-// 		i++;
-// 	return (i);
-// }
-
-int	num_vars_env()
+int	num_vars_env(t_dlist *env)
 {
-	return lstsize(*g_env);
+	return (lstsize(env));
 }
 
-// int	var_in_env(char *varname)
-// {
-// 	int		i;
-// 	char	**split;
-
-// 	i = 0;
-// 	while (g_envp[i] && varname)
-// 	{
-// 		split = ft_split(g_envp[i], '=');
-// 		if (split && *split && !ft_strncmp(split[0], varname, ft_strlen(split[0]) + 1))
-// 		{
-// 			free_split(split);
-// 			return (i);
-// 		}
-// 		free_split(split);
-// 		i++;
-// 	}
-// 	return (i);
-// }
-
-int	var_in_env(char *varname)
+int	var_in_env(char *varname, t_dlist *env)
 {
-	t_dlist *elem;
+	t_dlist	*elem;
 
-	elem = *g_env;
+	elem = env;
 	while (elem)
 	{
 		if (!ft_strncmp(varname, elem->content->key, ft_strlen(varname) + 1))
@@ -123,20 +127,7 @@ int	var_in_env(char *varname)
 	return (0);
 }
 
-// void	display_env(void)
-// {
-// 	int		i;
-
-// 	i = 0;
-// 	while (g_envp[i])
-// 	{
-// 		printf("%s\n",g_envp[i]);
-// 		i++;
-// 	}
-// 	return ;
-// }
-
-int	display_env(void)
+int	display_env(t_dlist *env)
 {
 	t_dlist	*var;
 
@@ -144,7 +135,10 @@ int	display_env(void)
 	while (var && var->content
 		&& ft_strncmp(var->content->key, "?", 2))
 	{
-		printf("%s=%s\n", var->content->key, var->content->val);
+		printf("%s=", var->content->key);
+		if (var->content->val)
+			printf("%s", var->content->val);
+		printf("\n");
 		var = var->next;
 	}
 	return (0);
@@ -157,25 +151,30 @@ char	**env_list_to_char_arr(t_dlist **env)
 	char	**env_c;
 	char	*buf;
 
-	env_c = malloc(sizeof(char *) * (lstsize(*env) + 1));
-	//printf("lstsize: %d\n", lstsize(*env));
-	i = 0;
-	if (!env && !env_c)
+	if (!env || !*env)
 		return (NULL);
-	elem = env[0];
+	i = 0;
+	elem = *env;
+	env_c = malloc(sizeof(char *) * (lstsize(*env) + 1));
+	if (!env_c)
+		return (NULL);
 	while (i < lstsize(*env))
 	{
-		buf = ft_strjoin(elem->content->key, "=");
-		if (elem->content->val && *(elem->content->val))
+		if (elem->content && elem->content->key)
 		{
-			env_c[i] = ft_strjoin(buf, elem->content->val);
+			buf = ft_strjoin(elem->content->key, "=");
+			if (elem->content->val && (elem->content->val)[0])
+				env_c[i] = ft_strjoin(buf, elem->content->val);
+			else
+				env_c[i] = ft_strdup(buf);
 			free(buf);
 		}
 		else
-			env_c[i] = buf;
+			env_c[i] = ft_strdup("");
 		i++;
+		elem = elem->next;
 	}
-	env_c[i] = ft_strdup("");
+	*(env_c + i) = NULL;
 	return (env_c);
 }
 

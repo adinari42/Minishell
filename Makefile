@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
+#    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/12/07 17:36:34 by adinari          ###   ########.fr        #
+#    Updated: 2022/12/13 22:26:14 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,6 @@ SRCS = 	main.c \
 		ltokens.c \
 		quotes.c \
 		parse.c \
-		exec.c \
 		command.c \
 		builtins.c \
 		expandvalue.c \
@@ -27,11 +26,12 @@ SRCS = 	main.c \
 		init.c \
 		dlist.c \
 		exit.c \
-		gnl/get_next_line.c \
-		gnl/get_next_line_utils.c \
 		execute_line.c \
 		spaces.c \
-		string_utils.c
+		string_utils.c \
+		pipes.c \
+		gnl/get_next_line.c \
+		gnl/get_next_line_utils.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
@@ -46,23 +46,47 @@ LEAKFLAGS = -LLeakSanitizer -llsan -lc++
 
 all: $(NAME)
 
-%.o:%.c
-	gcc $(FLAGS) -c $< -o $@
+# $(NAME): ${HOME}/.brew ${HOME}/.brew/opt/readline $(OBJS) $(LIBFTDIR)/$(LIBFT)
+# 	$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) $(LFLAGS) -o $(NAME)
 
-$(ODIR):
-	mkdir -p $(ODIR)
+$(NAME): $(OBJS) $(LIBFTDIR)/$(LIBFT)
+	$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) $(LFLAGS) -o $(NAME)
 
-$(NAME): $(OBJECTS)
-	@cd libft && make
-	$(CC) $(OBJECTS) $(LIBS) -o $(NAME)  -lreadline 
+
+debug: ${HOME}/.brew ${HOME}/.brew/opt/readline $(OBJS) $(LIBFTDIR)/$(LIBFT)
+	$(CC) $(CFLAGS) -g3 -O0 -fsanitize=address $(LEAKFLAGS) $(IFLAGS) $(OBJS) $(LFLAGS) -o $(NAME)
+
+# print-%: 
+# 	@echo $* = $($*)
+
+
+$(ODIR)/%.o: %.c
+	@mkdir -p $(ODIR)
+	@mkdir -p $(ODIR)/gnl
+	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
+
+$(LIBFTDIR)/$(LIBFT):
+	make -C $(LIBFTDIR)
+
+${HOME}/.brew:
+ 	@test -f ${HOME}/.brew/bin/brew && curl -fsSL https://rawgit.com/kube/42homebrew/master/install.sh | zsh
+
+${HOME}/.brew/opt/readline: 
+	brew install readline
+	brew link --force readline
+
+libftclean:
+	make -C $(LIBFTDIR) clean
 
 clean:
-	@cd libft && make clean
-	@rm -rf $(OBJECTS)
+	make -C libft clean
+	rm -rf $(OBJS) $(LIBFTDIR)/$(LIBFT) $(LIBFTDIR)/$(LIBFTOBJS)
 
-
-fclean: clean
-	@cd libft && make fclean
-	@rm -rf $(NAME) *.o
+fclean:
+	make -C libft fclean
+	rm -rf $(OBJS) $(NAME) $(LIBFTDIR)/$(LIBFTOBJS) $(LIBFTDIR)/libft.a
 
 re: fclean all
+
+.PHONY: libft
+
