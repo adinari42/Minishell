@@ -3,26 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 16:38:47 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 23:09:46 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-#include "minishell.h"
-
-extern volatile int	g_stop;
+volatile int	g_stop;
 
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
 	char	*var_path;
 	char	**split_path;
-	int		i;
 
-	i = 0;
 	parse->cmd = set_parse_cmd(*cmdline);
 	var_path = get_value_from_key(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
@@ -103,7 +99,7 @@ void	init_outfile(t_pipe *pipe)
 void	child(t_pipe *pipe, int i)
 {
 	if (i < pipe->cmd_pos)
-	{	
+	{
 		if (dup2(pipe->fd[1], 1) == -1)
 			ms_fd_error(2, pipe);
 	}
@@ -125,7 +121,7 @@ int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
 	data->out_fd = NULL;
 	if (redir_type == APPEND_IN)
-	{	
+	{
 		list->type = INFILE;
 		if (init_here_doc(list, data))
 			return (1);
@@ -168,7 +164,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 		else if (tmp->type == SPACE)
 			tmp = tmp->next;
 		else
-		{	
+		{
 			ms_fd_error(5, data);
 			break ;
 		}
@@ -276,7 +272,7 @@ int	handle_input(char **inpt_split, t_pipe *data, char **envp, int stdout_restor
 	int				err;
 	char			*inpt;
 	t_token			**list;
-	t_token			**pipes;	
+	t_token			**pipes;
 
 	err = 0;
 	dup2(stdin_restore, 0);
@@ -450,7 +446,7 @@ int main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (1);
 	l_envp = init_minishell(envp);
-	(void) argv; //to silence unused argv error and not use dislay env 
+	(void) argv; //to silence unused argv error and not use dislay env
 	stdin_restore = dup(0);
 	stdout_restore = dup(1);
 	//list = malloc(sizeof(t_token *));
@@ -480,3 +476,4 @@ int main(int argc, char **argv, char **envp)
 	}
 	return (argc);
 }
+
