@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 16:02:51 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 17:32:29 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 			if (tmp[counter.k + 1] == '$')
 				break ;
 		}
-		// while (tmp[counter.k] && tmp[counter.k] == ' ')
+		// while (tmp[counter.k] && tmp[counter.k] == ' ')//removed due to unnecessary space management
 		// {
 		// 	res = ft_strjoin_free_str1(res, " ");
 		// 	counter.k++;
