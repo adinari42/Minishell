@@ -1,5 +1,0 @@
-libft/libft.a
-minishell
-*.o
-libft/*.o
-obj/*.o
