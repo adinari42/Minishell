@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/26 16:45:09 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 14:01:48 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			cmd_line = add_quote_char(cmd_line, tmp);
 			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
 			if (tmp->type != ASSIGN && tmp->type != STR_DQUOTES && tmp->type != STR_SQUOTES
-				&&  (!tmp->next || tmp->next->type != ASSIGN))
+				&& tmp->type != WORD && (!tmp->next || tmp->next->type != ASSIGN ))
 				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
 			cmd_line = add_quote_char(cmd_line, tmp);
 		}

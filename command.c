@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/26 16:44:47 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 12:09:26 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int bui
 		child(data, i + 1);
 		if (builtin_id == 1 || builtin_id == 3 || builtin_id == 6 || builtin_id == 7 ) 
 			ret = handle_builtin(list, env, data);
-		printf("ret = %d\n", ret);
 		exit (ret);
 	}
 	else
