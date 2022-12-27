@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expandvalue.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/25 20:08:39 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/27 15:30:28 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,11 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 	split2 = ft_split(str, '$');
 	while (split2[counter.j] && split2[counter.j][0])
 	{
+		while (tmp[counter.k] && tmp[counter.k] == ' ')
+		{
+			res = ft_strjoin_free_str1(res, " ");
+			counter.k++;
+		}
 		if (counter.j != 0 || (counter.j == 0 && tmp[counter.k] == '$'))
 		{
 			val = get_value_from_key(env, split2[counter.j], data);
