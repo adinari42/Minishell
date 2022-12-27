@@ -1,10 +1,9 @@
 /***************
-not working:
+not working/TODO:
 ****************/
 
-echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
 many many leaks
-any command with a pipe also seems to loak
+any command with a pipe also seems to leak
 dprintf is a forbidden function
 perror is a forbidden function
 ""							(should output "command not found")
@@ -12,7 +11,8 @@ perror is a forbidden function
 Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. : looks good, but exit code is not 130
 exit code of 'Ctrl-\' after running a blocking command like cat should be 131
 none of the builtins properly handle exit codes, they need to go into $?
-
+merging of '=' characters also needs to be done for builtins
+cat <				(should output unexpected token error. we're probably missing parsing for '<' and '>' in general).
 
 /***************
 to check:
@@ -26,8 +26,8 @@ go through the evaluation sheet again
 /***************
 working atm:
 ****************/
-cat main.c					
-echo foo$USER				
+cat main.c
+echo foo$USER
 export foo=3			- still ok
 echo "foo" > bar
 < infile cat
@@ -59,6 +59,10 @@ env | grep USER
 echo "foo" | grep foo
 echo $?						(does not output '0' if it is the first command being executed, instead outputs some random value)
 echo $?						(leaks)
+expanded variable strings don't seem to be null-terminated. example:
+Minishell$ echo foo$USER			(sometimes spit out extra characters before the fix)
 
 'Minishell$ env | grep HOME=/
 grep: /: Is a directory '
+
+echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
