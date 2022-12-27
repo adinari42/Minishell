@@ -59,7 +59,7 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 	int		ret;
 
 	while (list->type == SPACE_TKN)
-		list = list-> next;
+		list = list->next;
 	str = list->str;
 	ret = 0;
 	if (!ft_strncmp(str, g_builtins[ECHO42], 5))

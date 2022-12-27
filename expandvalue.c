@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 17:32:29 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/27 16:02:51 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,13 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 // 		free(str);
 // 		return (newstr);
 // 	}
-// 	return (str);
+// 	return (str);	
 // }
 
 /*
 -split the token twice, once using spaces to seperate words,
 -then split the words using $ to seperate variables from non variables,
--add spaces in the result at the beginning
+-add spaces in the result at the beginning 
 or after every word depending on the original format(tmp works as a reference)
 -then check if the word starts with $ and expand it then join to to result
 -skip the letters of the word in tmp and repeat
@@ -143,7 +143,7 @@ char	*expand_value(char *str, t_dlist *env, t_pipe *data)
 			if (tmp[counter.k + 1] == '$')
 				break ;
 		}
-		// while (tmp[counter.k] && tmp[counter.k] == ' ')//removed due to unnecessary space management
+		// while (tmp[counter.k] && tmp[counter.k] == ' ')
 		// {
 		// 	res = ft_strjoin_free_str1(res, " ");
 		// 	counter.k++;

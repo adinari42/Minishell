@@ -3,4 +3,3 @@ minishell
 *.o
 libft/*.o
 obj/*.o
-includes/minishell.h~main

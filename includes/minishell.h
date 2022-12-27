@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/26 13:36:37 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/26 11:46:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 # define TOKENS " $'<>\""
 
-extern volatile int	g_stop;
+volatile int	g_stop;
 
 enum e_tokentype
 {
@@ -67,7 +67,7 @@ enum e_builtins
 	EXPORT,
 	UNSET,
 	ENV,
-	EXIT
+	EXIT	
 };
 
 static const char *const	g_builtins[] = {
@@ -126,9 +126,9 @@ void	ms_fd_error(int i, t_pipe *data);
 /*******/
 t_token	*token_new(char *str);
 void	delete(t_token *del_elem);
-void	append(t_token *token, t_token *new_elem);
-t_token	*list_end(t_token *token);
-t_token	*list_start(t_token *token);
+void	append(t_token **token, t_token *new_elem);
+t_token	*list_end(t_token **token);
+t_token	*list_start(t_token **token);
 
 /* spaces.c */
 t_token	*skip_spaces(t_token *token);
@@ -141,12 +141,12 @@ void	free_and_close(t_pipe *pipe);
 int		init_outfile(t_pipe *pipe);
 char**	set_parse_cmd(t_token *head);
 
-
-
-void	print_double_ptr(char **ptr);
-
 /*signals.c*/
 void	signals_blocking_command(void);
 void	heredoc_signals(int fd);
+
+
+
+void	print_double_ptr(char **ptr);
 
 #endif
