@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/26 13:36:37 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/26 11:46:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 # define TOKENS " $'<>\""
 
-extern volatile int	g_stop;
+volatile int	g_stop;
 
 enum e_tokentype
 {
@@ -67,7 +67,7 @@ enum e_builtins
 	EXPORT,
 	UNSET,
 	ENV,
-	EXIT
+	EXIT	
 };
 
 static const char *const	g_builtins[] = {
