@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
+/*   ft_lstadd_back.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 01:26:58 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/20 05:20:44 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/25 18:03:05 by slakner           #+#    #+#             */
+/*   Updated: 2022/04/06 19:14:25 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-/*
-checks if parameters are NULL,if true , it exits function;
-checks if first node is NULL, if yes, assigns new node adress to it and exits;
-assigns new node adress to last node of the list;
-*/
+
 void	ft_lstadd_back(t_list **lst, t_list *new)
 {
+	t_list	*last;
+
 	if (!lst || !new)
 		return ;
-	if (*lst == NULL)
+	if (!*lst)
 	{
 		*lst = new;
 		return ;
 	}
-	ft_lstlast(*lst)->next = new;
+	last = ft_lstlast(*lst);
+	if (last)
+		last->next = new;
 }

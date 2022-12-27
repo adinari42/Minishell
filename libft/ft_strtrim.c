@@ -3,69 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/04 02:50:19 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/19 01:13:20 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/24 20:18:43 by slakner           #+#    #+#             */
+/*   Updated: 2022/04/21 17:16:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	start_index(char const *s, char const *set)
+static int	char_in_charset(char c, const char *charset)
 {
-	int		k;
+	char	*ptr;
+
+	ptr = (char *) charset;
+	while (*ptr)
+	{
+		if (c == *ptr)
+			return (1);
+		ptr ++;
+	}
+	return (0);
+}
+
+static size_t	find_start(char *ptr, char const *set)
+{
 	size_t	i;
 
 	i = 0;
-	while (s[i])
-	{
-		k = 0;
-		while (ft_strchr(s + i, set[k]) != s + i && k < ft_strlen(set))
-			k++;
-		if (k >= ft_strlen(set))
-			break ;
-		if (ft_strchr(s + i, set[k]) == s + i)
-			i++;
-	}
+	while (i < ft_strlen(ptr) && char_in_charset(ptr[i], set))
+		i++;
 	return (i);
 }
 
-static int	end_index(char const *s, char const *set)
+static size_t	find_end(char *ptr, char const *set)
 {
-	int		k;
 	size_t	i;
 
-	i = ft_strlen(s) - 1;
-	while (i >= 0)
-	{
-		k = 0;
-		while (ft_strchr(s + i, set[k]) != s + i && k < ft_strlen(set))
-			k++;
-		if (k >= ft_strlen(set))
-			break ;
-		if (ft_strchr(s + i, set[k]) == s + i)
-			i--;
-	}
+	i = ft_strlen(ptr) - 1;
+	while (i > 0 && char_in_charset(ptr[i], set))
+		i--;
 	return (i);
 }
 
 char	*ft_strtrim(char const *s1, char const *set)
-{	
-	char	*s1_trim;
-	int		i;
-	int		j;
+{
+	char	*s_ptr;
+	char	*substr;
+	size_t	start_idx;
+	size_t	end_idx;
+	size_t	size;
 
-	if (s1 == NULL)
+	if (!s1 || !set)
 		return (NULL);
-	if (set == NULL)
-		return (ft_strdup(s1));
-	i = (int)start_index(s1, set);
-	j = (int)end_index(s1, set) + 1;
-	if (i >= j)
+	s_ptr = (char *) s1;
+	start_idx = find_start(s_ptr, set);
+	end_idx = find_end(s_ptr, set);
+	if (start_idx >= ft_strlen(s1))
 		return (ft_strdup(""));
-	s1_trim = ft_substr(s1, i, j - i);
-	if (!s1_trim)
+	size = (end_idx - start_idx + 2);
+	substr = malloc(size);
+	if (!substr)
 		return (NULL);
-	return (s1_trim);
+	ft_strlcpy(substr, &(s1[start_idx]), size);
+	return (substr);
 }

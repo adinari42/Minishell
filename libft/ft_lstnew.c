@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 00:08:39 by adinari           #+#    #+#             */
-/*   Updated: 2022/04/20 05:10:58 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/25 16:14:43 by slakner           #+#    #+#             */
+/*   Updated: 2022/03/30 22:02:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 t_list	*ft_lstnew(void *content)
 {
-	t_list	*new_node;
+	struct s_list	*newlist;
 
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
+	newlist = malloc(sizeof(struct s_list));
+	if (!newlist)
 		return (NULL);
-	new_node->content = content;
-	new_node->next = NULL;
-	return (new_node);
+	newlist->content = content;
+	newlist->next = NULL;
+	return (newlist);
 }

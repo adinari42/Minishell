@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/03 02:30:21 by adinari           #+#    #+#             */
-/*   Updated: 2022/10/18 23:08:50 by adinari          ###   ########.fr       */
+/*   Created: 2022/03/24 19:11:23 by slakner           #+#    #+#             */
+/*   Updated: 2022/12/01 16:16:33 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*join_spot;
-	size_t	len;
+	char	*newstr;
+	size_t	size;
 
-	if (!s1 && !s2)
+	if (!s1 || !s2)
 		return (NULL);
-	join_spot = malloc(ft_strlen(s1) + ft_strlen(s2)+1);
-	if (!join_spot)
+	size = ft_strlen(s1) + ft_strlen(s2);
+	newstr = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!newstr)
 		return (NULL);
-	ft_memcpy(join_spot, s1, ft_strlen(s1));
-	len = ft_strlen(s2) + 1;
-	ft_strlcpy(join_spot + ft_strlen(s1), s2, len);
-	return (join_spot);
+	ft_strlcpy(newstr, s1, size + 1);
+	ft_strlcat(newstr, s2, size + 1);
+	return (newstr);
 }
