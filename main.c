@@ -14,15 +14,13 @@
 
 #include "minishell.h"
 
-extern volatile int	g_stop;
+volatile int g_stop = 0;
 
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {
 	char	*var_path;
 	char	**split_path;
-	int		i;
 
-	i = 0;
 	parse->cmd = set_parse_cmd(*cmdline);
 	var_path = get_value_from_key(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
