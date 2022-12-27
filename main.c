@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
 /*   Updated: 2022/12/26 11:46:00 by adinari          ###   ########.fr       */
@@ -156,7 +156,7 @@ int	init_outfile(t_pipe *pipe)
 void	child(t_pipe *pipe, int i)
 {
 	if (i < pipe->cmd_pos)
-	{	
+	{
 		if (dup2(pipe->fd[1], 1) == -1)
 			ms_fd_error(2, pipe);
 	}
@@ -179,14 +179,18 @@ void	parent(t_pipe *pipe)
 
 int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
-		data->out_fd = NULL;
-		if (redir_type == APPEND_IN)
-		{	
-			list->type = INFILE;
-			if(init_here_doc(list, data))
-				return(1);
-		}
-		else if (redir_type == REDIR_IN)
+	data->out_fd = NULL;
+	if (redir_type == APPEND_IN)
+	{
+		list->type = INFILE;
+		if (init_here_doc(list, data))
+			return (1);
+	}
+	else if (redir_type == REDIR_IN)
+	{
+		list->type = INFILE;
+		data->file.infile = open(list->str, O_RDONLY);
+		if (data->file.infile == -1)
 		{
 			list->type = INFILE;
 			data->file.infile = open(list->str, O_RDONLY);
@@ -230,7 +234,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 		else if (tmp->type == SPACE_TKN)
 			tmp = tmp->next;
 		else
-		{	
+		{
 			ms_fd_error(5, data);
 			break ;
 		}
@@ -364,9 +368,10 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 
 int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore)
 {
-	int		err;
-	char	*inpt;
-	t_token	**list;
+	int				err;
+	char			*inpt;
+	t_token			**list;
+	t_token			**pipes;
 
 	err = 0;
 	//data.error_code = 0;
@@ -406,8 +411,8 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (1);
 	l_envp = init_minishell(envp);
-	(void) argv; //to silence unused argv error and not use dislay env 
-	stdin_restore = dup(0);		// save original stdin/stdout
+	(void) argv; //to silence unused argv error and not use dislay env
+	stdin_restore = dup(0);
 	stdout_restore = dup(1);
 	while (1)
 		main_loop(l_envp, stdin_restore, stdout_restore);

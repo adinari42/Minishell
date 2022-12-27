@@ -116,13 +116,13 @@ char	*join_to_res(char *tmp, char **split2, char *res, int j, char **envp)
 // 		free(str);
 // 		return (newstr);
 // 	}
-// 	return (str);	
+// 	return (str);
 // }
 
 /*
 -split the token twice, once using spaces to seperate words,
 -then split the words using $ to seperate variables from non variables,
--add spaces in the result at the beginning 
+-add spaces in the result at the beginning
 or after every word depending on the original format(tmp works as a reference)
 -then check if the word starts with $ and expand it then join to to result
 -skip the letters of the word in tmp and repeat

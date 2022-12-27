@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 19:30:22 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/27 13:17:34 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,3 +178,8 @@ char	**env_list_to_char_arr(t_dlist **env)
 	*(env_c + i) = NULL;
 	return (env_c);
 }
+
+// void	write_exit_to_env(int err)
+// {
+
+// }
