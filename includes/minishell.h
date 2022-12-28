@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 23:45:11 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/28 14:54:09 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ int		init_outfile(t_pipe *pipe);
 char**	set_parse_cmd(t_token *head);
 
 /*signals.c*/
+int		error_code(int *err);
 void	signals_blocking_command(void);
 void	heredoc_signals(int fd);
 

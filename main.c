@@ -6,7 +6,7 @@
 /*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/27 23:42:52 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/28 21:54:00 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,9 @@ void	child(t_pipe *pipe, int i)
 
 void	parent(t_pipe *pipe)
 {
+	// 	err = 0;
+	// waitpid(pipe->pid, &err, 0);
+	// error_code(&err);
 	waitpid(pipe->pid, &pipe->status, 0);
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
@@ -357,6 +360,12 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		i++;
 	}
 	data->error_code = WEXITSTATUS(data->status);
+	if (error_code(NULL))
+	{
+		data->error_code = error_code(NULL);
+		i = 0;
+		error_code(&i);
+	}
 	return (data->status);
 }
 

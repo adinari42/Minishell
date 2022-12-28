@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 22:22:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/28 21:56:08 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,8 @@
 
 void	nul(int signum)
 {
-	//char *pos;
-
 	if (signum == SIGQUIT)
-	{
 		rl_redisplay();
-	}
 }
 
 void	minishell_new_prompt(int signum)
@@ -45,7 +41,7 @@ void	heredoc_sigint_handler(int signum)
 		// rl_redisplay();
 		write (2, "\n", 1);
 	}
-}	
+}
 
 void	heredoc_sigquit_handler(int signum)
 {
@@ -72,29 +68,53 @@ void	heredoc_signals(int fd)
 	tcsetattr(fd, 0, &t_settings);
 }
 
-void	minishell_new_prompt_blocking(int signum)
+int	error_code(int *err)
 {
+	static	int error_code;
+	if (err)
+		error_code = *err;
+	printf("Returning err! %d\n", error_code);
+	return (error_code);
+}
+
+void	minishell_new_prompt_blocking(int signum)
+//void	sigint_blocking(int signum, t_pipe *data)
+{
+	int err;
+
+	err = 130;
 	if (signum == SIGINT)
 	{
 		write (1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
+		error_code(&err);
 	}
 }
 
 void	sigquit_blocking(int signum)
 {
+	int	err;
+
+	err = 131;
 	if (signum == SIGQUIT)
 	{
 		printf("Quit: 3\n");
 		rl_redisplay();
+		error_code(&err);
 	}
 }
 
 void	signals_blocking_command(void)
 {
-	struct termios	t_settings;
+	struct termios		t_settings;
+	// struct sigaction	sigint_action;
+	// struct sigaction	old_action;
 
+	// sigint_action.sa_handler = sigint_blocking;
+	// sigemptyset(&sigint_action.sa_mask);
+	// if (old_action.sa_handler != SIG_IGN)
+	// 	sigaction(SIGINT, &sigint_action, NULL);
 	signal(SIGINT, minishell_new_prompt_blocking);
 	signal(SIGQUIT, sigquit_blocking);
 	tcgetattr(1, &t_settings);
