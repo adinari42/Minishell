@@ -8,14 +8,9 @@ dprintf is a forbidden function
 perror is a forbidden function
 ""							(should output "command not found")
 "" | "" | "" ""				(doesn't crash, but bash outputs "command not found", minishell doesn't output anything)
-grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
-Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. : looks good, but exit code is not 130
-exit code of 'Ctrl-\' after running a blocking command like cat should be 131
 none of the builtins properly handle exit codes, they need to go into $?
 eououe > 			('> at the end of the line should throw a parse error')
 oeuoeu >>			('>> at the end of the line should throw a parse error')
-> oeuoeua			(should 'hang')
->> oaeuoaeueo (should 'hang')
 oeuoeueo << 	(should throw a syntax error)
 
 /***************
@@ -67,3 +62,7 @@ echo $?						(leaks)
 grep: /: Is a directory '
 
 echo $USER'$USER'$USER		(outputs an extra space that shouldn't be there)
+
+grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
+Try 'ctrl-C' after running a blocking command like cat without arguments or grep “something“. : looks good, but exit code is not 130
+exit code of 'Ctrl-\' after running a blocking command like cat should be 131grep -Hirn "parse error" .	(quotes problem, outputs lines that don't contain parse error)
