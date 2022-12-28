@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/27 16:01:13 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/28 15:23:41 by stephanie.l      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	//check and replace with env value***/
 	value = NULL;
 	if (!ft_strncmp("?", str, ft_strlen(str)))
-		value = ft_itoa(data->error_code);
+		return(ft_itoa(data->error_code));
 	else
 	{
 		while (var)
@@ -180,5 +180,5 @@ char	**env_list_to_char_arr(t_dlist **env)
 
 // void	write_exit_to_env(int err)
 // {
-	
+
 // }
