@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 14:15:23 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 05:48:54 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 18:33:56 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	ms_fd_error(int i, t_pipe *data)
 		write(2, ": Command not found\n", 20);
 	}
 	else if (i == 258)	
-		write(2, ": systax error: unclosed quotes\n", 32);
+		write(2, "systax error\n", 32);
 	else
 		write(2, "Error\n", 8);
 	data->error_code = i;

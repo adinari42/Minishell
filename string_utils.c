@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 15:15:32 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 23:32:30 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 18:15:31 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ int	count_split_elems(char **arr)
 		i ++;
 	return (i);
 }
-void	print_double_ptr(char **ptr)
-{
-	int	f;
+// void	print_double_ptr(char **ptr)
+// {
+// 	int	f;
 
-	f = 0;
-	while (ptr[f])
-	{
-		printf("ptr[%d] = %s.\n",f, ptr[f]);
-		f++;
-	}
-}
+// 	f = 0;
+// 	while (ptr[f])
+// 	{
+// 		printf("ptr[%d] = %s.\n",f, ptr[f]);
+// 		f++;
+// 	}
+// }

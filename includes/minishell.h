@@ -6,11 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/12/28 14:54:09 by stephanie.l      ###   ########.fr       */
-=======
-/*   Updated: 2022/12/28 23:20:32 by adinari          ###   ########.fr       */
->>>>>>> tweaks for passing empty quotes, error messages for bad commadns and redirections
+/*   Updated: 2022/12/29 17:55:26 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

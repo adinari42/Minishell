@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 22:09:19 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 05:46:42 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 18:44:55 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int		init_outfile(t_pipe *pipe)
 	}
 	else if (dup2(pipe->file.outfile, 1) == -1)
 	{
-		ms_fd_error(2, pipe);
+		// ms_fd_error(2, pipe);
 		return (1);
 	}
 	close (pipe->file.outfile);

@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 17:54:15 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 19:06:02 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,11 @@ void	parent(t_pipe *pipe)
 
 t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
+	if (!tmp)
+	{
+		ms_fd_error(258, data);
+		return (NULL);
+	}
 	while (tmp)
 	{
 		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
@@ -86,7 +91,7 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 			tmp = tmp->next;
 		else
 		{
-			ms_fd_error(5, data);
+			ms_fd_error(258, data);
 			break ;
 		}
 	}
@@ -185,6 +190,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		builtin_id = 0;
 		pipe(data->fd);
 		check_value(pipes[i], *env, data);
+		print_list(pipes[i]);
 		cmd_line = get_cmd(pipes[i], data);
 		data->parse.cmd = set_parse_cmd(pipes[i]);
 		if (cmd_line)
