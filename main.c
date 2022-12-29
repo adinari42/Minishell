@@ -119,7 +119,10 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			tmp = tmp->next;
 			tmp = skip_redir(tmp, data, redir_type);
 			if (tmp == NULL)
+			{
+				free(cmd_line);
 				return (NULL);
+			}
 		}
 		else
 		{
