@@ -6,13 +6,13 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 19:06:02 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 21:31:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile int	g_stop;
+volatile sig_atomic_t	g_stop;
 
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 {

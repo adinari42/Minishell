@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 18:10:46 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/29 19:36:36 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 # define TOKENS " $'<>\""
 
-extern volatile int	g_stop;
+extern volatile sig_atomic_t	g_stop;
 
 enum e_tokentype
 {
