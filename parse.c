@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 18:59:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/29 19:05:38 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	is_empty_inpt(char *inpt)
 	return (0);
 }
 
-//checks if there is a string before the first pipe, between two pipes, and behind the last pipe
+// checks if there is a string before the first pipe, between two pipes,
+// and behind the last pipe
 int	check_pipes(t_token *tkn)
 {
 	int	expect_cmd;
@@ -40,7 +41,8 @@ int	check_pipes(t_token *tkn)
 			tkn = tkn->next;
 		if (!tkn)
 			break ;
-		if (tkn->type == WORD || tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
+		if (tkn->type == WORD || tkn->type == STR_DQUOTES
+			|| tkn->type == STR_SQUOTES)
 			expect_cmd = 0;
 		else if (tkn->type == PIPE && expect_cmd)
 		{
@@ -114,18 +116,4 @@ int	parse(t_token **list, t_pipe *data)
 	if (ret)
 		data->error_code = ret;
 	return (ret);
-}
-
-t_token	*remove_spaces(t_token *list)
-{
-	t_token	*token;
-
-	token = tlist_start(list);
-	while (token)
-	{
-		if (token->type == SPACE_TKN)
-			delete(token);
-		token = token->next;
-	}
-	return (list);
 }

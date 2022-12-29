@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 22:55:43 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/29 23:33:06 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,37 +41,16 @@ void	minishell_new_prompt(int signum)
 void	heredoc_sigint_handler(int signum)
 {
 	struct termios	t_settings;
-	// printf("%d\n", signum);
+
 	if (signum == SIGINT)
 	{
-		// printf("%d\n", signum);
 		g_stop = 1;
-		// printf("%d\n", g_stop);
-		//init_signals();
-		//signal (SIGINT, SIG_DFL);
-		//int eof = 5;
-
 		tcgetattr(0, &t_settings);
-		//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);
-		//t_settings.c_lflag &= ~ICANON;
-		//t_settings.c_lflag |= ISIG;
 		t_settings.c_lflag &=~ECHOCTL;
 		t_settings.c_iflag |= O_NONBLOCK;
-		//t_settings.c_oflag |=OCRNL;
-		// t_settings.c_cc[VMIN]  = 1;
-		// t_settings.c_cc[VTIME] = 0;
-		//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);
-		// t_settings.c_cc[VMIN] = 1;
-		// t_settings.c_cc[VTIME] = 0;
 		tcsetattr(0, TCSANOW, &t_settings);
-		//write(0, 3, 1);
-		//write (0, NULL, 1);
-		//kill(0, SIGPIPE);exi
 		write(0, "\n", 1);
 		close(0);
-		// rl_replace_line("", 0);
-		// rl_redisplay();
-		// write (2, "\n", 1);
 	}
 }
 
@@ -86,19 +65,13 @@ void	heredoc_sigquit_handler(int signum)
 void	heredoc_signals(int fd)
 {
 	struct termios	t_settings;
-	
+
 	signal(SIGINT, SIG_DFL);
 	signal(SIGINT, heredoc_sigint_handler);
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGQUIT, heredoc_nul);
 	tcgetattr(fd, &t_settings);
-	//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);
-	//t_settings.c_lflag |= ICANON;
 	t_settings.c_lflag &=~ECHOCTL;
-	//t_settings.c_oflag |=OCRNL;
-	//printf("%lx %lx\n", t_settings.c_lflag, t_settings.c_oflag);
-	// t_settings.c_cc[VMIN] = 1;
-	// t_settings.c_cc[VTIME] = 0;
 	tcsetattr(fd, 0, &t_settings);
 }
 

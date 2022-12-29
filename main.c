@@ -181,11 +181,13 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	t_token	**builtin_list;
 	int		builtin_id;
 
-	//(void) env;
+	// (void) env;
+	// cmd_line = NULL;
 	data->cmd_pos = count_pipes(pipes);
 	i = 0;
 	while (pipes[i])
 	{
+		g_stop = 0;
 		builtin_id = 0;
 		pipe(data->fd);
 		check_value(pipes[i], *env, data);
@@ -196,12 +198,12 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			builtin_list = read_tokens(cmd_line);
 			builtin_list = merge_quoted_strings(builtin_list);
 			builtin_id = is_builtin(cmd_line);
-			if (builtin_id)
+			if (builtin_id && !g_stop)
 			{
 				free(cmd_line);
 				handle_builtinstr(*builtin_list, data, i, env, builtin_id);
 			}
-			else if (cmd_line && cmd_line[0])
+			else if (cmd_line && cmd_line[0] && !g_stop)
 			{
 				free(cmd_line);
 				handle_command(data, &pipes[i], i, env);
