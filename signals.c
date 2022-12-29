@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 17:48:32 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 18:06:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	minishell_new_prompt(int signum)
 {
 	int	err;
 
-	err = 1;	
+	err = 1;
 	if (signum == SIGINT)
 	{
 		write (1, "\n", 1);

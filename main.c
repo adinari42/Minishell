@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
 /*   Updated: 2022/12/29 19:06:02 by adinari          ###   ########.fr       */
@@ -45,7 +45,6 @@ void	exec_cmd(t_pipe *data, t_dlist **env)
 	exit(0);
 }
 
-
 void	child(t_pipe *pipe, int i)
 {
 	if (i < pipe->cmd_pos)
@@ -63,14 +62,10 @@ void	child(t_pipe *pipe, int i)
 
 void	parent(t_pipe *pipe)
 {
-	// 	err = 0;
-	// waitpid(pipe->pid, &err, 0);
-	// error_code(&err);
 	waitpid(pipe->pid, &pipe->status, 0);
 	dup2(pipe->fd[0], 0);
 	close (pipe->fd[1]);
 }
-
 
 t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
@@ -183,6 +178,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	t_token	**builtin_list;
 	int		builtin_id;
 
+	//(void) env;
 	data->cmd_pos = count_pipes(pipes);
 	i = 0;
 	while (pipes[i])
