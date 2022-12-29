@@ -12,7 +12,6 @@
 
 # include "includes/minishell.h"
 
-
 int		init_here_doc(t_token *list, t_pipe *pipe)
 {
 	char	*str;
@@ -23,6 +22,8 @@ int		init_here_doc(t_token *list, t_pipe *pipe)
 	reset_term_signals();
 	heredoc_signals(STDIN_FILENO);
 	read_to_tmp(list, pipe, str);
+	if (str)
+		free(str);
 	signals_blocking_command();
 	pipe->append = 1;
 	if (dup2(pipe->file.tmp, 0) == -1)
