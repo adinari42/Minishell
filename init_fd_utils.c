@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_fd_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 23:19:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 05:01:21 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 21:56:29 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,11 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str)
 	g_stop = 0;
 	while (!g_stop && str)
 	{
-		str = readline("> ");
-		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
+		write (1, "> ", 2);
+		str = get_next_line(0);
+		//printf("%s, list->str: %s\n", str, list->str);
+		if (str && (!ft_strncmp(list->str, str, ft_strlen(list->str))
+			&& !ft_strncmp(str + ft_strlen(list->str), "\n", 1)))
 		{
 			free(str);
 			break ;
