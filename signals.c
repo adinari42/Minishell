@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 23:33:06 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 00:05:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ void	minishell_new_prompt(int signum)
 void	heredoc_sigint_handler(int signum)
 {
 	struct termios	t_settings;
+	int				err;
 
+	err = 130;
 	if (signum == SIGINT)
 	{
 		g_stop = 1;
@@ -51,6 +53,7 @@ void	heredoc_sigint_handler(int signum)
 		tcsetattr(0, TCSANOW, &t_settings);
 		write(0, "\n", 1);
 		close(0);
+		error_code(&err);
 	}
 }
 

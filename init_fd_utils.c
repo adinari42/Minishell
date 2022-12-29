@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 23:19:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 21:56:29 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 00:06:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str)
 			break ;
 		}
 		ft_putstr_fd(str, pipe->file.infile);
-		ft_putstr_fd("\n", pipe->file.infile);
 		if (str)
 			free(str);
 	}
