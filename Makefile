@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
+#    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/12/13 22:26:14 by slakner          ###   ########.fr        #
+#    Updated: 2022/12/28 23:20:03 by adinari          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,9 @@ SRCS = 	main.c \
 		string_utils.c \
 		pipes.c \
 		gnl/get_next_line.c \
-		gnl/get_next_line_utils.c
+		gnl/get_next_line_utils.c\
+		init_fd.c\
+		init_fd_utils.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))

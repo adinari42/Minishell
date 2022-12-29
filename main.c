@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/28 21:54:00 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/29 17:47:57 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,17 @@ void	exec_cmd(t_pipe *data, t_dlist **env)
 	envp = env_list_to_char_arr(env);
 	if (!data->parse.path)
 	{
-		write(2, data->parse.cmd[0], ft_strlen(data->parse.cmd[0]));
+		// write(2, "Minishell: ", 12);
+		// write(2, data->parse.cmd[0], ft_strlen(data->parse.cmd[0]));
 		ms_fd_error(127, data);
 		exit (127);
 	}
 	else
-		execve(data->parse.path, data->parse.cmd, envp);
-	// if (execve(data->parse.path, data->parse.cmd, envp) == -1)
-	// 	ms_fd_error(3, data);
+	{
+		if (execve(data->parse.path, data->parse.cmd, envp) == -1)
+			ms_fd_error(127, data);
+	}	
+	// execve(data->parse.path, data->parse.cmd, envp);
 	free_char_arr(envp);
 	exit(0);
 }
@@ -82,74 +85,74 @@ void	exec_cmd(t_pipe *data, t_dlist **env)
 // 	return (0);
 // }
 
-int	init_here_doc(t_token *list, t_pipe *pipe)
-{
-	char	*str;
+// int	init_here_doc(t_token *list, t_pipe *pipe)
+// {
+// 	char	*str;
 
-	(void) list;
-	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (pipe->file.infile == -1)
-	{
-		ms_fd_error(1, pipe);
-		return (1);
-	}
-	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
-	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
-	{
-		ms_fd_error(1, pipe);
-		return (1);
-	}
-	str = ft_strdup("");
-	reset_term_signals();
-	heredoc_signals(STDIN_FILENO);
-	g_stop = 0;
-	while (!g_stop && str)
-	{
-		str = readline("> ");
-		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
-		{
-			free(str);
-			break ;
-		}
-		ft_putstr_fd(str, pipe->file.infile);
-		ft_putstr_fd("\n", pipe->file.infile);
-		if (str)
-			free(str);
-	}
-	signals_blocking_command();
-	pipe->append = 1;
-	if (dup2(pipe->file.tmp, 0) == -1)
-	{
-		ms_fd_error(2, pipe);
-		return (1);
-	}
-	close(pipe->file.infile);
-	close(pipe->file.tmp);
-	return (0);
-}
+// 	(void) list;
+// 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (pipe->file.infile == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	pipe->file.tmp = open("tmp", O_RDONLY | O_CREAT);
+// 	if (pipe->file.infile == -1 || pipe->file.tmp == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	str = ft_strdup("");
+// 	reset_term_signals();
+// 	heredoc_signals(STDIN_FILENO);
+// 	g_stop = 0;
+// 	while (!g_stop && str)
+// 	{
+// 		str = readline("> ");
+// 		if (str && (!ft_strncmp(list->str, str, ft_strlen(str) + 1)))
+// 		{
+// 			free(str);
+// 			break ;
+// 		}
+// 		ft_putstr_fd(str, pipe->file.infile);
+// 		ft_putstr_fd("\n", pipe->file.infile);
+// 		if (str)
+// 			free(str);
+// 	}
+// 	signals_blocking_command();
+// 	pipe->append = 1;
+// 	if (dup2(pipe->file.tmp, 0) == -1)
+// 	{
+// 		ms_fd_error(2, pipe);
+// 		return (1);
+// 	}
+// 	close(pipe->file.infile);
+// 	close(pipe->file.tmp);
+// 	return (0);
+// }
 
-int	init_outfile(t_pipe *pipe)
-{
-	if (pipe->append == 0)
-		pipe->file.outfile = open(pipe->out_fd,
-				O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else
-		pipe->file.outfile = open(pipe->out_fd,
-				O_WRONLY | O_CREAT | O_APPEND, 0644);
-	pipe->append = 0;
-	if (pipe->file.outfile == -1)
-	{
-		ms_fd_error(1, pipe);
-		return (1);
-	}
-	if (dup2(pipe->file.outfile, 1) == -1)
-	{
-		ms_fd_error(2, pipe);
-		return (1);
-	}
-	close (pipe->file.outfile);
-	return (0);
-}
+// int	init_outfile(t_pipe *pipe)
+// {
+// 	if (pipe->append == 0)
+// 		pipe->file.outfile = open(pipe->out_fd,
+// 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	else
+// 		pipe->file.outfile = open(pipe->out_fd,
+// 				O_WRONLY | O_CREAT | O_APPEND, 0644);
+// 	pipe->append = 0;
+// 	if (pipe->file.outfile == -1)
+// 	{
+// 		ms_fd_error(1, pipe);
+// 		return (1);
+// 	}
+// 	if (dup2(pipe->file.outfile, 1) == -1)
+// 	{
+// 		ms_fd_error(2, pipe);
+// 		return (1);
+// 	}
+// 	close (pipe->file.outfile);
+// 	return (0);
+// }
 
 void	child(t_pipe *pipe, int i)
 {
@@ -161,7 +164,12 @@ void	child(t_pipe *pipe, int i)
 	if (pipe->out_fd != NULL)
 	{
 		if (init_outfile(pipe))
-			ms_fd_error(1, pipe);
+		{
+			// printf("sUIIII\n");
+			// ms_fd_error(1, pipe);
+
+			exit(1);
+		}
 	}
 	close (pipe->fd[0]);
 }
@@ -176,43 +184,43 @@ void	parent(t_pipe *pipe)
 	close (pipe->fd[1]);
 }
 
-int	init_infile(t_token *list, t_pipe *data, int redir_type)
-{
-	data->out_fd = NULL;
-	if (redir_type == APPEND_IN)
-	{
-		list->type = INFILE;
-		if (init_here_doc(list, data))
-			return (1);
-	}
-	else if (redir_type == REDIR_IN)
-	{
-		list->type = INFILE;
-		data->file.infile = open(list->str, O_RDONLY);
-		if (data->file.infile == -1)
-		{
-			write(2, list->str, ft_strlen(list->str));
-			close(data->file.infile);
-			ms_fd_error(1, data);
-			return (1);
-		}
-		dup2(data->file.infile, 0);
-		close(data->file.infile);
-	}
-	else if (redir_type == APPEND_OUT)
-	{
-		list->type = OUTFILE;
-		data->append = 1;
-		data->out_fd = list->str;
-	}
-	else if (redir_type == REDIR_OUT)
-	{
-		list->type = OUTFILE;
-		data->append = 0;
-		data->out_fd = list->str;
-	}
-	return (0);
-}
+// int	init_infile(t_token *list, t_pipe *data, int redir_type)
+// {
+// 	data->out_fd = NULL;
+// 	if (redir_type == APPEND_IN)
+// 	{
+// 		list->type = INFILE;
+// 		if (init_here_doc(list, data))
+// 			return (1);
+// 	}
+// 	else if (redir_type == REDIR_IN)
+// 	{
+// 		list->type = INFILE;
+// 		data->file.infile = open(list->str, O_RDONLY);
+// 		if (data->file.infile == -1)
+// 		{
+// 			write(2, list->str, ft_strlen(list->str));
+// 			close(data->file.infile);
+// 			ms_fd_error(1, data);
+// 			return (1);
+// 		}
+// 		dup2(data->file.infile, 0);
+// 		close(data->file.infile);
+// 	}
+// 	else if (redir_type == APPEND_OUT)
+// 	{
+// 		list->type = OUTFILE;
+// 		data->append = 1;
+// 		data->out_fd = list->str;
+// 	}
+// 	else if (redir_type == REDIR_OUT)
+// 	{
+// 		list->type = OUTFILE;
+// 		data->append = 0;
+// 		data->out_fd = list->str;
+// 	}
+// 	return (0);
+// }
 
 t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 {
@@ -259,7 +267,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		{
 			redir_type = tmp->type;
 			tmp = tmp->next;
-			tmp = skip_redir(tmp, data, redir_type);//break ;
+			tmp = skip_redir(tmp, data, redir_type);
 			if (tmp == NULL)
 				return (NULL);
 		}
@@ -293,11 +301,6 @@ char**	set_parse_cmd(t_token *head)
 		curr = curr->next;
 	}
 	cmd = malloc((count + 1) * sizeof (char *));
-	if (cmd == NULL)
-	{
-		perror("malloc");
-		exit(1);
-	}
 	count = 0;
 	curr = head;
 	while (curr != NULL)

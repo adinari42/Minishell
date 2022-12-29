@@ -1,7 +1,10 @@
 /***************
 not working:
 ****************/
-
+signals need to work in heredoc the rest we can ignore, this is important
+ctrl-C in a prompt after you wrote some stuff should display a new line with a new prompt. exit code must be 1<<<<<<<<<<<<<<<<<<<<<<<!!
+ctrl-C after running a blocking command like cat without arguments or grep “something“ , exit code must be 130<<<<<<<<<<<<<<<<<<<<<<<!!
+Try ctrl-\ after running a blocking command like cat without arguments or grep “something“, exit code must be 131<<<<<<<<<<<<<<<<<<<<!!!!!
 many many leaks
 any command with a pipe also seems to leak
 dprintf is a forbidden function
@@ -25,6 +28,7 @@ go through the evaluation sheet again
 /***************
 working atm:
 ****************/
+exit code of commadns like *cat outfile | grep ssss* that return nothing is now 1
 cat main.c
 echo foo$USER
 export foo=3			- still ok

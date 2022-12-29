@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/12/28 14:54:09 by stephanie.l      ###   ########.fr       */
+=======
+/*   Updated: 2022/12/28 23:20:32 by adinari          ###   ########.fr       */
+>>>>>>> tweaks for passing empty quotes, error messages for bad commadns and redirections
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +150,15 @@ int		error_code(int *err);
 void	signals_blocking_command(void);
 void	heredoc_signals(int fd);
 
-
+/*init_infile.c*/
+int		init_infile(t_token *list, t_pipe *data, int redir_type);
+int		init_here_doc(t_token *list, t_pipe *pipe);
+int		init_outfile(t_pipe *pipe);
+/*init_fd_utils.c*/
+int		open_tmp(t_pipe *pipe);
+void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str);
+int		redir_in(t_token *list, t_pipe *data);
+int		append_in(t_token *list, t_pipe *data);
 
 void	print_double_ptr(char **ptr);
 
