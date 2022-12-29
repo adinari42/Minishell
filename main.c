@@ -189,7 +189,6 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		builtin_id = 0;
 		pipe(data->fd);
 		check_value(pipes[i], *env, data);
-		print_list(pipes[i]);
 		cmd_line = get_cmd(pipes[i], data);
 		data->parse.cmd = set_parse_cmd(pipes[i]);
 		if (cmd_line)
@@ -214,6 +213,7 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 		}
 		else
 			parent(data);
+		free(data->parse.cmd);
 		unlink("tmp");			// do we need this line?
 		i++;
 	}
