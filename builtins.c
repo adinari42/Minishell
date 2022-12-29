@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/25 17:21:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/29 23:51:56 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,8 +214,9 @@ void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 	if (!builtin_plausible(tkn, "exit"))
 		return ;
 	tkn = skip_spaces(tkn);
-	if (tkn && tkn->next)
+	if (tkn)
 	{
+		printf("exit\n");
 		tokenstr = tkn->str;
 		while (*(tokenstr))
 		{
