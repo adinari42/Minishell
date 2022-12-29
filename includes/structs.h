@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:26:28 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/25 14:48:04 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/29 23:50:59 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,13 @@ typedef struct s_expand
 	int		j;
 	int		k;
 }				t_expand;
+
+typedef struct s_expval
+{
+	char		**split2;
+	char		*res;
+	char		*tmp;
+	char		*val;
+}				t_expval;
 
 #endif

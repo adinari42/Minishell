@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 21:31:11 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/29 23:41:14 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,17 @@ char	*add_quote_char(char *cmd, t_token *tkn)
 	return (cmd);
 }
 
+char	*join_param(char	*cmd_line,	t_token	*tmp)
+{
+	cmd_line = add_quote_char(cmd_line, tmp);
+	cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
+	if (tmp->type != ASSIGN && tmp->type != STR_DQUOTES && tmp->type != STR_SQUOTES
+		&& tmp->type != WORD && (!tmp->next || tmp->next->type != ASSIGN ))
+		cmd_line = ft_strjoin_free_str1(cmd_line, " ");
+	cmd_line = add_quote_char(cmd_line, tmp);
+	return (cmd_line);
+}
+
 char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token	*tmp;
@@ -125,14 +136,7 @@ char	*get_cmd(t_token *list, t_pipe *data)
 			}
 		}
 		else
-		{
-			cmd_line = add_quote_char(cmd_line, tmp);
-			cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
-			if (tmp->type != ASSIGN && tmp->type != STR_DQUOTES && tmp->type != STR_SQUOTES
-				&& tmp->type != WORD && (!tmp->next || tmp->next->type != ASSIGN ))
-				cmd_line = ft_strjoin_free_str1(cmd_line, " ");
-			cmd_line = add_quote_char(cmd_line, tmp);
-		}
+			cmd_line = join_param(cmd_line, tmp);
 		tmp = tmp->next;
 	}
 	return (cmd_line);
