@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/28 15:23:41 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/29 18:27:59 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,13 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	char	*str;
 	int		count;
 
-	//iterate through varname, count the length from beginning to first s_quote******
 	count = 0;
 	while (varname[count] && (ft_isalnum(varname[count]) || varname[count] == '_'))
 		count++;
-	//printf("varname %s, count %d\n", varname, count);
-	//extract that first string*****/
 	str = ft_substr(varname, 0, count);
-	//check and replace with env value***/
 	value = NULL;
 	if (!ft_strncmp("?", str, ft_strlen(str)))
-		return(ft_itoa(data->error_code));
+		value = ft_itoa(data->error_code);
 	else
 	{
 		while (var)
@@ -58,9 +54,9 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 		}
 		if (!value)
 			value = ft_strdup("");					// this needs to be malloced instead of null so we can properly free when this is used by the builtins
+		value = ft_strjoin_free_str1(value, varname + count);
 	}
 	free(str);
-	value = ft_strjoin_free_str1(value, varname + count);
 	return (value);
 }
 
