@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/24 19:10:25 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/29 18:59:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,22 @@ int	check_quotes(t_token *tkn)
 	return (0);
 }
 
+int	check_redirs(t_token *tkn)
+{
+	t_token	*end;
+
+	end = tlist_end(tkn);
+	while (end && end->type == SPACE_TKN)
+		end = end->prev;
+	if (end && (end->type == REDIR_IN || end->type == REDIR_OUT
+			|| end->type == APPEND_IN || end->type == APPEND_OUT))
+	{
+		printf("Minishell: syntax error near unexpected token `newline'\n");
+		return (258);
+	}
+	return (0);
+}
+
 int	parse(t_token **list, t_pipe *data)
 {
 	int	ret;
@@ -89,6 +105,12 @@ int	parse(t_token **list, t_pipe *data)
 	}
 	merge_quoted_strings(list);
 	ret = check_pipes(*list);
+	if (ret)
+	{	
+		data->error_code = ret;
+		return (ret);
+	}
+	ret = check_redirs(*list);
 	if (ret)
 		data->error_code = ret;
 	return (ret);
