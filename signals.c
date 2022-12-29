@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stephanie.lakner <stephanie.lakner@stud    +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/28 21:56:08 by stephanie.l      ###   ########.fr       */
+/*   Updated: 2022/12/29 14:18:31 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,16 @@ void	nul(int signum)
 
 void	minishell_new_prompt(int signum)
 {
+	int	err;
+
+	err = 1;	
 	if (signum == SIGINT)
 	{
 		write (1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
+		error_code(&err);
 	}
 }
 
@@ -71,14 +75,13 @@ void	heredoc_signals(int fd)
 int	error_code(int *err)
 {
 	static	int error_code;
+
 	if (err)
 		error_code = *err;
-	printf("Returning err! %d\n", error_code);
 	return (error_code);
 }
 
 void	minishell_new_prompt_blocking(int signum)
-//void	sigint_blocking(int signum, t_pipe *data)
 {
 	int err;
 
@@ -108,13 +111,7 @@ void	sigquit_blocking(int signum)
 void	signals_blocking_command(void)
 {
 	struct termios		t_settings;
-	// struct sigaction	sigint_action;
-	// struct sigaction	old_action;
 
-	// sigint_action.sa_handler = sigint_blocking;
-	// sigemptyset(&sigint_action.sa_mask);
-	// if (old_action.sa_handler != SIG_IGN)
-	// 	sigaction(SIGINT, &sigint_action, NULL);
 	signal(SIGINT, minishell_new_prompt_blocking);
 	signal(SIGQUIT, sigquit_blocking);
 	tcgetattr(1, &t_settings);
