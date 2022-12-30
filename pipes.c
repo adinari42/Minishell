@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:38:34 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/23 00:51:07 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 23:20:40 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ t_token	*cut_at_pipe(t_token *list, t_token **pipes, int i)
 	return (next);
 }
 
-// we might have to make a copy of the original list with memcopy since it gets changed here
-// assign i+1 and mark end of array somehow?
 t_token	**list_to_pipes(t_token **list)
 {
 	t_token	**pipes;
@@ -75,8 +73,6 @@ t_token	**list_to_pipes(t_token **list)
 	pipes = malloc(sizeof(t_token *) * (numpipes + 1));
 	i = 0;
 	elem = *list;
-	if (!list || !elem)
-		return (NULL);
 	pipes[0] = elem;
 	while (elem->next)
 	{

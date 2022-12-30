@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:14:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 21:02:08 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 23:26:58 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@ int	prnt_err2(char *cmd, char *errstr)
 	return (1);
 }
 
+int	prnt_err3(char *errstr)
+{
+	write(2, "minishell: ", 11);
+	write(2, errstr, ft_strlen(errstr));
+	write(2, "\n", 1);
+}
 
 int	print_builtin_error(char *builtin, char *dir)
 {

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 22:32:54 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 23:18:05 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,27 +36,11 @@ int	token_type(char *c)
 		return (WORD);
 }
 
-// void	print_list(t_token *list)
-// {
-// 	t_token	*tklist;
-
-// 	tklist = list;
-// 	if (!tklist)
-// 		return ;
-// 	while (tklist)
-// 	{
-// 		printf(">%s %d\n", tklist->str, tklist->type);
-// 		tklist = tklist->next;
-// 	}
-// 	return ;
-// }
-
-void append_from_str(t_token **list, char *str)
+void	append_from_str(t_token **list, char *str)
 {
 	tappend(list, token_new(str));
 	free(str);
 }
-
 
 char	*non_word_tknstr(char *bashcmd, size_t *i)
 {
@@ -73,7 +57,7 @@ char	*non_word_tknstr(char *bashcmd, size_t *i)
 	return (tokenstr);
 }
 
-t_token	**read_tokens(char *bashcmd)
+t_token	**read_tokens(char *cmd)
 {
 	const char	spec_c[] = "\"'<>| =\t";
 	t_token		**tk_list;
@@ -83,23 +67,22 @@ t_token	**read_tokens(char *bashcmd)
 	tk_list = malloc(sizeof(t_token *));
 	*tk_list = NULL;
 	i = 0;
-	while (i < ft_strlen(bashcmd) && (bashcmd[i] == ' ' || bashcmd[i] == '\t'))
+	while (i < ft_strlen(cmd) && (cmd[i] == ' ' || cmd[i] == '\t'))
 		i++;
 	word_s = i;
-	while (i < ft_strlen(bashcmd))
+	while (i < ft_strlen(cmd))
 	{
-		if (char_in_charset(bashcmd[i], spec_c))
+		if (char_in_charset(cmd[i], spec_c))
 		{
 			if (i - word_s > 0)
-				append_from_str(tk_list,
-					ft_substr(bashcmd, word_s, i - word_s));
-			append_from_str(tk_list, non_word_tknstr(bashcmd, &i));
+				append_from_str(tk_list, ft_substr(cmd, word_s, i - word_s));
+			append_from_str(tk_list, non_word_tknstr(cmd, &i));
 			word_s = i + 1;
 		}
 		i++;
 	}
 	if (word_s < i)
-		append_from_str(tk_list, ft_substr(bashcmd, word_s, i - word_s));
+		append_from_str(tk_list, ft_substr(cmd, word_s, i - word_s));
 	return (tk_list);
 }
 

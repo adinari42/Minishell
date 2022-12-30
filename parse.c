@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 19:05:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 23:27:27 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	check_pipes(t_token *tkn)
 			expect_cmd = 0;
 		else if (tkn->type == PIPE && expect_cmd)
 		{
-			printf("Minishell: syntax error near unexpected token `|'\n");
+			prnt_err3("syntax error near unexpected token `|'");
 			return (258);
 		}
 		else if (tkn->type == PIPE)
