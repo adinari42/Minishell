@@ -244,7 +244,15 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 	dup2(stdin_restore, 0);
 	dup2(stdout_restore, 1);
 	reset_term_signals();
-	inpt = readline("Minishell$ ");
+	if (isatty(stdin_restore))
+	{
+		inpt = readline("Minishell$ ");
+	}
+	else
+	{	
+		inpt = get_next_line(0);
+		inpt = ft_strtrim(inpt, "\n");
+	}
 	if (!inpt)
 		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
 	add_history(inpt);
@@ -267,6 +275,8 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 		}
 		free_pipes(pipes);
 	}
+	if (!isatty(stdin_restore))
+		exit(data->error_code);
 	return (err);
 }
 
