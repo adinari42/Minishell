@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 21:13:49 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:34:21 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 # include "parse.h"
 # include "builtins.h"
 # include "error.h"
+# include "signals.h"
 
 # define TOKENS " $'<>\""
 
@@ -112,6 +113,7 @@ t_token	*list_start(t_token **token);
 /* spaces.c */
 t_token	*skip_spaces(t_token *token);
 t_token	*skip_empty(t_token *token);
+t_token	**tabs_to_spaces(t_token **pipes);
 
 /* current main.c */
 char	*get_cmd(t_token *list, t_pipe *data);

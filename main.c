@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 18:20:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:33:45 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,26 +45,26 @@ void	exec_cmd(t_pipe *data, t_dlist **env)
 	exit(0);
 }
 
-void	child(t_pipe *pipe, int i)
+void	child(t_pipe *plist, int i)
 {
-	if (i < pipe->cmd_pos)
+	if (i < plist->cmd_pos)
 	{
-		if (dup2(pipe->fd[1], 1) == -1)
-			ms_fd_error(2, pipe);
+		if (dup2(plist->fd[1], 1) == -1)
+			ms_fd_error(2, plist);
 	}
-	if (pipe->out_fd != NULL)
+	if (plist->out_fd != NULL)
 	{
-		if (init_outfile(pipe))
+		if (init_outfile(plist))
 			exit(1);
 	}
-	close (pipe->fd[0]);
+	close (plist->fd[0]);
 }
 
-void	parent(t_pipe *pipe)
+void	parent(t_pipe *plist)
 {
-	waitpid(pipe->pid, &pipe->status, 0);
-	dup2(pipe->fd[0], 0);
-	close (pipe->fd[1]);
+	waitpid(plist->pid, &plist->status, 0);
+	dup2(plist->fd[0], 0);
+	close (plist->fd[1]);
 }
 
 t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
@@ -171,58 +171,61 @@ char**	set_parse_cmd(t_token *head)
 	return (cmd);
 }
 
-void	free_and_close(t_pipe *pipe)
+void	free_and_close(t_pipe *plist)
 {
-	close(pipe->fd[0]);
-	close(pipe->fd[1]);
+	close(plist->fd[0]);
+	close(plist->fd[1]);
 	unlink("tmp");
 }
 
-int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
+int handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
 {
-	int		i;
 	char	*cmd_line;
 	t_token	**builtin_list;
-	int		builtin_id;
 
-	// (void) env;
-	// cmd_line = NULL;
-	data->cmd_pos = count_pipes(pipes);
-	i = 0;
-	while (pipes[i])
+	g_stop = 0;
+	pipe(data->fd);
+	check_value(plist, *env, data);
+	cmd_line = get_cmd(plist, data);
+	data->parse.cmd = set_parse_cmd(plist);
+	if (cmd_line)
 	{
-		g_stop = 0;
-		builtin_id = 0;
-		pipe(data->fd);
-		check_value(pipes[i], *env, data);
-		cmd_line = get_cmd(pipes[i], data);
-		data->parse.cmd = set_parse_cmd(pipes[i]);
-		if (cmd_line)
+		builtin_list = read_tokens(cmd_line);
+		builtin_list = merge_quoted_strings(builtin_list);
+		if (is_builtin(cmd_line) && !g_stop)
 		{
-			builtin_list = read_tokens(cmd_line);
-			builtin_list = merge_quoted_strings(builtin_list);
-			builtin_id = is_builtin(cmd_line);
-			if (builtin_id && !g_stop)
-			{
-				free(cmd_line);
-				data->error_code =
-					handle_builtinstr(*builtin_list, data, i, env, builtin_id);
-				error_code(&data->error_code);
-			}
-			else if (cmd_line && cmd_line[0] && !g_stop)
-			{
-				free(cmd_line);
-				handle_command(data, &pipes[i], i, env);
-			}
-			else if (cmd_line)
-				free(cmd_line);
-			free_token_list(*builtin_list);
-			free(builtin_list);
+			free(cmd_line);
+			data->error_code = handle_builtinstr(
+					*builtin_list, data, i, env, is_builtin(cmd_line));
+			error_code(&data->error_code);
 		}
-		else
-			parent(data);
-		free(data->parse.cmd);
-		unlink("tmp");			// do we need this line?
+		else if (cmd_line && cmd_line[0] && !g_stop)
+		{
+			free(cmd_line);
+			handle_command(data, &plist, i, env);
+		}
+		else if (cmd_line)
+			free(cmd_line);
+		free_token_list(*builtin_list);
+		free(builtin_list);
+	}
+	else
+		parent(data);
+	free(data->parse.cmd);
+	unlink("tmp");
+	return (0);
+}
+
+
+int	handle_input(t_token **plist, t_pipe *data, t_dlist **env)
+{
+	int		i;
+
+	i = 0;
+	data->cmd_pos = count_pipes(plist);
+	while (plist[i])
+	{
+		handle_single_pipe(plist[i], data, env, i);
 		i++;
 	}
 	data->error_code = WEXITSTATUS(data->status);
@@ -235,32 +238,12 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	return (data->status);
 }
 
-t_token	**tabs_to_spaces(t_token **pipes)
-{
-	int		i;
-	t_token	*tkn;
-
-	i = 0;
-	while (pipes[i])
-	{
-		tkn = pipes[i];
-		while (tkn)
-		{
-			if (tkn->type == SPACE_TKN)
-				tkn->str[0] = ' ';
-			tkn = tkn->next;
-		}
-		i++;
-	}
-	return (pipes);
-}
-
 int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data)
 {
 	int				err;
 	char			*inpt;
 	t_token			**list;
-	t_token			**pipes;
+	t_token			**plist;
 
 	err = 0;
 	dup2(stdin_restore, 0);
@@ -290,14 +273,14 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 	}
 	else
 	{
-		pipes = list_to_pipes(list);
-		pipes = tabs_to_spaces(pipes);
-		if (pipes && !err)
+		plist = list_to_pipes(list);
+		plist = tabs_to_spaces(plist);
+		if (plist && !err)
 		{
 			signals_blocking_command();
-			err = handle_input(pipes, data, env);
+			err = handle_input(plist, data, env);
 		}
-		free_pipes(pipes);
+		free_pipes(plist);
 	}
 	return (err);
 }
@@ -312,7 +295,7 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (1);
 	l_envp = init_minishell(envp);
-	(void) argv; //to silence unused argv error and not use dislay env
+	(void) argv;
 	stdin_restore = dup(0);
 	stdout_restore = dup(1);
 	data.error_code = 0;
