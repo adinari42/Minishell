@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 16:58:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 17:28:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ int	update_var(char *varname, char *value, t_dlist *env)
 }
 
 
-// if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
+// if cd has more than one argument,
+// bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
 int	exec_cd(t_token *list, t_dlist *env, t_pipe *data)
 {
@@ -257,11 +258,6 @@ int	exec_pwd(t_token *list, t_dlist *env)
 	if (!builtin_plausible(tkn, "pwd"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn)
-	{
-		printf("pwd: too many arguments");
-		return (1);
-	}
 	getcwd(pwd, 1024);
 	printf("%s\n", pwd);
 	return (0);
