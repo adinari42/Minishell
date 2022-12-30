@@ -107,6 +107,7 @@ int		exec_env(t_token *token, t_dlist *env);
 void	exec_exit(t_token *token, t_dlist **env, t_pipe *data);
 int		builtin_plausible(t_token *token, char *builtin);
 int		print_builtin_error(char *builtin, char *dir);
+int		prnt_err2(char *cmd, char *errstr);
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
@@ -132,6 +133,7 @@ t_token	*list_start(t_token **token);
 
 /* spaces.c */
 t_token	*skip_spaces(t_token *token);
+t_token	*skip_empty(t_token *token);
 
 /* current main.c */
 char	*get_cmd(t_token *list, t_pipe *data);

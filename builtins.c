@@ -233,7 +233,8 @@ void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 		{
 			if (!ft_isdigit(*tokenstr))
 			{
-				printf("minishell: exit: %s: numeric argument required\n", tkn->str);
+				//printf("minishell: exit: %s: numeric argument required", tkn->str);
+				prnt_err("exit", "tkn->str", "numeric argument required");
 				exit_with_value(255, env);
 			}
 			tokenstr ++;
@@ -242,7 +243,8 @@ void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 		tkn = skip_spaces(tkn);
 		if (tkn && tkn->type != SPACE_TKN)
 		{
-			printf("minishell: exit: too many arguments\n");
+			//printf("minishell: exit: too many arguments\n");
+			prnt_err2("exit", "too many arguments");
 			data->error_code = 1;
 			return ;
 		}
@@ -317,6 +319,26 @@ int	valid_identifier(char *varname)
 
 int	prnt_err(char *cmd, char *arg, char *errstr)
 {
-	printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
+	//printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
+	write(2, "minishell: ", 11);
+	write(2, cmd, ft_strlen(cmd));
+	write(2, ": `", 3);
+	write(2, arg, ft_strlen(arg));
+	write(2, "': ", 3);
+	write(2, errstr, ft_strlen(errstr));
+	write(2, "\n", 1);
+	return (1);
+}
+
+int	prnt_err2(char *cmd, char *errstr)
+{
+	//printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
+	write(2, "minishell: ", 11);
+	write(2, cmd, ft_strlen(cmd));
+	write(2, ": ", 3);
+	// write(2, arg, ft_strlen(arg));
+	// write(2, "': ", 3);
+	write(2, errstr, ft_strlen(errstr));
+	write(2, "\n", 1);
 	return (1);
 }
