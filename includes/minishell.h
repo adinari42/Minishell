@@ -6,15 +6,15 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 20:16:33 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:13:49 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <sys/types.h>
-#include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
@@ -72,16 +72,6 @@ enum e_builtins
 	EXIT
 };
 
-static const char *const	g_builtins[] = {
-	"echo",
-	"cd",
-	"pwd",
-	"export",
-	"unset",
-	"env",
-	"exit"
-};
-
 /*tokens.c*/
 t_token	**read_tokens(char *bashcmd);
 void	set_cmd_path(t_token *tklist, t_parse parse);
@@ -96,9 +86,6 @@ int		exec(char *program, char **args, char *const *envp);
 int		handle_builtin(t_token *list, t_dlist **env, t_pipe *data);
 int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int builtin_id);
 int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
-
-
-
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);

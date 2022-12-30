@@ -6,24 +6,19 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:01:42 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 00:05:01 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:10:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "signals.h"
 
-void	nul(int signum)
+void	sigquit_handler(int signum)
 {
 	if (signum == SIGQUIT)
 		rl_redisplay();
 }
 
-void	heredoc_nul(int signum)
-{
-	(void) signum;
-}
-
-void	minishell_new_prompt(int signum)
+void	sigint_handler(int signum)
 {
 	int	err;
 
@@ -38,58 +33,20 @@ void	minishell_new_prompt(int signum)
 	}
 }
 
-void	heredoc_sigint_handler(int signum)
+void	signals_blocking_command(void)
 {
-	struct termios	t_settings;
-	int				err;
+	struct termios		t_settings;
 
-	err = 130;
-	if (signum == SIGINT)
-	{
-		g_stop = 1;
-		tcgetattr(0, &t_settings);
-		t_settings.c_lflag &=~ECHOCTL;
-		t_settings.c_iflag |= O_NONBLOCK;
-		tcsetattr(0, TCSANOW, &t_settings);
-		write(0, "\n", 1);
-		close(0);
-		error_code(&err);
-	}
+	signal(SIGINT, sigint_handler_blocking);
+	signal(SIGQUIT, sigquit_handler_blocking);
+	tcgetattr(1, &t_settings);
+	t_settings.c_lflag |= ECHOCTL;
+	tcsetattr(1, 0, &t_settings);
 }
 
-void	heredoc_sigquit_handler(int signum)
+void	sigint_handler_blocking(int signum)
 {
-	if (signum == SIGQUIT)
-	{
-		g_stop = 1;
-	}
-}
-
-void	heredoc_signals(int fd)
-{
-	struct termios	t_settings;
-
-	signal(SIGINT, SIG_DFL);
-	signal(SIGINT, heredoc_sigint_handler);
-	signal(SIGQUIT, SIG_DFL);
-	signal(SIGQUIT, heredoc_nul);
-	tcgetattr(fd, &t_settings);
-	t_settings.c_lflag &=~ECHOCTL;
-	tcsetattr(fd, 0, &t_settings);
-}
-
-int	error_code(int *err)
-{
-	static	int error_code;
-
-	if (err)
-		error_code = *err;
-	return (error_code);
-}
-
-void	minishell_new_prompt_blocking(int signum)
-{
-	int err;
+	int	err;
 
 	err = 130;
 	if (signum == SIGINT)
@@ -101,7 +58,7 @@ void	minishell_new_prompt_blocking(int signum)
 	}
 }
 
-void	sigquit_blocking(int signum)
+void	sigquit_handler_blocking(int signum)
 {
 	int	err;
 
@@ -112,26 +69,4 @@ void	sigquit_blocking(int signum)
 		rl_redisplay();
 		error_code(&err);
 	}
-}
-
-void	signals_blocking_command(void)
-{
-	struct termios		t_settings;
-
-	signal(SIGINT, minishell_new_prompt_blocking);
-	signal(SIGQUIT, sigquit_blocking);
-	tcgetattr(1, &t_settings);
-	// printf("ECHOCTL: %d %x \n", ECHOCTL, ECHOCTL);
-	// printf("tcgetattr.c_lflag: %lu\n", t_settings.c_lflag);
-	t_settings.c_lflag |=ECHOCTL;
-	// printf("tcgetattr.c_lflag: %lu\n", t_settings.c_lflag);
-	tcsetattr(1, 0, &t_settings);
-}
-
-// Ctrl-C: SIGINT
-// Ctrl-\: SIGQUIT
-void	init_signals(void)
-{
-	signal(SIGINT, minishell_new_prompt);
-	signal(SIGQUIT, nul);
 }

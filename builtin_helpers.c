@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 19:25:25 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 20:31:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:17:11 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 
 int	is_builtin(char *str)
 {
-	size_t	i;
-	char	**split;
+	size_t						i;
+	char						**split;
+	static const char *const	builtins[] = \
+		{"echo", "cd", "pwd", "export", "unset", "env", "exit"};
 
 	i = 0;
 	split = ft_split(str, ' ');
 	while (split && split[0] && split[0][0]
-		&& i < sizeof(g_builtins) / sizeof(const char *const))
+		&& i < sizeof(builtins) / sizeof(const char *const))
 	{
-		if (!ft_strncmp(split[0], g_builtins[i], ft_strlen(g_builtins[i]) + 1))
+		if (!ft_strncmp(split[0], builtins[i], ft_strlen(builtins[i]) + 1))
 		{
 			free_split(split);
 			return (i + 1);

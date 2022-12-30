@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:14:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 20:15:11 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:02:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,14 @@ int	print_builtin_error(char *builtin, char *dir)
 		write(2, "No such file or directory\n",
 			ft_strlen("No such file or directory\n"));
 	return (0);
+}
+
+
+int	error_code(int *err)
+{
+	static int	error_code;
+
+	if (err)
+		error_code = *err;
+	return (error_code);
 }

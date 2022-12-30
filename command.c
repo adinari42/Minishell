@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 18:14:26 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:05:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 	while (list->type == SPACE_TKN)
 		list = list->next;
 	str = list->str;
-	if (!ft_strncmp(str, g_builtins[EXPORT], 7))
+	if (!ft_strncmp(str, "export", 7))
 	{
 		data->error_code = exec_export(list, *env);
 		return (data->error_code);
@@ -93,17 +93,17 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 	ptr = merge_word_strings(ptr);
 	str = list->str;
 	ret = 0;
-	if (!ft_strncmp(str, g_builtins[ECHO42], 5))
+	if (!ft_strncmp(str, "echo", 5))
 		ret = exec_echo(list, *env);
-	else if (!ft_strncmp(str, g_builtins[CD], 3))
+	else if (!ft_strncmp(str, "cd", 3))
 		ret = exec_cd(list, *env, data);
-	else if (!ft_strncmp(str, g_builtins[PWD], 4))
+	else if (!ft_strncmp(str, "pwd", 4))
 		ret = exec_pwd(list, *env);
-	else if (!ft_strncmp(str, g_builtins[UNSET], 6))
+	else if (!ft_strncmp(str, "unset", 6))
 		ret = exec_unset(list, *env);
-	else if (!ft_strncmp(str, g_builtins[ENV], 4))
+	else if (!ft_strncmp(str, "env", 4))
 		ret = exec_env(list, *env);
-	else if (!ft_strncmp(str, g_builtins[EXIT], 5))
+	else if (!ft_strncmp(str, "exit", 5))
 		exec_exit(list, env, data);
 	data->error_code = ret;
 	return (ret);

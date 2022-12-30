@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 20:23:32 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:05:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	exec_export(t_token *list, t_dlist *env)
 	if (!valid_identifier(tkn->str))
 		return (prnt_err("export", tkn->str, "not a valid identifier"));
 	if (tkn->type == WORD && ft_strlen(tkn->str))
-		cntnt = extract_keyvalue_unquoted(tkn, cntnt);
+		cntnt = extract_keyvalue_unquoted(tkn);
 	else if (tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 	{
 		cntnt = malloc(sizeof(t_kval));
