@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 00:00:04 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:46:02 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,10 +178,32 @@ void	free_and_close(t_pipe *plist)
 	unlink("tmp");
 }
 
+void	treat_cmdline(t_token *plist, t_pipe *data, t_dlist **env, int i, char	*cmd_line)
+{
+	t_token	**builtin_list;
+
+	builtin_list = read_tokens(cmd_line);
+	builtin_list = merge_quoted_strings(builtin_list);
+	if (is_builtin(cmd_line) && !g_stop)
+	{
+		free(cmd_line);
+		data->error_code = handle_builtinstr(*builtin_list, data, i, env);
+		error_code(&data->error_code);
+	}
+	else if (cmd_line && cmd_line[0] && !g_stop)
+	{
+		free(cmd_line);
+		handle_command(data, &plist, i, env);
+	}
+	else if (cmd_line)
+		free(cmd_line);
+	free_token_list(*builtin_list);
+	free(builtin_list);
+}
+
 int handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
 {
 	char	*cmd_line;
-	t_token	**builtin_list;
 
 	g_stop = 0;
 	pipe(data->fd);
@@ -189,25 +211,7 @@ int handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
 	cmd_line = get_cmd(plist, data);
 	data->parse.cmd = set_parse_cmd(plist);
 	if (cmd_line)
-	{
-		builtin_list = read_tokens(cmd_line);
-		builtin_list = merge_quoted_strings(builtin_list);
-		if (is_builtin(cmd_line) && !g_stop)
-		{
-			free(cmd_line);
-			data->error_code = handle_builtinstr(*builtin_list, data, i, env);
-			error_code(&data->error_code);
-		}
-		else if (cmd_line && cmd_line[0] && !g_stop)
-		{
-			free(cmd_line);
-			handle_command(data, &plist, i, env);
-		}
-		else if (cmd_line)
-			free(cmd_line);
-		free_token_list(*builtin_list);
-		free(builtin_list);
-	}
+		treat_cmdline(plist, data, env, i, cmd_line);
 	else
 		parent(data);
 	free(data->parse.cmd);
