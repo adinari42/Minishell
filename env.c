@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 18:29:40 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:25:51 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	str = ft_substr(varname, 0, count);
 	value = NULL;
 	if (!ft_strncmp("?", str, ft_strlen(str)))
-		value = ft_itoa(data->error_code);
+		value = ft_strjoin_free_str1(ft_itoa(data->error_code), varname + (count + 1));
 	else
 	{
 		while (var)
@@ -60,6 +60,7 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 	return (value);
 }
 
+//assumption here: quotes have been stripped already
 char	*extract_varname_quoted(char *tokenstr)
 {
 	char	*varname;
