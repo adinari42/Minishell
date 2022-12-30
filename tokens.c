@@ -42,7 +42,7 @@ int	token_type(char *c)
 		return (SINGLE_QUOTE);
 	else if (!ft_strncmp(c, "|", 1))
 		return (PIPE);
-	else if (!ft_strncmp(c, " ", 1))
+	else if (!ft_strncmp(c, " ", 1) || !ft_strncmp(c, "\t", 1))
 		return (SPACE_TKN);
 	else if (!ft_strncmp(c, "=", 1))
 		return (ASSIGN);
@@ -89,7 +89,7 @@ char	*non_word_tknstr(char *bashcmd, size_t *i)
 
 t_token	**read_tokens(char *bashcmd)
 {
-	const char	spec_c[] = "\"'<>| =";
+	const char	spec_c[] = "\"'<>| =\t";
 	t_token		**tk_list;
 	size_t		word_s;
 	size_t		i;
@@ -97,7 +97,7 @@ t_token	**read_tokens(char *bashcmd)
 	tk_list = malloc(sizeof(t_token *));
 	*tk_list = NULL;
 	i = 0;
-	while (i < ft_strlen(bashcmd) && bashcmd[i] == ' ')
+	while (i < ft_strlen(bashcmd) && (bashcmd[i] == ' ' || bashcmd[i] == '\t'))
 		i++;
 	word_s = i;
 	while (i < ft_strlen(bashcmd))

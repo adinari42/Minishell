@@ -233,6 +233,26 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 	return (data->status);
 }
 
+t_token	**tabs_to_spaces(t_token **pipes)
+{
+	int		i;
+	t_token	*tkn;
+
+	i = 0;
+	while (pipes[i])
+	{
+		tkn = pipes[i];
+		while (tkn)
+		{
+			if (tkn->type == SPACE_TKN)
+				tkn->str[0] = ' ';
+			tkn = tkn->next;
+		}
+		i++;
+	}
+	return (pipes);
+}
+
 int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data)
 {
 	int				err;
@@ -268,6 +288,7 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 	else
 	{
 		pipes = list_to_pipes(list);
+		pipes = tabs_to_spaces(pipes);
 		if (pipes && !err)
 		{
 			signals_blocking_command();
