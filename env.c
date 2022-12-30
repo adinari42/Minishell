@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 23:04:54 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:16:01 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,15 @@ char	**envp_parse(char **envp)
 	return (envp_parse);
 }
 
-char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
+char	*get_value_from_key(t_dlist *var, char *varname, int count, t_pipe *dt)
 {
 	char	*value;
 	char	*str;
-	int		count;
 
-	count = 0;
-	while (varname[count]
-		&& (ft_isalnum(varname[count]) || varname[count] == '_'))
-		count++;
 	str = ft_substr(varname, 0, count);
 	value = NULL;
 	if (!ft_strncmp("?", str, ft_strlen(str)))
-		value = ft_strjoin_free_str1(ft_itoa(data->error_code),
+		value = ft_strjoin_free_str1(ft_itoa(dt->error_code),
 				varname + (count + 1));
 	else
 	{
@@ -59,6 +54,19 @@ char	*get_value_from_key(t_dlist *var, char *varname, t_pipe *data)
 		value = ft_strjoin_free_str1(value, varname + count);
 	}
 	free(str);
+	return (value);
+}
+
+char	*expand_var_in_str(t_dlist *var, char *varname, t_pipe *data)
+{
+	char	*value;
+	int		count;
+
+	count = 0;
+	while (varname[count]
+		&& (ft_isalnum(varname[count]) || varname[count] == '_'))
+		count++;
+	value = get_value_from_key(var, varname, count, data);
 	return (value);
 }
 

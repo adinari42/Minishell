@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 22:34:20 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:00:04 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
 	char	**split_path;
 
 	parse->cmd = set_parse_cmd(*cmdline);
-	var_path = get_value_from_key(*env, "PATH", data);
+	var_path = expand_var_in_str(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
 	free_split(split_path);

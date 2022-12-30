@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:18:59 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 23:08:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:02:04 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	init_values(char *str, t_expand *counter, t_expval	*exp)
 
 void	set_value( t_expval exp, t_expand counter, t_dlist *env, t_pipe *data)
 {
-	exp.val = get_value_from_key(env, exp.split2[counter.j], data);
+	exp.val = expand_var_in_str(env, exp.split2[counter.j], data);
 	if (exp.split2[counter.j])
 		free(exp.split2[counter.j]);
 	exp.split2[counter.j] = ft_strdup(exp.val);

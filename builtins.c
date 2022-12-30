@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 21:05:48 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:01:31 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	exec_cd(t_token *list, t_dlist *env, t_pipe *data)
 	tkn = skip_spaces(tkn);
 	if (!tkn)
 	{
-		homedir = get_value_from_key(env, "HOME", data);
+		homedir = expand_var_in_str(env, "HOME", data);
 		chdir(homedir);
 		free(homedir);
 	}
