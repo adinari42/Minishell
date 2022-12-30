@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 21:05:23 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 22:27:48 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,18 @@
 // 	return (1);
 // }
 
-int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int builtin_id) //int stdout_restore, int i)
+int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env)
+	//int builtin_id)
 {
+	int	builtin_id;
 	int	ret;
 
 	ret = 0;
-	if ((builtin_id != 1 && builtin_id != 3 && builtin_id != 6) && data->cmd_pos == 1)
-		return(handle_builtin(list, env, data));
+	while (list->type == SPACE_TKN)
+		list = list->next;
+	builtin_id = is_builtin(list->str);
+	if (builtin_id != 1 && builtin_id != 3 && builtin_id != 6 && data->cmd_pos == 1)
+		return (handle_builtin(list, env, data));
 	data->pid = fork();
 	if (data->pid == -1)
 		ms_fd_error(4, data);
@@ -53,26 +58,6 @@ int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int bui
 	return (ret);
 }
 
-t_token	**merge_word_strings(t_token **cmd_line)
-{
-	t_token	*tkn;
-
-	tkn = *cmd_line;
-	while (tkn && tkn->next)
-	{
-		if ((tkn->type == WORD || tkn->type == ASSIGN
-				|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
-			&& (tkn->next->type == ASSIGN || tkn->next->type == WORD
-				|| tkn->next->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
-		{
-			tkn->str = ft_strjoin_free_str1(tkn->str, tkn->next->str);
-			delete(tkn->next);
-		}
-		else
-			tkn = tkn->next;
-	}
-	return (cmd_line);
-}
 
 //must not fork if they are commands after: cd, export, unset, exit
 int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 21:34:21 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 22:34:43 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@
 # include "builtins.h"
 # include "error.h"
 # include "signals.h"
+# include "command.h"
+# include "tokens.h"
 
 # define TOKENS " $'<>\""
 
@@ -80,13 +82,7 @@ int		token_type(char *c);
 void	print_list(t_token *tklist);
 void	init_signals(void);
 
-int		exec(char *program, char **args, char *const *envp);
-
-/*command.c*/
-//int		handle_commandstr(t_token **list);
-int		handle_builtin(t_token *list, t_dlist **env, t_pipe *data);
-int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int builtin_id);
-int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
+//int		exec(char *program, char **args, char *const *envp);
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
@@ -123,11 +119,6 @@ void	free_and_close(t_pipe *pipe);
 int		init_outfile(t_pipe *pipe);
 char	**set_parse_cmd(t_token *head);
 
-/*signals.c*/
-
-void	signals_blocking_command(void);
-void	heredoc_signals(int fd);
-
 /*init_infile.c*/
 int		init_infile(t_token *list, t_pipe *data, int redir_type);
 int		init_here_doc(t_token *list, t_pipe *pipe);
@@ -138,6 +129,6 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str);
 int		redir_in(t_token *list, t_pipe *data);
 int		append_in(t_token *list, t_pipe *data);
 
-void	print_double_ptr(char **ptr);
+//void	print_double_ptr(char **ptr);
 
 #endif

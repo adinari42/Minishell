@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 15:15:32 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 18:15:31 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/30 22:30:21 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,17 @@ int	count_split_elems(char **arr)
 		i ++;
 	return (i);
 }
-// void	print_double_ptr(char **ptr)
-// {
-// 	int	f;
 
-// 	f = 0;
-// 	while (ptr[f])
-// 	{
-// 		printf("ptr[%d] = %s.\n",f, ptr[f]);
-// 		f++;
-// 	}
-// }
+int	char_in_charset(char c, const char *charset)
+{
+	char	*ptr;
+
+	ptr = (char *) charset;
+	while (*ptr)
+	{
+		if (c == *ptr)
+			return (1);
+		ptr ++;
+	}
+	return (0);
+}

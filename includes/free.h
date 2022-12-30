@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 19:35:05 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/13 21:33:11 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 22:08:40 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 void	free_split(char **splitret);
 void	free_token_list(t_token *list);
+void	free_token_list_and_ptr(t_token **list);
 void	free_token(t_token *token);
 void	free_2d(char ***to_free);
 void	free_strings(char *str, char **split1);

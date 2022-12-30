@@ -6,25 +6,11 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 15:30:57 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 22:32:54 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-int	char_in_charset(char c, const char *charset)
-{
-	char	*ptr;
-
-	ptr = (char *) charset;
-	while (*ptr)
-	{
-		if (c == *ptr)
-			return (1);
-		ptr ++;
-	}
-	return (0);
-}
+#include "tokens.h"
 
 int	token_type(char *c)
 {
@@ -50,20 +36,20 @@ int	token_type(char *c)
 		return (WORD);
 }
 
-void	print_list(t_token *list)
-{
-	t_token	*tklist;
+// void	print_list(t_token *list)
+// {
+// 	t_token	*tklist;
 
-	tklist = list;
-	if (!tklist)
-		return ;
-	while (tklist)
-	{
-		printf(">%s %d\n", tklist->str, tklist->type);
-		tklist = tklist->next;
-	}
-	return ;
-}
+// 	tklist = list;
+// 	if (!tklist)
+// 		return ;
+// 	while (tklist)
+// 	{
+// 		printf(">%s %d\n", tklist->str, tklist->type);
+// 		tklist = tklist->next;
+// 	}
+// 	return ;
+// }
 
 void append_from_str(t_token **list, char *str)
 {
@@ -115,4 +101,25 @@ t_token	**read_tokens(char *bashcmd)
 	if (word_s < i)
 		append_from_str(tk_list, ft_substr(bashcmd, word_s, i - word_s));
 	return (tk_list);
+}
+
+t_token	**merge_word_strings(t_token **cmd_line)
+{
+	t_token	*tkn;
+
+	tkn = *cmd_line;
+	while (tkn && tkn->next)
+	{
+		if ((tkn->type == WORD || tkn->type == ASSIGN
+				|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
+			&& (tkn->next->type == ASSIGN || tkn->next->type == WORD
+				|| tkn->next->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
+		{
+			tkn->str = ft_strjoin_free_str1(tkn->str, tkn->next->str);
+			delete(tkn->next);
+		}
+		else
+			tkn = tkn->next;
+	}
+	return (cmd_line);
 }

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 21:46:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 22:34:20 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,8 +195,7 @@ int handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
 		if (is_builtin(cmd_line) && !g_stop)
 		{
 			free(cmd_line);
-			data->error_code = handle_builtinstr(
-					*builtin_list, data, i, env, is_builtin(cmd_line));
+			data->error_code = handle_builtinstr(*builtin_list, data, i, env);
 			error_code(&data->error_code);
 		}
 		else if (cmd_line && cmd_line[0] && !g_stop)
@@ -272,10 +271,7 @@ void	main_loop(t_dlist **env, int stdin_rstr, int stdout_rstr, t_pipe *data)
 	list = read_tokens(inpt);
 	free(inpt);
 	if (parse(list, data))
-	{
-		free_token_list(*list);
-		free(list);
-	}
+		free_token_list_and_ptr(list);
 	else
 	{
 		plist = list_to_pipes(list);
