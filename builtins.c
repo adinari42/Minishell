@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/29 23:51:56 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 16:07:08 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,18 +85,26 @@ int	update_var(char *varname, char *value, t_dlist *env)
 
 // if cd has more than one argument, bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
-int	exec_cd(t_token *list, t_dlist *env)
+int	exec_cd(t_token *list, t_dlist *env, t_pipe *data)
 {
 	int		ret;
 	t_token	*tkn;
 	char	pwd[1024];
+	char	*homedir;
 
 	ret = 0;
 	tkn = tlist_start(list);
+	homedir = NULL;
 	if (!builtin_plausible(tkn, "cd"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn && (tkn->type == WORD
+	if (!tkn)
+	{
+		homedir = get_value_from_key(env, "HOME", data);
+		chdir(homedir);
+		free(homedir);
+	}
+	else if (tkn && (tkn->type == WORD
 			|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
 		ret = chdir(tkn->str);
 	if (ret == -1)

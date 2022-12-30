@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/27 12:09:26 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/30 16:10:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 	if (!ft_strncmp(str, g_builtins[ECHO42], 5))
 		ret = exec_echo(list, *env);
 	else if (!ft_strncmp(str, g_builtins[CD], 3))
-		ret = exec_cd(list, *env);
+		ret = exec_cd(list, *env, data);
 	else if (!ft_strncmp(str, g_builtins[PWD], 4))
 		ret = exec_pwd(list, *env);
 	else if (!ft_strncmp(str, g_builtins[EXPORT], 7))
