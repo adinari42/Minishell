@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 16:07:08 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 16:58:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,7 @@ int	exec_pwd(t_token *list, t_dlist *env)
 		return (1);
 	}
 	getcwd(pwd, 1024);
-	printf("%s \n", pwd);
+	printf("%s\n", pwd);
 	return (0);
 }
 
