@@ -4,3 +4,17 @@ obj/*.o
 libft/libft.a
 
 minishell
+
+tests/
+
+tests/
+
+bash_out
+
+err
+
+mini_out
+
+out
+
+tmp_mini
