@@ -271,6 +271,8 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 	else
 	{	
 		inpt = get_next_line(0);
+		if (!inpt)
+			exit(data->error_code);
 		inpt = ft_strtrim(inpt, "\n");
 	}
 	if (!inpt)
@@ -296,8 +298,6 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 		}
 		free_pipes(pipes);
 	}
-	if (!isatty(stdin_restore))
-		exit(data->error_code);
 	return (err);
 }
 
