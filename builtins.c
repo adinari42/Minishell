@@ -282,15 +282,23 @@ int	print_builtin_error(char *builtin, char *dir)
 {
 	if (ft_strncmp(builtin, "cd", 3))
 		access(dir, X_OK);
+	write (2, "minishell: ", 11);
+	write (2, builtin, ft_strlen(builtin));
+	write (2, ":", 1);
+	write (2, dir, ft_strlen(dir));
 	if (errno == EACCES)
-		printf("minishell: %s: %s/: permission denied\n", builtin, dir);
+		write(2, "/", 1);
+	write (2, ": ", 1);
+	if (errno == EACCES)
+		write(2, "permission denied\n", ft_strlen("permission denied\n"));
 	else if (errno == ENOTDIR)
-		printf("minishell: %s: %s: Not a directory\n", builtin, dir);
+		write(2, "Not a directory\n", ft_strlen("Not a directory\n"));
 	else if (errno == ENAMETOOLONG)
-		printf("minishell: %s: %s: File name too long\n", builtin, dir);
+		write(2, "File name too long\n", ft_strlen("File name too long\n"));
 	else if (errno == ENOENT)
-		printf("minishell: %s: %s: No such file or directory\n", builtin, dir);
-	return (1);
+		write(2, "No such file or directory\n",
+			ft_strlen("No such file or directory\n"));
+	return (0);
 }
 
 // varnames can contain letters, digits and underscores
