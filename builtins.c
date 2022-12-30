@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 17:28:02 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:00:00 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	exec_cd(t_token *list, t_dlist *env, t_pipe *data)
 	char	*homedir;
 
 	ret = 0;
-	tkn = tlist_start(list);
+	tkn = list;
 	homedir = NULL;
 	if (!builtin_plausible(tkn, "cd"))
 		return (1);
@@ -120,17 +120,19 @@ int	exec_export(t_token *list, t_dlist *env)
 	t_token	*tkn;
 	t_kval	*cntnt;
 
-	tkn = tlist_start(list);
+	tkn = list;
 	cntnt = malloc(sizeof(t_kval));
 	if (!builtin_plausible(tkn, "export"))
 		return (1);
 	tkn = skip_spaces(tkn);
+	tkn = skip_empty(tkn);
 	if (!tkn)
 		return (display_env(env));
 	if (!valid_identifier(tkn->str))
 	{
 		free(cntnt);
-		return (prnt_err("export", tkn->str, "not a valid identifier"));
+		prnt_err("export", tkn->str, "not a valid identifier");
+		return (1);
 	}
 	if (tkn->type == WORD && ft_strlen(tkn->str)) //case: varname before 
 	{
@@ -177,7 +179,7 @@ int	exec_unset(t_token *list, t_dlist *env)
 	t_token	*tkn;
 	t_dlist	*var;
 
-	tkn = tlist_start(list);
+	tkn = list;
 	var = env;
 	if (!builtin_plausible(tkn, "unset"))
 		return (1);
@@ -201,7 +203,7 @@ int	exec_env(t_token *list, t_dlist *env)
 {
 	t_token	*tkn;
 
-	tkn = tlist_start(list);
+	tkn = list;
 	if (!builtin_plausible(tkn, "env"))
 		return (1);
 	tkn = skip_spaces(tkn);
@@ -254,7 +256,7 @@ int	exec_pwd(t_token *list, t_dlist *env)
 	char	pwd[1024];
 
 	(void) env;
-	tkn = tlist_start(list);
+	tkn = list;
 	if (!builtin_plausible(tkn, "pwd"))
 		return (1);
 	tkn = skip_spaces(tkn);
