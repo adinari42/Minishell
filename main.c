@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 21:33:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 21:46:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,17 +238,10 @@ int	handle_input(t_token **plist, t_pipe *data, t_dlist **env)
 	return (data->status);
 }
 
-int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data)
+char	*get_input_line(t_dlist **env, t_pipe *data, int stdin_restore)
 {
-	int				err;
-	char			*inpt;
-	t_token			**list;
-	t_token			**plist;
+	char	*inpt;
 
-	err = 0;
-	dup2(stdin_restore, 0);
-	dup2(stdout_restore, 1);
-	reset_term_signals();
 	if (isatty(stdin_restore))
 		inpt = readline("Minishell$ ");
 	else
@@ -257,13 +250,25 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 		if (!inpt)
 			exit(data->error_code);
 		inpt = ft_strtrim(inpt, "\n");
-		//printf("Input: %s\n", inpt);
 	}
 	if (!inpt)
-		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D
+		free_and_exit(SIGINT, env);
 	add_history(inpt);
 	if (is_empty_inpt(inpt))
-		return (0);
+		return (NULL);
+	return (inpt);
+}
+
+void	main_loop(t_dlist **env, int stdin_rstr, int stdout_rstr, t_pipe *data)
+{
+	char			*inpt;
+	t_token			**list;
+	t_token			**plist;
+
+	dup2(stdin_rstr, 0);
+	dup2(stdout_rstr, 1);
+	reset_term_signals();
+	inpt = get_input_line(env, data, stdin_rstr);
 	list = read_tokens(inpt);
 	free(inpt);
 	if (parse(list, data))
@@ -275,14 +280,13 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 	{
 		plist = list_to_pipes(list);
 		plist = tabs_to_spaces(plist);
-		if (plist && !err)
+		if (plist)
 		{
 			signals_blocking_command();
-			err = handle_input(plist, data, env);
+			handle_input(plist, data, env);
 		}
 		free_pipes(plist);
 	}
-	return (err);
 }
 
 int	main(int argc, char **argv, char **envp)
