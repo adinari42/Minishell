@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 23:41:14 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/30 15:44:35 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,10 +303,10 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_dlist	**l_envp;
-	int		stdin_restore;
-	int		stdout_restore;
-	t_pipe	data;
+	t_dlist			**l_envp;
+	int				stdin_restore;
+	int				stdout_restore;
+	t_pipe			data;
 
 	if (argc != 1)
 		return (1);

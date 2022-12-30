@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/25 14:13:03 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 15:30:57 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,8 @@ t_token	**read_tokens(char *bashcmd)
 		if (char_in_charset(bashcmd[i], spec_c))
 		{
 			if (i - word_s > 0)
-				append_from_str(tk_list, ft_substr(bashcmd, word_s, i - word_s));
+				append_from_str(tk_list,
+					ft_substr(bashcmd, word_s, i - word_s));
 			append_from_str(tk_list, non_word_tknstr(bashcmd, &i));
 			word_s = i + 1;
 		}
