@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 19:28:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 20:23:32 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ int	exec_echo(t_token *list, t_dlist *env)
 	(void) env;
 	tkn = list;
 	newline = 1;
-	if (!builtin_plausible(tkn, "echo"))
-		return (1);
 	tkn = skip_spaces(tkn);
 	while (tkn && !ft_strncmp(tkn->str, "-n", 3))
 	{
@@ -41,26 +39,6 @@ int	exec_echo(t_token *list, t_dlist *env)
 	return (0);
 }
 
-int	update_var(char *varname, char *value, t_dlist *env)
-{
-	t_dlist	*var;
-
-	var = env;
-	while (var)
-	{
-		if (!ft_strncmp(var->content->key, varname, ft_strlen(varname)))
-		{
-			if (var->content->val)
-				free(var->content->val);
-			var->content->val = ft_strdup(value);
-			return (0);
-		}
-		var = var->next;
-	}
-	return (1);
-}
-
-
 // if cd has more than one argument,
 // bash ignores anything after the first and just changes dir anyway
 // -> we don't have to do any special handling of too many arguments
@@ -74,8 +52,6 @@ int	exec_cd(t_token *list, t_dlist *env, t_pipe *data)
 	ret = 0;
 	tkn = list;
 	homedir = NULL;
-	if (!builtin_plausible(tkn, "cd"))
-		return (1);
 	tkn = skip_spaces(tkn);
 	if (!tkn)
 	{
@@ -99,55 +75,24 @@ int	exec_export(t_token *list, t_dlist *env)
 	t_kval	*cntnt;
 
 	tkn = list;
-	cntnt = malloc(sizeof(t_kval));
-	if (!builtin_plausible(tkn, "export"))
-		return (1);
 	tkn = skip_spaces(tkn);
 	tkn = skip_empty(tkn);
+	cntnt = NULL;
 	if (!tkn)
 		return (display_env(env));
 	if (!valid_identifier(tkn->str))
-	{
-		free(cntnt);
-		prnt_err("export", tkn->str, "not a valid identifier");
-		return (1);
-	}
-	if (tkn->type == WORD && ft_strlen(tkn->str)) //case: varname before 
-	{
-		cntnt->key = ft_strdup(tkn->str);
-		if (tkn->next && tkn->next->type == ASSIGN) // found the equal sign, next tkn please
-		{
-			tkn = tkn->next;
-			if (tkn->next && tkn->next->str)
-				cntnt->val = ft_strdup(tkn->next->str);
-			else
-				cntnt->val = ft_strdup("");
-		}
-		else
-		{
-			free(cntnt->key);
-			free(cntnt);
-			return (0);
-		}
-	}
+		return (prnt_err("export", tkn->str, "not a valid identifier"));
+	if (tkn->type == WORD && ft_strlen(tkn->str))
+		cntnt = extract_keyvalue_unquoted(tkn, cntnt);
 	else if (tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
 	{
+		cntnt = malloc(sizeof(t_kval));
 		cntnt->key = extract_varname_quoted(tkn->next->str);
 		cntnt->val = extract_value(tkn->next->str);
 	}
 	else
-	{
-		free(cntnt); // TODO: needs actual error management if the tkn after 'export' and some spaces is not WORD or STR_...
-		display_env(env);
-		return (0);
-	}
-	if (!var_in_env(cntnt->key, env))
-		lstadd_back(&env, lstnew(cntnt));
-	else
-	{
-		update_var(cntnt->key, cntnt->val, env);
-		free_kval(cntnt);
-	}
+		return (display_env(env));
+	write_export_var(cntnt, env);
 	return (0);
 }
 
@@ -159,8 +104,6 @@ int	exec_unset(t_token *list, t_dlist *env)
 
 	tkn = list;
 	var = env;
-	if (!builtin_plausible(tkn, "unset"))
-		return (1);
 	tkn = skip_spaces(tkn);
 	while (var)
 	{
@@ -175,148 +118,4 @@ int	exec_unset(t_token *list, t_dlist *env)
 		var = var->next;
 	}
 	return (0);
-}
-
-int	exec_env(t_token *list, t_dlist *env)
-{
-	t_token	*tkn;
-
-	tkn = list;
-	if (!builtin_plausible(tkn, "env"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	if (tkn) // env command does not take arguments
-	{
-		printf("env: %s: No such file or directory\n", tkn->next->str);
-		return (1);
-	}
-	display_env(env);
-	return (0);
-}
-
-void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
-{
-	t_token	*tkn;
-	char	*tokenstr;
-
-	tkn = list;
-	if (!builtin_plausible(tkn, "exit"))
-		return ;
-	tkn = skip_spaces(tkn);
-	if (tkn)
-	{
-		printf("exit\n");
-		tokenstr = tkn->str;
-		while (*(tokenstr))
-		{
-			if (!ft_isdigit(*tokenstr))
-			{
-				//printf("minishell: exit: %s: numeric argument required", tkn->str);
-				prnt_err("exit", "tkn->str", "numeric argument required");
-				exit_with_value(255, env);
-			}
-			tokenstr ++;
-		}
-		data->error_code = ft_atoi(tkn->str);
-		tkn = skip_spaces(tkn);
-		if (tkn && tkn->type != SPACE_TKN)
-		{
-			//printf("minishell: exit: too many arguments\n");
-			prnt_err2("exit", "too many arguments");
-			data->error_code = 1;
-			return ;
-		}
-	}
-	exit_with_value(data->error_code, env);
-}
-
-int	exec_pwd(t_token *list, t_dlist *env)
-{
-	t_token	*tkn;
-	char	pwd[1024];
-
-	(void) env;
-	tkn = list;
-	if (!builtin_plausible(tkn, "pwd"))
-		return (1);
-	tkn = skip_spaces(tkn);
-	getcwd(pwd, 1024);
-	printf("%s\n", pwd);
-	return (0);
-}
-
-int	builtin_plausible(t_token *tkn, char *builtin)
-{
-	if (ft_strncmp(tkn->str, builtin, ft_strlen(builtin) + 1))
-	{
-		printf("Something went wrong here, %s is not the %s command.\n",
-			tkn->str, builtin);
-		return (0);
-	}
-	return (1);
-}
-
-int	print_builtin_error(char *builtin, char *dir)
-{
-	if (ft_strncmp(builtin, "cd", 3))
-		access(dir, X_OK);
-	write (2, "minishell: ", 11);
-	write (2, builtin, ft_strlen(builtin));
-	write (2, ":", 1);
-	write (2, dir, ft_strlen(dir));
-	if (errno == EACCES)
-		write(2, "/", 1);
-	write (2, ": ", 1);
-	if (errno == EACCES)
-		write(2, "permission denied\n", ft_strlen("permission denied\n"));
-	else if (errno == ENOTDIR)
-		write(2, "Not a directory\n", ft_strlen("Not a directory\n"));
-	else if (errno == ENAMETOOLONG)
-		write(2, "File name too long\n", ft_strlen("File name too long\n"));
-	else if (errno == ENOENT)
-		write(2, "No such file or directory\n",
-			ft_strlen("No such file or directory\n"));
-	return (0);
-}
-
-// varnames can contain letters, digits and underscores
-// a varname can't start with a digit
-int	valid_identifier(char *varname)
-{
-	if (ft_isdigit(*varname))
-		return (0);
-	while (*varname)
-	{
-		if (!ft_isalpha(*varname) && !ft_isdigit(*varname)
-			&& *varname != '_')
-			return (0);
-		varname ++;
-	}
-	return (1);
-}
-
-int	prnt_err(char *cmd, char *arg, char *errstr)
-{
-	//printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
-	write(2, "minishell: ", 11);
-	write(2, cmd, ft_strlen(cmd));
-	write(2, ": `", 3);
-	write(2, arg, ft_strlen(arg));
-	write(2, "': ", 3);
-	write(2, errstr, ft_strlen(errstr));
-	write(2, "\n", 1);
-	return (1);
-}
-
-int	prnt_err2(char *cmd, char *errstr)
-{
-	//printf("minishell: %s: `%s': %s\n", cmd, arg, errstr);
-	write(2, "minishell: ", 11);
-	write(2, cmd, ft_strlen(cmd));
-	write(2, ": ", 3);
-	// write(2, arg, ft_strlen(arg));
-	// write(2, "': ", 3);
-	write(2, errstr, ft_strlen(errstr));
-	write(2, "\n", 1);
-	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 19:27:21 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 20:16:33 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 # include <fcntl.h>
 # include "parse.h"
 # include "builtins.h"
+# include "error.h"
 
 # define TOKENS " $'<>\""
 
@@ -134,7 +135,7 @@ int		init_outfile(t_pipe *pipe);
 char	**set_parse_cmd(t_token *head);
 
 /*signals.c*/
-int		error_code(int *err);
+
 void	signals_blocking_command(void);
 void	heredoc_signals(int fd);
 
