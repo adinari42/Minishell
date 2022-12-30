@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 15:44:35 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 18:20:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,9 @@ char	*join_param(char	*cmd_line,	t_token	*tmp)
 {
 	cmd_line = add_quote_char(cmd_line, tmp);
 	cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
-	if (tmp->type != ASSIGN && tmp->type != STR_DQUOTES && tmp->type != STR_SQUOTES
-		&& tmp->type != WORD && (!tmp->next || tmp->next->type != ASSIGN ))
-		cmd_line = ft_strjoin_free_str1(cmd_line, " ");
+	// if (tmp->type != ASSIGN && tmp->type != STR_DQUOTES && tmp->type != STR_SQUOTES
+	// 	&& tmp->type != WORD && (!tmp->next || tmp->next->type != ASSIGN ))
+	// 	cmd_line = ft_strjoin_free_str1(cmd_line, " ");
 	cmd_line = add_quote_char(cmd_line, tmp);
 	return (cmd_line);
 }
@@ -205,7 +205,9 @@ int	handle_input(t_token **pipes, t_pipe *data, t_dlist **env)
 			if (builtin_id && !g_stop)
 			{
 				free(cmd_line);
-				handle_builtinstr(*builtin_list, data, i, env, builtin_id);
+				data->error_code =
+					handle_builtinstr(*builtin_list, data, i, env, builtin_id);
+				error_code(&data->error_code);
 			}
 			else if (cmd_line && cmd_line[0] && !g_stop)
 			{
@@ -265,15 +267,14 @@ int	main_loop(t_dlist **env, int stdin_restore, int stdout_restore, t_pipe *data
 	dup2(stdout_restore, 1);
 	reset_term_signals();
 	if (isatty(stdin_restore))
-	{
 		inpt = readline("Minishell$ ");
-	}
 	else
 	{	
 		inpt = get_next_line(0);
 		if (!inpt)
 			exit(data->error_code);
 		inpt = ft_strtrim(inpt, "\n");
+		//printf("Input: %s\n", inpt);
 	}
 	if (!inpt)
 		free_and_exit(SIGINT, env);		// this does the exit on Ctrl-D

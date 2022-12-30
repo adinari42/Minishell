@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 16:10:46 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 18:14:26 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,45 @@ int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int bui
 		parent(data);
 	return (ret);
 }
+
+t_token	**merge_word_strings(t_token **cmd_line)
+{
+	t_token	*tkn;
+
+	tkn = *cmd_line;
+	while (tkn && tkn->next)
+	{
+		if ((tkn->type == WORD || tkn->type == ASSIGN
+				|| tkn->type == STR_DQUOTES || tkn->type == STR_SQUOTES)
+			&& (tkn->next->type == ASSIGN || tkn->next->type == WORD
+				|| tkn->next->type == STR_DQUOTES || tkn->type == STR_SQUOTES))
+		{
+			tkn->str = ft_strjoin_free_str1(tkn->str, tkn->next->str);
+			delete(tkn->next);
+		}
+		else
+			tkn = tkn->next;
+	}
+	return (cmd_line);
+}
+
 //must not fork if they are commands after: cd, export, unset, exit
 int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 {
 	char	*str;
 	int		ret;
+	t_token	**ptr;
 
 	while (list->type == SPACE_TKN)
 		list = list->next;
+	str = list->str;
+	if (!ft_strncmp(str, g_builtins[EXPORT], 7))
+	{
+		data->error_code = exec_export(list, *env);
+		return (data->error_code);
+	}
+	ptr = &list;
+	ptr = merge_word_strings(ptr);
 	str = list->str;
 	ret = 0;
 	if (!ft_strncmp(str, g_builtins[ECHO42], 5))
@@ -68,8 +99,6 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 		ret = exec_cd(list, *env, data);
 	else if (!ft_strncmp(str, g_builtins[PWD], 4))
 		ret = exec_pwd(list, *env);
-	else if (!ft_strncmp(str, g_builtins[EXPORT], 7))
-		ret = exec_export(list, *env);
 	else if (!ft_strncmp(str, g_builtins[UNSET], 6))
 		ret = exec_unset(list, *env);
 	else if (!ft_strncmp(str, g_builtins[ENV], 4))
@@ -78,26 +107,6 @@ int	handle_builtin(t_token *list, t_dlist **env, t_pipe *data)
 		exec_exit(list, env, data);
 	data->error_code = ret;
 	return (ret);
-}
-
-t_token	**merge_word_strings(t_token **cmd_line)
-{
-// 	t_token	*new_line;
-	t_token	*tkn;
-
-	tkn = *cmd_line;
-	while (tkn && tkn->next)
-	{
-		if ((tkn->type == WORD || tkn->type == ASSIGN) &&
-			(tkn->next->type == ASSIGN || tkn->next->type == WORD))
-			{
-				tkn->str = ft_strjoin_free_str1(tkn->str, tkn->next->str);
-				delete(tkn->next);
-			}
-		else
-			tkn = tkn->next;
-	}
-	return(cmd_line);
 }
 
 int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env) //int stdout_restore

@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 16:06:49 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 18:57:27 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void	exec_cmd(t_pipe *pipe, t_dlist **env);
 void	parent(t_pipe *pipe);
 void	free_and_close(t_pipe *pipe);
 int		init_outfile(t_pipe *pipe);
-char**	set_parse_cmd(t_token *head);
+char	**set_parse_cmd(t_token *head);
 
 /*signals.c*/
 int		error_code(int *err);
