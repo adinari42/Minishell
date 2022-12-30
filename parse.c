@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 14:08:29 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 23:27:27 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 23:32:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 int	is_empty_inpt(char *inpt)
 {
-	char	*start = inpt;
+	char	*start;
 
+	start = inpt;
 	if (!inpt)
 		return (1);
 	while (is_whitespace(inpt))

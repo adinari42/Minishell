@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/04 21:38:34 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 23:20:40 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 23:39:50 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,21 +55,12 @@ t_token	*cut_at_pipe(t_token *list, t_token **pipes, int i)
 	return (next);
 }
 
-t_token	**list_to_pipes(t_token **list)
+t_token	**valid_list_to_pipes(t_token **list, int numpipes)
 {
 	t_token	**pipes;
 	int		i;
-	int		numpipes;
 	t_token	*elem;
 
-	if (!list)
-		return (NULL);
-	else if (!*list)
-	{
-		free(list);
-		return (NULL);
-	}
-	numpipes = count_tokens(*list, PIPE);
 	pipes = malloc(sizeof(t_token *) * (numpipes + 1));
 	i = 0;
 	elem = *list;
@@ -84,5 +75,22 @@ t_token	**list_to_pipes(t_token **list)
 	free(list);
 	pipes[numpipes - 1] = tlist_start(elem);
 	pipes[numpipes] = NULL;
+	return (pipes);
+}
+
+t_token	**list_to_pipes(t_token **list)
+{
+	t_token	**pipes;
+	int		numpipes;
+
+	if (!list)
+		return (NULL);
+	else if (!*list)
+	{
+		free(list);
+		return (NULL);
+	}
+	numpipes = count_tokens(*list, PIPE);
+	pipes = valid_list_to_pipes(list, numpipes);
 	return (pipes);
 }
