@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 18:57:27 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:27:21 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # include "pipes.h"
 # include <fcntl.h>
 # include "parse.h"
+# include "builtins.h"
 
 # define TOKENS " $'<>\""
 
@@ -96,18 +97,7 @@ int		handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env, int bu
 int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env);
 
 
-/*builtin.c*/
-int		is_builtin(char *str);
-int		exec_echo(t_token *token, t_dlist *env);
-int		exec_cd(t_token *token, t_dlist *env, t_pipe *data);
-int		exec_pwd(t_token *token, t_dlist *env);
-int		exec_export(t_token *token, t_dlist *env);
-int		exec_unset(t_token *token, t_dlist *env);
-int		exec_env(t_token *token, t_dlist *env);
-void	exec_exit(t_token *token, t_dlist **env, t_pipe *data);
-int		builtin_plausible(t_token *token, char *builtin);
-int		print_builtin_error(char *builtin, char *dir);
-int		prnt_err2(char *cmd, char *errstr);
+
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);

@@ -6,33 +6,11 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 19:00:00 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/30 19:28:41 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-int	is_builtin(char *str)
-{
-	size_t	i;
-	char	**split;
-
-	i = 0;
-	split = ft_split(str, ' ');
-	while (split && split[0] && split[0][0]
-		&& i < sizeof(g_builtins) / sizeof(const char *const))
-	{
-		if (!ft_strncmp(split[0], g_builtins[i], ft_strlen(g_builtins[i]) + 1))
-		{
-			free_split(split);
-			return (i + 1);
-		}
-		i++;
-	}
-	if (split)
-		free_split(split);
-	return (0);
-}
+#include "builtins.h"
 
 int	exec_echo(t_token *list, t_dlist *env)
 {
