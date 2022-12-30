@@ -45,7 +45,7 @@ int	exec_echo(t_token *list, t_dlist *env)
 	if (!builtin_plausible(tkn, "echo"))
 		return (1);
 	tkn = skip_spaces(tkn);
-	if (tkn && !ft_strncmp(tkn->str, "-n", 3))
+	while (tkn && !ft_strncmp(tkn->str, "-n", 3))
 	{
 		newline = 0;
 		tkn = skip_spaces(tkn);
