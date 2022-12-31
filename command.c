@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 01:17:04 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:57:46 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	handle_nonexport_builtin(t_token *list, t_dlist **env, t_pipe *data)
 	else if (!ft_strncmp(list->str, "env", 4))
 		ret = exec_env(list, *env);
 	else if (!ft_strncmp(list->str, "exit", 5))
-		exec_exit(list, env, data);
+		ret = exec_exit(list, env, data);
 	data->error_code = ret;
 	return (ret);
 }

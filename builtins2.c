@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 19:53:54 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 03:37:34 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:58:51 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	exec_env(t_token *list, t_dlist *env)
 	return (0);
 }
 
-void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
+int	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 {
 	t_token	*tkn;
 
@@ -56,10 +56,11 @@ void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 		{
 			prnt_err2("exit", "too many arguments");
 			data->error_code = 1;
-			return ;
+			return (1);
 		}
 	}
 	exit_with_value(data->error_code, env);
+	return (data->error_code);
 }
 
 void	exit_if_not_numeric(t_token *tkn, t_dlist **env)

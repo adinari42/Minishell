@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 19:26:20 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 20:37:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:58:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		exec_pwd(t_token *token, t_dlist *env);
 int		exec_export(t_token *token, t_dlist *env);
 int		exec_unset(t_token *token, t_dlist *env);
 int		exec_env(t_token *token, t_dlist *env);
-void	exec_exit(t_token *token, t_dlist **env, t_pipe *data);
+int		exec_exit(t_token *token, t_dlist **env, t_pipe *data);
 
 int		update_var(char *varname, char *value, t_dlist *env);
 int		is_builtin(char *str);
