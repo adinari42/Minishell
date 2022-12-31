@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 21:01:13 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/19 23:52:42 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:32:36 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,13 @@ t_token	*merge_two_tokens(t_token *token1, t_token *token2)
 		token1->next->prev = token1;
 	delete(token2);
 	return (token1);
+}
+
+char	*add_quote_char(char *cmd, t_token *tkn)
+{
+	if (tkn->type == STR_DQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "\"");
+	else if (tkn->type == STR_SQUOTES)
+		cmd = ft_strjoin_free_str1(cmd, "'");
+	return (cmd);
 }

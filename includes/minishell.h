@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 00:39:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 02:20:29 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ enum e_builtins
 t_token	**merge_quoted_strings(t_token **list);
 t_token	*merge_tokens(t_token *first, t_token *last);
 t_token	*merge_two_tokens(t_token *token1, t_token *token2);
+char	*add_quote_char(char *cmd, t_token *tkn);
 
 /*exit.c*/
 void	free_and_exit(int signum, t_dlist **env);
@@ -122,6 +123,16 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str);
 int		redir_in(t_token *list, t_pipe *data);
 int		append_in(t_token *list, t_pipe *data);
 
-//void	print_double_ptr(char **ptr);
+/*command.c*/
+void	treat_cmdline(t_token	*plist, t_pipe	*data, t_dlist	**env, int i);
+
+/*cmd_param.c*/
+void	init_path(t_token **cmd, t_parse *parse, t_dlist **env, t_pipe *data);
+char**	set_parse_cmd(t_token *head);
+char	*get_cmd(t_token *list, t_pipe *data);
+t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type);
+
+
+char	*add_quote_char(char *cmd, t_token *tkn);
 
 #endif

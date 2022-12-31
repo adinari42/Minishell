@@ -6,13 +6,13 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 23:19:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 01:03:37 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:06:25 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int		open_tmp(t_pipe *pipe)
+int	open_tmp(t_pipe *pipe)
 {
 	pipe->file.infile = open("tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (pipe->file.infile == -1)
@@ -28,6 +28,7 @@ int		open_tmp(t_pipe *pipe)
 	}
 	return (0);
 }
+
 void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str)
 {
 	g_stop = 0;
@@ -35,9 +36,8 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str)
 	{
 		write (1, "> ", 2);
 		str = get_next_line(0);
-		//printf("%s, list->str: %s\n", str, list->str);
 		if (str && (!ft_strncmp(list->str, str, ft_strlen(list->str))
-			&& !ft_strncmp(str + ft_strlen(list->str), "\n", 1)))
+				&& !ft_strncmp(str + ft_strlen(list->str), "\n", 1)))
 		{
 			free(str);
 			break ;
@@ -48,7 +48,7 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str)
 	}
 }
 
-int		append_in(t_token *list, t_pipe *data)
+int	append_in(t_token *list, t_pipe *data)
 {
 	list->type = INFILE;
 	if (init_here_doc(list, data))
@@ -56,13 +56,12 @@ int		append_in(t_token *list, t_pipe *data)
 	return (0);
 }
 
-int		redir_in(t_token *list, t_pipe *data)
+int	redir_in(t_token *list, t_pipe *data)
 {
 	list->type = INFILE;
 	data->file.infile = open(list->str, O_RDONLY);
 	if (data->file.infile == -1)
 	{
-		// write(2, list->str, ft_strlen(list->str));
 		data->out_fd = list->str;
 		close(data->file.infile);
 		ms_fd_error(1, data);

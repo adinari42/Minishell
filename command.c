@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:14:57 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 22:55:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:17:04 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,27 @@ int	handle_command(t_pipe *data, t_token **cmd_line, int i, t_dlist **env)
 	else
 		parent(data);
 	return (err);
+}
+
+void	treat_cmdline(t_token *plist, t_pipe *data, t_dlist **env, int i)
+{
+	t_token	**builtin_list;
+
+	builtin_list = read_tokens(data->cmd_line);
+	builtin_list = merge_quoted_strings(builtin_list);
+	if (is_builtin(data->cmd_line) && !g_stop)
+	{
+		free(data->cmd_line);
+		data->error_code = handle_builtinstr(*builtin_list, data, i, env);
+		error_code(&data->error_code);
+	}
+	else if (data->cmd_line && data->cmd_line[0] && !g_stop)
+	{
+		free(data->cmd_line);
+		handle_command(data, &plist, i, env);
+	}
+	else if (data->cmd_line)
+		free(data->cmd_line);
+	free_token_list(*builtin_list);
+	free(builtin_list);
 }

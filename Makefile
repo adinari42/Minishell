@@ -3,10 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
+#    By: adinari <adinari@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2022/12/31 00:35:23 by slakner          ###   ########.fr        #
+=======
+#    Updated: 2022/12/31 01:25:27 by adinari          ###   ########.fr        #
+>>>>>>> norm fixes
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +44,8 @@ SRCS = 	main.c \
 		error.c\
 		heredoc_signals.c\
 		free2.c\
-		input.c
+		input.c\
+		cmd_param.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
