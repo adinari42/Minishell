@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 19:53:54 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 03:27:59 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:37:34 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 	tkn = skip_spaces(tkn);
 	if (tkn)
 	{
-		printf("exit\n");
+		write(2, "exit\n", 5);
 		exit_if_not_numeric(tkn, env);
 		data->error_code = ft_atoi(tkn->str);
 		tkn = skip_spaces(tkn);
