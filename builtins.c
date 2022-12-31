@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 20:03:18 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 02:08:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:53:17 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	exec_echo(t_token *list, t_dlist *env)
 	}
 	while (tkn)
 	{
-		write(1, tkn->str, ft_strlen(tkn->str));
+		if (!(tkn->type == SPACE_TKN && !tkn->next))
+			write(1, tkn->str, ft_strlen(tkn->str));
 		if (tkn->type == SPACE_TKN)
 			tkn = skip_spaces(tkn);
 		else
@@ -105,8 +106,8 @@ int	exec_unset(t_token *list, t_dlist *env)
 	tkn = list;
 	var = env;
 	tkn = skip_spaces(tkn);
-	if (!tkn->str)
-		return (0);
+	if (!tkn || !tkn->str)
+		return (prnt_err2("unset", "not enough arguments"));
 	if (!valid_identifier(tkn->str))
 		return (prnt_err("unset", tkn->str, "not a valid identifier"));
 	while (var)
