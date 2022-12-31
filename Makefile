@@ -7,10 +7,14 @@
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
 <<<<<<< HEAD
+<<<<<<< HEAD
 #    Updated: 2022/12/31 00:35:23 by slakner          ###   ########.fr        #
 =======
 #    Updated: 2022/12/31 01:25:27 by adinari          ###   ########.fr        #
 >>>>>>> norm fixes
+=======
+#    Updated: 2022/12/31 01:51:11 by adinari          ###   ########.fr        #
+>>>>>>> added fork_and_exec.c
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +49,9 @@ SRCS = 	main.c \
 		heredoc_signals.c\
 		free2.c\
 		input.c\
-		cmd_param.c
+		cmd_param.c\
+		fork_and_exec.c
+
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))

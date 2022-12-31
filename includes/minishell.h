@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 02:20:29 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 02:23:15 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,5 +134,10 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type);
 
 
 char	*add_quote_char(char *cmd, t_token *tkn);
+
+/*fork_and_exec.c*/
+void	exec_cmd(t_pipe *data, t_dlist **env);
+void	child(t_pipe *plist, int i);
+void	parent(t_pipe *plist);
 
 #endif

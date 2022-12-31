@@ -6,25 +6,25 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/31 01:22:41 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 01:30:53 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 02:00:18 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
+void	init_path(t_token **cmd_l, t_parse *parse, t_dlist **env, t_pipe *data)
 {
 	char	*var_path;
 	char	**split_path;
 
-	parse->cmd = set_parse_cmd(*cmdline);
+	parse->cmd = set_parse_cmd(*cmd_l);
 	var_path = expand_var_in_str(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
 	free_split(split_path);
 }
 
-char**	set_parse_cmd(t_token *head)
+char	**set_parse_cmd(t_token	*head)
 {
 	int		count;
 	t_token	*curr;
@@ -62,7 +62,8 @@ t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type)
 	}
 	while (tmp)
 	{
-		if (tmp->type == WORD || tmp->type == STR_DQUOTES || tmp->type == STR_SQUOTES)
+		if (tmp->type == WORD || tmp->type == STR_DQUOTES
+			|| tmp->type == STR_SQUOTES)
 		{
 			if (init_infile(tmp, data, redir_type))
 				return (NULL);
@@ -91,18 +92,17 @@ char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token	*tmp;
 	char	*cmd_line;
-	int		redir_type;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
 	data->out_fd = NULL;
 	while (tmp)
 	{
-		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT || tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
+		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT
+			|| tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
 		{
-			redir_type = tmp->type;
 			tmp = tmp->next;
-			tmp = skip_redir(tmp, data, redir_type);
+			tmp = skip_redir(tmp, data, tmp->type);
 			if (tmp == NULL)
 			{
 				free(cmd_line);
