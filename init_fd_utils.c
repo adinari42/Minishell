@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 23:19:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 01:06:25 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 04:24:19 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	read_to_tmp(t_token *list, t_pipe *pipe, char	*str)
 			free(str);
 			break ;
 		}
+		str = expand_value(str, *pipe->env, pipe);
 		ft_putstr_fd(str, pipe->file.infile);
 		if (str)
 			free(str);
