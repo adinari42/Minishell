@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:14:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 00:24:09 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:27:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ int	print_builtin_error(char *builtin, char *dir)
 		access(dir, X_OK);
 	write (2, "minishell: ", 11);
 	write (2, builtin, ft_strlen(builtin));
-	write (2, ":", 1);
+	write (2, ": ", 2);
 	write (2, dir, ft_strlen(dir));
 	if (errno == EACCES)
 		write(2, "/", 1);
-	write (2, ": ", 1);
+	write (2, ": ", 2);
 	if (errno == EACCES)
 		write(2, "permission denied\n", ft_strlen("permission denied\n"));
 	else if (errno == ENOTDIR)
