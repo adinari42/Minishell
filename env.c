@@ -6,7 +6,7 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 22:30:12 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 00:35:36 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:57:52 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ char	*get_value_from_key(t_dlist *var, char *varname, int count, t_pipe *dt)
 			}
 			var = var->next;
 		}
-        if (!value && !count++)
-            value = ft_strdup("");
+		if (!value && !count++)
+			value = ft_strdup("");
 		value = ft_strjoin_free_str1(value, varname + count);
 	}
 	free(str);
@@ -111,4 +111,3 @@ char	*extract_value(char *tokenstr)
 	}
 	return (varname);
 }
-

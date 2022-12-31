@@ -6,13 +6,13 @@
 /*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 22:09:19 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/29 18:44:55 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:03:47 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "includes/minishell.h"
+#include "minishell.h"
 
-int		init_here_doc(t_token *list, t_pipe *pipe)
+int	init_here_doc(t_token *list, t_pipe *pipe)
 {
 	char	*str;
 
@@ -36,11 +36,11 @@ int		init_here_doc(t_token *list, t_pipe *pipe)
 	return (0);
 }
 
-int		init_infile(t_token *list, t_pipe *data, int redir_type)
+int	init_infile(t_token *list, t_pipe *data, int redir_type)
 {
 	data->out_fd = NULL;
 	if (redir_type == APPEND_IN)
-		return(append_in(list, data));
+		return (append_in(list, data));
 	else if (redir_type == REDIR_IN)
 		return (redir_in(list, data));
 	else if (redir_type == APPEND_OUT)
@@ -58,7 +58,7 @@ int		init_infile(t_token *list, t_pipe *data, int redir_type)
 	return (0);
 }
 
-int		init_outfile(t_pipe *pipe)
+int	init_outfile(t_pipe *pipe)
 {
 	if (pipe->append == 0)
 		pipe->file.outfile = open(pipe->out_fd,
@@ -69,15 +69,11 @@ int		init_outfile(t_pipe *pipe)
 	pipe->append = 0;
 	if (pipe->file.outfile == -1)
 	{
-		// pipe->file.infile = pipe->out_fd;
 		ms_fd_error(6, pipe);
 		return (1);
 	}
 	else if (dup2(pipe->file.outfile, 1) == -1)
-	{
-		// ms_fd_error(2, pipe);
 		return (1);
-	}
 	close (pipe->file.outfile);
 	return (0);
 }

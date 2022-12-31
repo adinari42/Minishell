@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init_fd_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 23:19:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 00:06:01 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:03:37 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "includes/minishell.h"
+#include "includes/minishell.h"
 
 int		open_tmp(t_pipe *pipe)
 {

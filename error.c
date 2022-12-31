@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:14:43 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 23:30:41 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:00:20 by adinari          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "error.h"
-
 
 int	prnt_err(char *cmd, char *arg, char *errstr)
 {
@@ -65,7 +64,6 @@ int	print_builtin_error(char *builtin, char *dir)
 			ft_strlen("No such file or directory\n"));
 	return (0);
 }
-
 
 int	error_code(int *err)
 {
