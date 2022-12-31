@@ -6,13 +6,12 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 20:33:27 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/13 21:33:38 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:18:19 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LLIST_H
 # define LLIST_H
-
 
 t_token	*token_new(char *str);
 void	delete(t_token *del_elem);

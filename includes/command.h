@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.h                                         :+:      :+:    :+:   */
+/*   command.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 22:25:04 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 22:26:45 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:14:43 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COMMANDS_H
-# define COMMANDS_H
+#ifndef COMMAND_H
+# define COMMAND_H
 # include "minishell.h"
 
 int	handle_builtinstr(t_token *list, t_pipe *data, int i, t_dlist **env);

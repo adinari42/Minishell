@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 02:23:15 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:19:39 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ enum e_builtins
 	EXIT
 };
 
-
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
 t_token	*merge_tokens(t_token *first, t_token *last);
@@ -89,7 +88,8 @@ void	exit_with_value(int retval, t_dlist **env);
 
 /*execute_line.c*/
 void	execute_line(t_token *list, t_parse parse, char **envp);
-void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data);
+void	init_path(t_token **cmdline, t_parse *parse,
+			t_dlist **env, t_pipe *data);
 char	*get_path(char **string, char *cmd);
 void	ms_fd_error(int i, t_pipe *data);
 /*******/
@@ -128,10 +128,9 @@ void	treat_cmdline(t_token	*plist, t_pipe	*data, t_dlist	**env, int i);
 
 /*cmd_param.c*/
 void	init_path(t_token **cmd, t_parse *parse, t_dlist **env, t_pipe *data);
-char**	set_parse_cmd(t_token *head);
+char	**set_parse_cmd(t_token *head);
 char	*get_cmd(t_token *list, t_pipe *data);
 t_token	*skip_redir(t_token *tmp, t_pipe *data, int redir_type);
-
 
 char	*add_quote_char(char *cmd, t_token *tkn);
 

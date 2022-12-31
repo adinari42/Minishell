@@ -6,59 +6,15 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 02:28:56 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:14:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_stop;
 
-// void	exec_cmd(t_pipe *data, t_dlist **env)
-// {
-// 	char	**envp;
-
-// 	envp = env_list_to_char_arr(env);
-// 	if (!data->parse.path)
-// 	{
-// 		ms_fd_error(127, data);
-// 		exit (127);
-// 	}
-// 	else
-// 	{
-// 		if (execve(data->parse.path, data->parse.cmd, envp) == -1)
-// 			ms_fd_error(127, data);
-// 	}	
-// 	free_char_arr(envp);
-// 	exit(0);
-// }
-
-// void	child(t_pipe *plist, int i)
-// {
-// 	if (i < plist->cmd_pos)
-// 	{
-// 		if (dup2(plist->fd[1], 1) == -1)
-// 			ms_fd_error(2, plist);
-// 	}
-// 	if (plist->out_fd != NULL)
-// 	{
-// 		if (init_outfile(plist))
-// 			exit(1);
-// 	}
-// 	close (plist->fd[0]);
-// }
-
-// void	parent(t_pipe *plist)
-// {
-// 	waitpid(plist->pid, &plist->status, 0);
-// 	dup2(plist->fd[0], 0);
-// 	close (plist->fd[1]);
-// }
-
-
-/**********/
-void call_cmdline(t_token *plist, t_dlist **env, t_pipe *data, int i)
+void	call_cmdline(t_token *plist, t_dlist **env, t_pipe *data, int i)
 {
 	char	*cmd_line;
 	t_token	**builtin_list;
@@ -87,7 +43,7 @@ void call_cmdline(t_token *plist, t_dlist **env, t_pipe *data, int i)
 		parent(data);
 }
 
-int handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
+int	handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
 {
 	g_stop = 0;
 	pipe(data->fd);

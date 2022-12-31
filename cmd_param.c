@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/31 01:22:41 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 03:05:34 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:12:23 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ char	*get_cmd(t_token *list, t_pipe *data)
 {
 	t_token	*tmp;
 	char	*cmd_line;
-	int		redir_type;
 
 	tmp = list;
 	cmd_line = ft_strdup("");
@@ -102,9 +101,8 @@ char	*get_cmd(t_token *list, t_pipe *data)
 		if (tmp->type == APPEND_IN || tmp->type == APPEND_OUT
 			|| tmp->type == REDIR_IN || tmp->type == REDIR_OUT)
 		{
-			redir_type = tmp->type;
 			tmp = tmp->next;
-			tmp = skip_redir(tmp, data, redir_type);
+			tmp = skip_redir(tmp, data, tmp->prev->type);
 			if (tmp == NULL)
 			{
 				free(cmd_line);
