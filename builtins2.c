@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 19:53:54 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/31 03:58:51 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 15:25:06 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 			return (1);
 		}
 	}
+	free_token_list(list);
 	exit_with_value(data->error_code, env);
 	return (data->error_code);
 }
@@ -66,11 +67,14 @@ int	exec_exit(t_token *list, t_dlist **env, t_pipe *data)
 void	exit_if_not_numeric(t_token *tkn, t_dlist **env)
 {
 	char	*tokenstr;
+	t_token	*start;
 
 	tokenstr = tkn->str;
+	start = tlist_start(tkn);
 	if (!*tokenstr)
 	{
 		prnt_err("exit", "tkn->str", "numeric argument required");
+		free_token_list(start);
 		exit_with_value(255, env);
 	}
 	while (*(tokenstr))
@@ -78,6 +82,7 @@ void	exit_if_not_numeric(t_token *tkn, t_dlist **env)
 		if (!ft_isdigit(*tokenstr))
 		{
 			prnt_err("exit", "tkn->str", "numeric argument required");
+			free_token_list(start);
 			exit_with_value(255, env);
 		}
 		tokenstr ++;
