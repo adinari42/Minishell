@@ -3,23 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 00:46:02 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:12:15 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_stop;
 
-void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data)
+void	init_path(t_token **cmd, t_parse *parse, t_dlist **env, t_pipe *data)
 {
 	char	*var_path;
 	char	**split_path;
 
-	parse->cmd = set_parse_cmd(*cmdline);
+	parse->cmd = set_parse_cmd(*cmd);
 	var_path = expand_var_in_str(*env, "PATH", data);
 	split_path = ft_split(var_path, ':');
 	parse->path = get_path(split_path, parse->cmd[0]);
@@ -102,7 +103,7 @@ char	*add_quote_char(char *cmd, t_token *tkn)
 	return (cmd);
 }
 
-char	*join_param(char	*cmd_line,	t_token	*tmp)
+char	*join_param(char *cmd_line, t_token *tmp)
 {
 	cmd_line = add_quote_char(cmd_line, tmp);
 	cmd_line = ft_strjoin_free_str1(cmd_line, tmp->str);
@@ -178,88 +179,45 @@ void	free_and_close(t_pipe *plist)
 	unlink("tmp");
 }
 
-void	treat_cmdline(t_token *plist, t_pipe *data, t_dlist **env, int i, char	*cmd_line)
-{
-	t_token	**builtin_list;
-
-	builtin_list = read_tokens(cmd_line);
-	builtin_list = merge_quoted_strings(builtin_list);
-	if (is_builtin(cmd_line) && !g_stop)
-	{
-		free(cmd_line);
-		data->error_code = handle_builtinstr(*builtin_list, data, i, env);
-		error_code(&data->error_code);
-	}
-	else if (cmd_line && cmd_line[0] && !g_stop)
-	{
-		free(cmd_line);
-		handle_command(data, &plist, i, env);
-	}
-	else if (cmd_line)
-		free(cmd_line);
-	free_token_list(*builtin_list);
-	free(builtin_list);
-}
-
-int handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
+void call_cmdline(t_token *plist, t_dlist **env, t_pipe *data, int i)
 {
 	char	*cmd_line;
+	t_token	**builtin_list;
 
-	g_stop = 0;
-	pipe(data->fd);
-	check_value(plist, *env, data);
 	cmd_line = get_cmd(plist, data);
 	data->parse.cmd = set_parse_cmd(plist);
 	if (cmd_line)
-		treat_cmdline(plist, data, env, i, cmd_line);
+	{
+		builtin_list = read_tokens(cmd_line);
+		builtin_list = merge_quoted_strings(builtin_list);
+		if (is_builtin(cmd_line) && !g_stop)
+		{
+			free(cmd_line);
+			data->error_code = handle_builtinstr(*builtin_list, data, i, env);
+			error_code(&data->error_code);
+		}
+		else if (cmd_line && cmd_line[0] && !g_stop)
+		{
+			free(cmd_line);
+			handle_command(data, &plist, i, env);
+		}
+		else if (cmd_line)
+			free(cmd_line);
+		free_token_list_and_ptr(builtin_list);
+	}
 	else
 		parent(data);
+}
+
+int	handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i)
+{
+	g_stop = 0;
+	pipe(data->fd);
+	check_value(plist, *env, data);
+	call_cmdline(plist, env, data, i);
 	free(data->parse.cmd);
 	unlink("tmp");
 	return (0);
-}
-
-
-int	handle_input(t_token **plist, t_pipe *data, t_dlist **env)
-{
-	int		i;
-
-	i = 0;
-	data->cmd_pos = count_pipes(plist);
-	while (plist[i])
-	{
-		handle_single_pipe(plist[i], data, env, i);
-		i++;
-	}
-	data->error_code = WEXITSTATUS(data->status);
-	if (error_code(NULL))
-	{
-		data->error_code = error_code(NULL);
-		i = 0;
-		error_code(&i);
-	}
-	return (data->status);
-}
-
-char	*get_input_line(t_dlist **env, t_pipe *data, int stdin_restore)
-{
-	char	*inpt;
-
-	if (isatty(stdin_restore))
-		inpt = readline("Minishell$ ");
-	else
-	{	
-		inpt = get_next_line(0);
-		if (!inpt)
-			exit(data->error_code);
-		inpt = ft_strtrim(inpt, "\n");
-	}
-	if (!inpt)
-		free_and_exit(SIGINT, env);
-	add_history(inpt);
-	if (is_empty_inpt(inpt))
-		return (NULL);
-	return (inpt);
 }
 
 void	main_loop(t_dlist **env, int stdin_rstr, int stdout_rstr, t_pipe *data)

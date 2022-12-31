@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 22:49:44 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/30 22:34:43 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 00:39:45 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # include "signals.h"
 # include "command.h"
 # include "tokens.h"
+# include "input.h"
 
 # define TOKENS " $'<>\""
 
@@ -75,14 +76,6 @@ enum e_builtins
 	EXIT
 };
 
-/*tokens.c*/
-t_token	**read_tokens(char *bashcmd);
-void	set_cmd_path(t_token *tklist, t_parse parse);
-int		token_type(char *c);
-void	print_list(t_token *tklist);
-void	init_signals(void);
-
-//int		exec(char *program, char **args, char *const *envp);
 
 /*quotes.c*/
 t_token	**merge_quoted_strings(t_token **list);
@@ -97,7 +90,6 @@ void	exit_with_value(int retval, t_dlist **env);
 void	execute_line(t_token *list, t_parse parse, char **envp);
 void	init_path(t_token **cmdline, t_parse *parse, t_dlist **env, t_pipe *data);
 char	*get_path(char **string, char *cmd);
-void	ms_fd_err(int i);
 void	ms_fd_error(int i, t_pipe *data);
 /*******/
 t_token	*token_new(char *str);
@@ -112,6 +104,7 @@ t_token	*skip_empty(t_token *token);
 t_token	**tabs_to_spaces(t_token **pipes);
 
 /* current main.c */
+int		handle_single_pipe(t_token *plist, t_pipe *data, t_dlist **env, int i);
 char	*get_cmd(t_token *list, t_pipe *data);
 void	exec_cmd(t_pipe *pipe, t_dlist **env);
 void	parent(t_pipe *pipe);

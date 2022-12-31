@@ -6,7 +6,7 @@
 #    By: slakner <slakner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 16:24:13 by adinari           #+#    #+#              #
-#    Updated: 2022/12/30 21:17:29 by slakner          ###   ########.fr        #
+#    Updated: 2022/12/31 00:35:23 by slakner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,9 @@ SRCS = 	main.c \
 		env2.c\
 		builtins2.c\
 		error.c\
-		heredoc_signals.c
+		heredoc_signals.c\
+		free2.c\
+		input.c
 
 ODIR	= obj
 OBJS    = $(addprefix $(ODIR)/, $(SRCS:.c=.o))
