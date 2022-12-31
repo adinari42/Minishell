@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adinari <adinari@student.42.fr>            +#+  +:+       +#+        */
+/*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 04:22:17 by adinari          ###   ########.fr       */
+/*   Updated: 2022/12/31 03:14:12 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (1);
 	l_envp = init_minishell(envp);
-	data.env = l_envp;
 	(void) argv;
 	stdin_restore = dup(0);
 	stdout_restore = dup(1);
