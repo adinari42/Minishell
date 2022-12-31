@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 20:39:48 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 23:18:05 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:19:52 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,6 @@ int	token_type(char *c)
 		return (ASSIGN);
 	else
 		return (WORD);
-}
-
-void	append_from_str(t_token **list, char *str)
-{
-	tappend(list, token_new(str));
-	free(str);
 }
 
 char	*non_word_tknstr(char *bashcmd, size_t *i)
@@ -84,6 +78,15 @@ t_token	**read_tokens(char *cmd)
 	if (word_s < i)
 		append_from_str(tk_list, ft_substr(cmd, word_s, i - word_s));
 	return (tk_list);
+}
+
+t_token	**tokenize(char *cmd)
+{
+	t_token	**ltokens;
+
+	ltokens = read_tokens(cmd);
+	ltokens = merge_quoted_strings(ltokens);
+	return (ltokens);
 }
 
 t_token	**merge_word_strings(t_token **cmd_line)

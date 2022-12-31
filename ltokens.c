@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 21:49:16 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/15 19:18:17 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:18:02 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,26 +81,3 @@ t_token	*tlist_start(t_token *token)
 		token = token->prev;
 	return (token);
 }
-
-// t_token	*pop(t_token **token)
-// {
-// 	t_token	*old_top;
-
-// 	old_top = NULL;
-// 	if (token && *token)
-// 	{
-// 		old_top = token_top(token);
-// 		if (old_top)
-// 		{
-// 			if (old_top->prev)
-// 			{
-// 				old_top->prev->next = NULL;
-// 				old_top->next = NULL;
-// 				old_top->prev = NULL;
-// 			}
-// 		}
-// 	}
-// 	if (*token == old_top)
-// 		*token = NULL;
-// 	return (old_top);
-// }

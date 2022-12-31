@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 15:26:14 by adinari           #+#    #+#             */
-/*   Updated: 2022/12/31 01:12:15 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:18:22 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,8 +188,7 @@ void call_cmdline(t_token *plist, t_dlist **env, t_pipe *data, int i)
 	data->parse.cmd = set_parse_cmd(plist);
 	if (cmd_line)
 	{
-		builtin_list = read_tokens(cmd_line);
-		builtin_list = merge_quoted_strings(builtin_list);
+		builtin_list = tokenize(cmd_line);
 		if (is_builtin(cmd_line) && !g_stop)
 		{
 			free(cmd_line);

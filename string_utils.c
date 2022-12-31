@@ -6,7 +6,7 @@
 /*   By: slakner <slakner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 15:15:32 by slakner           #+#    #+#             */
-/*   Updated: 2022/12/30 22:30:21 by slakner          ###   ########.fr       */
+/*   Updated: 2022/12/31 01:17:19 by slakner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,10 @@ int	char_in_charset(char c, const char *charset)
 		ptr ++;
 	}
 	return (0);
+}
+
+void	append_from_str(t_token **list, char *str)
+{
+	tappend(list, token_new(str));
+	free(str);
 }
